@@ -45,15 +45,15 @@ const ProfileScreen = () => {
   );
 
   const ProfileSection = ({ title, icon, onPress }) => (
-    <TouchableOpacity 
-      style={[styles.sectionContainer, { backgroundColor: theme.colors.background }]} 
+    <TouchableOpacity
+      style={[styles.sectionContainer, { backgroundColor: theme.colors.background }]}
       onPress={onPress}
     >
       <View style={styles.sectionContent}>
         <Icons name={icon} size={24} color={theme.colors.text.primary} />
         <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>{title}</Text>
       </View>
-      <Icons name="chevron-forward" size={24} color={theme.colors.text.secondary} />
+      <Icons name="chevron-right" size={14} color={theme.colors.text.secondary} />
     </TouchableOpacity>
   );
 
@@ -68,9 +68,8 @@ const ProfileScreen = () => {
   };
 
   const renderProfile = () => {
-    console.log('user', user);
-    
-    return <ScrollView 
+
+    return <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.surface }]}
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -84,26 +83,29 @@ const ProfileScreen = () => {
       }
     >
       <View style={[styles.header, { backgroundColor: theme.colors.background }]}>
+          <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
+            <Icons name="gear" size={20} color={theme.colors.text.primary} />
+          </TouchableOpacity>
         <View style={styles.profileImageContainer}>
-          <Image source={{ uri: '' }} style={styles.profileImage} />
+          <Image source={{ uri: '#' }} style={styles.profileImage} />
           <TouchableOpacity style={[styles.editImageButton, { backgroundColor: theme.colors.primary }]}>
             <Icons name="camera" size={20} color={theme.colors.background} />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.name, { color: theme.colors.text.primary }]}>{user.name}</Text>
-        <Text style={[styles.email, { color: theme.colors.text.secondary }]}>{user.email}</Text>
+        <Text style={[styles.name, { color: theme.colors.text.primary }]}>{user.firstName} {user.lastName}</Text>
+        {/* <Text style={[styles.email, { color: theme.colors.text.secondary }]}>{user.email}</Text> */}
       </View>
 
       <View style={styles.sectionsContainer}>
-        <ProfileSection 
-          title="My Listed Items" 
-          icon="list" 
-          onPress={() => navigation.navigate('MyListings')} 
+        <ProfileSection
+          title="My Listed Items"
+          icon="list"
+          onPress={() => navigation.navigate('MyListings')}
         />
-        <ProfileSection 
-          title="Items Rented by Me" 
-          icon="cart" 
-          onPress={() => navigation.navigate('MyRentals')} 
+        <ProfileSection
+          title="Items Rented by Me"
+          icon="shopping-cart"
+          onPress={() => navigation.navigate('MyRentals')}
         />
 
         <View style={styles.recentSection}>
@@ -133,11 +135,11 @@ const ProfileScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.logoutButton, { backgroundColor: theme.colors.primary }]}
         onPress={handleLogout}
       >
-        <Text style={[styles.logoutText, { color: theme.colors.background }]}>Logout</Text>
+        <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
   }
@@ -287,6 +289,11 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 12,
     color: '#666',
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
   },
 });
 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 export const ItemDetailsScreen = ({ route, navigation }) => {
   const theme = useTheme();
   const { item } = route.params;
@@ -16,7 +16,7 @@ export const ItemDetailsScreen = ({ route, navigation }) => {
       <Text style={[styles.title, { color: theme.colors.text.primary }]}>{item.title}</Text>
       <Text style={[styles.description, { color: theme.colors.text.secondary }]}>{item.description}</Text>
       <Text style={[styles.price, { color: theme.colors.text.secondary }]}>${item.price}/day</Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.rentButton, { backgroundColor: theme.colors.primary }]}
         onPress={handleRent}
       >
@@ -71,5 +71,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backButton: {
+    marginBottom: 20,
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

@@ -1,36 +1,53 @@
 // screens/HomeScreen.js
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTheme } from '../src/theme/ThemeProvider';
+import React, {useState, useEffect} from 'react';
+import {View, FlatList, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useTheme} from '../src/theme/ThemeProvider';
+import {itemApi} from '../src/apis/item';
+import {useNavigation} from '@react-navigation/native';
+import {RefreshControl} from 'react-native';
+import {Item} from '../components/Item';
 
-export const HomeScreen = ({ navigation }) => {
+export const HomeScreen = () => {
   const theme = useTheme();
+  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
 
+  const fetchItems = async () => {
+    const items = await itemApi.getItems();
+    setItems(items);
+  };
   useEffect(() => {
-    // Fetch items from API
+    fetchItems();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      style={[styles.itemCard, { 
-        backgroundColor: theme.colors.surface,
-        borderBottomColor: theme.colors.text.secondary 
-      }]}
-      onPress={() => navigation.navigate('ItemDetails', { item })}
-    >
-      <Text style={[styles.itemTitle, { color: theme.colors.text.primary }]}>{item.title}</Text>
-      <Text style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>${item.price}/day</Text>
-    </TouchableOpacity>
+  const renderItem = ({item}) => (
+    <Item item={item} navigation={navigation} theme={theme} />
   );
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchItems();
+    setRefreshing(false);
+  };
+
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      {!items.length == 0 ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>No items found : (</Text>
+        </View>
+      ) : (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      )}
     </View>
   );
 };

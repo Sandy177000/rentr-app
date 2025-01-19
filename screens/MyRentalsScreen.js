@@ -1,23 +1,27 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../src/theme/ThemeProvider';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Item } from '../components/Item';
 
 // Sample data for rentals
 const rentalsData = [
-    { id: '1', title: 'Rental 1' },
-    { id: '2', title: 'Rental 2' },
-    { id: '3', title: 'Rental 3' },
+    { id: '1', name: 'Rental 1' },
+    { id: '2', name: 'Rental 2' },
+    { id: '3', name: 'Rental 3' },
 ];
 
 const MyRentalsScreen = () => {
+    const navigation = useNavigation();
+    const theme = useTheme();
+
     const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Text style={styles.title}>{item.title}</Text>
-        </View>
+        <Item item={item} navigation={navigation} theme={theme} />
     );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>My Rentals</Text>
             <FlatList
                 data={rentalsData}
                 renderItem={renderItem}
@@ -45,6 +49,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
+    },
+    backButton: {
+        marginBottom: 15,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: '#007AFF',
     },
 });
 
