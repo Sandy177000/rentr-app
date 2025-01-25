@@ -7,8 +7,8 @@ import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurren
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@rentr.com');
+  const [password, setPassword] = useState('Admin@123');
   const theme = useTheme();
   const dispatch = useDispatch();
   const loading = useSelector(selectAuthLoading);

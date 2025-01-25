@@ -40,8 +40,8 @@ const MainTabs = () => {
   ];
 
   const renderScene = SceneMap({
-    listItem: ListItemScreen,
     home: HomeScreen,
+    listItem: ListItemScreen,
     profile: ProfileScreen,
     search: SearchScreen,
   });
@@ -131,8 +131,10 @@ const App = () => {
             },
             cardStyle: {backgroundColor: theme.colors.background},
           }}>
+          <Stack.Screen name="List Item" component={ListItemScreen} />
           <Stack.Screen name="Login" component={LoginScreen}  options={{headerShown: false}}/>
-          <Stack.Screen name="Register" component={RegisterScreen} />
+
+          <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}} />
           <Stack.Screen
             name="MainTabs"
             component={MainTabs}

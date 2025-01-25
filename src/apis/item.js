@@ -24,16 +24,17 @@ export const itemApi = {
   },
   createItem: async (item) => {
     const storedUser = await AsyncStorage.getItem('user');
-      console.log(storedUser);
-      
-      if (!storedUser) {
-        return {error: 'User not found'}; 
-      }
-      
+    console.log(item);
+    
+    if (!storedUser) {
+      return {error: 'User not found'}; 
+    }
+    
     const { token } = JSON.parse(storedUser);
     const response = await axios.post(`${API_BASE_URL}/items`, item, {
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
       }
     });
     return response.data;
