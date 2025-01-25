@@ -24,6 +24,7 @@ import {useTheme} from './src/theme/ThemeProvider';
 import {LoginScreen} from './screens/LoginScreen';
 import {ThemeProvider} from './src/theme/ThemeProvider';
 import SearchScreen from './screens/SearchScreen';
+import CameraScreen from './screens/CameraScreen';
 
 const Stack = createStackNavigator();
 
@@ -160,7 +161,7 @@ const App = () => {
             options={{title: 'Settings'}}
             component={SettingsScreen}
           />
-          {/* <Stack.Screen name="About" options={{ title: "About" }} component={AboutScreen} /> */}
+          <Stack.Screen name="Camera" component={CameraScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

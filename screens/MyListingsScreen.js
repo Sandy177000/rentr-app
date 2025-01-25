@@ -12,6 +12,7 @@ import { itemApi } from '../src/apis/item';
 import { useTheme } from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import ListItem from '../components/ListItem';
 
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
@@ -34,40 +35,7 @@ export const MyListingsScreen = () => {
   }, []);
 
   const renderItem = ({ item, index }) => (
-    <View style={[
-      styles.itemCard,
-      { 
-        backgroundColor: theme.colors.surface,
-        marginLeft: index % 2 === 0 ? 0 : 8,
-        shadowColor: theme.colors.text.primary 
-      }
-    ]}>
-      
-      <Image
-        source={{ uri: item.images?.[0] || 'https://via.placeholder.com/150' }}
-        style={styles.itemImage}
-        resizeMode="cover"
-      />
-      <View style={styles.itemContent}>
-        <Text 
-          style={[styles.itemTitle, { color: theme.colors.text.primary }]}
-          numberOfLines={1}
-        >
-          {item.name}
-        </Text>
-        <Text 
-          style={[styles.itemPrice, { color: theme.colors.text.secondary }]}
-        >
-          ${item.price}/day
-        </Text>
-        <TouchableOpacity
-          style={[styles.viewButton, { backgroundColor: theme.colors.primary }]}
-          onPress={() => navigation.navigate('ItemDetails', { item })}
-        >
-          <Text style={styles.viewButtonText}>View Details</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
   );
 
   return (

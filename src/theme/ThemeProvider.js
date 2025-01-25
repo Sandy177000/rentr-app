@@ -13,7 +13,7 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
-  const theme = isDark ? darkTheme : lightTheme;
+  const theme = !isDark ? darkTheme : lightTheme;
 
   const toggleTheme = () => {
     setIsDark(!isDark);

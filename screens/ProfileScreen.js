@@ -1,59 +1,94 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState, useCallback, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectCurrentUser, logout } from '../store/authSlice';
-import { useTheme } from '../src/theme/ThemeProvider';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectCurrentUser, logout, updateUser} from '../store/authSlice';
+import {useTheme} from '../src/theme/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {userApi} from '../src/apis/user';
+import ProfileCard from '../components/ProfileCard';
 
 const ProfileScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser);
+  
 
+  const fetchUser = async () => {
+    const user = await userApi.getUserInfo();
+    dispatch(updateUser(user));
+    return user;
+  }
+ 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    // fetch user info from backend on refresh
+    fetchUser();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
-  const user = useSelector(selectCurrentUser);
 
   const recentListings = [
-    { id: 1, title: 'Mountain Bike', price: '$15/day' },
-    { id: 2, title: 'Camera Kit', price: '$25/day' },
-    { id: 3, title: 'Camping Tent', price: '$20/day' },
-    { id: 4, title: 'Camera Kit', price: '$25/day' },
-    { id: 5, title: 'Camping Tent', price: '$20/day' },
+    {id: 1, title: 'Mountain Bike', price: '$15/day'},
+    {id: 2, title: 'Camera Kit', price: '$25/day'},
+    {id: 3, title: 'Camping Tent', price: '$20/day'},
+    {id: 4, title: 'Camera Kit', price: '$25/day'},
+    {id: 5, title: 'Camping Tent', price: '$20/day'},
   ];
 
   const recentRentals = [
-    { id: 1, title: 'Surfboard', price: '$30/day' },
-    { id: 2, title: 'DJ Equipment', price: '$45/day' },
-    { id: 3, title: 'Drone', price: '$35/day' },
+    {id: 1, title: 'Surfboard', price: '$30/day'},
+    {id: 2, title: 'DJ Equipment', price: '$45/day'},
+    {id: 3, title: 'Drone', price: '$35/day'},
   ];
 
-  const ItemCard = ({ title, price }) => (
-    <View style={[styles.itemCard, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.itemImagePlaceholder, { backgroundColor: theme.colors.surface }]} />
-      <Text style={[styles.itemTitle, { color: theme.colors.text.primary }]}>{title}</Text>
-      <Text style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>{price}</Text>
+  const ItemCard = ({title, price}) => (
+    <View style={[styles.itemCard, {backgroundColor: theme.colors.background}]}>
+      <View
+        style={[
+          styles.itemImagePlaceholder,
+          {backgroundColor: theme.colors.surface},
+        ]}
+      />
+      <Text style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
+        {title}
+      </Text>
+      <Text style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
+        {price}
+      </Text>
     </View>
   );
 
-  const ProfileSection = ({ title, icon, onPress }) => (
+  const ProfileSection = ({title, icon, onPress}) => (
     <TouchableOpacity
-      style={[styles.sectionContainer, { backgroundColor: theme.colors.background }]}
-      onPress={onPress}
-    >
+      style={[
+        styles.sectionContainer,
+        {backgroundColor: theme.colors.background},
+      ]}
+      onPress={onPress}>
       <View style={styles.sectionContent}>
         <Icons name={icon} size={24} color={theme.colors.text.primary} />
-        <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>{title}</Text>
+        <Text style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
+          {title}
+        </Text>
       </View>
-      <Icons name="chevron-right" size={14} color={theme.colors.text.secondary} />
+      <Icons
+        name="chevron-right"
+        size={14}
+        color={theme.colors.text.secondary}
+      />
     </TouchableOpacity>
   );
 
@@ -68,85 +103,90 @@ const ProfileScreen = () => {
   };
 
   const renderProfile = () => {
-
-    return <ScrollView
-      style={[styles.container, { backgroundColor: theme.colors.surface }]}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={theme.colors.text.primary}
-          colors={[theme.colors.text.primary]}
-          progressBackgroundColor={theme.colors.background}
-        />
-      }
-    >
-      <View style={[styles.header, { backgroundColor: theme.colors.background }]}>
-          <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
-            <Icons name="gear" size={20} color={theme.colors.text.primary} />
-          </TouchableOpacity>
-        <View style={styles.profileImageContainer}>
-          <Image source={{ uri: '#' }} style={styles.profileImage} />
-          <TouchableOpacity style={[styles.editImageButton, { backgroundColor: theme.colors.primary }]}>
-            <Icons name="camera" size={20} color={theme.colors.background} />
-          </TouchableOpacity>
-        </View>
-        <Text style={[styles.name, { color: theme.colors.text.primary }]}>{user.firstName} {user.lastName}</Text>
-        {/* <Text style={[styles.email, { color: theme.colors.text.secondary }]}>{user.email}</Text> */}
-      </View>
-
-      <View style={styles.sectionsContainer}>
-        <ProfileSection
-          title="My Listed Items"
-          icon="list"
-          onPress={() => navigation.navigate('MyListings')}
-        />
-        <ProfileSection
-          title="Items Rented by Me"
-          icon="shopping-cart"
-          onPress={() => navigation.navigate('MyRentals')}
+    return (
+      <ScrollView
+        style={[styles.container, {backgroundColor: theme.colors.surface}]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.text.primary}
+            colors={[theme.colors.text.primary]}
+            progressBackgroundColor={theme.colors.background}
+          />
+        }>
+        <ProfileCard 
+          user={user} 
+          theme={theme} 
+          styles={styles} 
+          navigation={navigation}
+          fetchUser={fetchUser}
         />
 
-        <View style={styles.recentSection}>
-          <Text style={[styles.recentTitle, { color: theme.colors.text.primary }]}>
-            Recently Listed Items
-          </Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.recentItemsContainer}>
-              {recentListings.map(item => (
-                <ItemCard key={item.id} title={item.title} price={item.price} />
-              ))}
-            </View>
-          </ScrollView>
+        <View style={styles.sectionsContainer}>
+          <ProfileSection
+            title="My Listed Items"
+            icon="list"
+            onPress={() => navigation.navigate('MyListings')}
+          />
+          <ProfileSection
+            title="Items Rented by Me"
+            icon="shopping-cart"
+            onPress={() => navigation.navigate('MyRentals')}
+          />
+
+          <View style={styles.recentSection}>
+            <Text
+              style={[styles.recentTitle, {color: theme.colors.text.primary}]}>
+              Recently Listed Items
+            </Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.recentItemsContainer}>
+                {recentListings.map(item => (
+                  <ItemCard
+                    key={item.id}
+                    title={item.title}
+                    price={item.price}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+
+          <View style={styles.recentSection}>
+            <Text
+              style={[styles.recentTitle, {color: theme.colors.text.primary}]}>
+              Recently Rented Items
+            </Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.recentItemsContainer}>
+                {recentRentals.map(item => (
+                  <ItemCard
+                    key={item.id}
+                    title={item.title}
+                    price={item.price}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         </View>
 
-        <View style={styles.recentSection}>
-          <Text style={[styles.recentTitle, { color: theme.colors.text.primary }]}>
-            Recently Rented Items
-          </Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.recentItemsContainer}>
-              {recentRentals.map(item => (
-                <ItemCard key={item.id} title={item.title} price={item.price} />
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-      </View>
+        <TouchableOpacity
+          style={[styles.logoutButton, {backgroundColor: theme.colors.primary}]}
+          onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    );
+  };
 
-      <TouchableOpacity
-        style={[styles.logoutButton, { backgroundColor: theme.colors.primary }]}
-        onPress={handleLogout}
-      >
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  }
-
-  return (
-    user && renderProfile()
-  );
+  return user && renderProfile();
 };
 
 const styles = StyleSheet.create({
@@ -182,11 +222,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#333',
     padding: 8,
-    borderRadius: 20,
+    borderRadius: 200,
+    width: 35,
+    height: 35,
     borderWidth: 3,
-    borderColor: '#fff',
   },
   name: {
     fontSize: 24,
@@ -294,6 +334,32 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     right: 20,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    padding: 20,
+    borderRadius: 10,
+    width: '70%',
+  },
+  modalButton: {
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20,
   },
 });
 
