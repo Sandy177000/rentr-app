@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
+import CustomText from '../src/components/CustomText';
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 const ListItem = ({ item, index, theme, navigation }) => {
@@ -22,22 +22,22 @@ const ListItem = ({ item, index, theme, navigation }) => {
           resizeMode="cover"
         />
         <View style={styles.itemContent}>
-          <Text 
+          <CustomText 
             style={[styles.itemTitle, { color: theme.colors.text.primary }]}
             numberOfLines={1}
           >
             {item.name}
-          </Text>
-          <Text 
+          </CustomText>
+          <CustomText 
             style={[styles.itemPrice, { color: theme.colors.text.secondary }]}
           >
             ${item.price}/day
-          </Text>
+          </CustomText>
           <TouchableOpacity
             style={[styles.viewButton, { backgroundColor: theme.colors.primary }]}
             onPress={() => navigation.navigate('ItemDetails', { item })}
           >
-            <Text style={styles.viewButtonText}>View Details</Text>
+            <CustomText style={styles.viewButtonText}>View Details</CustomText>
           </TouchableOpacity>
         </View>
       </View>

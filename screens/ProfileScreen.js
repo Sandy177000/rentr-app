@@ -2,7 +2,6 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useCallback, useEffect} from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -15,6 +14,7 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userApi} from '../src/apis/user';
 import ProfileCard from '../components/ProfileCard';
+import CustomText from '../src/components/CustomText';
 
 const ProfileScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -62,12 +62,12 @@ const ProfileScreen = () => {
           {backgroundColor: theme.colors.surface},
         ]}
       />
-      <Text style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
+      <CustomText style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
         {title}
-      </Text>
-      <Text style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
+      </CustomText>
+      <CustomText style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
         {price}
-      </Text>
+      </CustomText>
     </View>
   );
 
@@ -80,9 +80,9 @@ const ProfileScreen = () => {
       onPress={onPress}>
       <View style={styles.sectionContent}>
         <Icons name={icon} size={24} color={theme.colors.text.primary} />
-        <Text style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
+        <CustomText style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
           {title}
-        </Text>
+        </CustomText>
       </View>
       <Icons
         name="chevron-right"
@@ -137,10 +137,10 @@ const ProfileScreen = () => {
           />
 
           <View style={styles.recentSection}>
-            <Text
+            <CustomText
               style={[styles.recentTitle, {color: theme.colors.text.primary}]}>
               Recently Listed Items
-            </Text>
+            </CustomText>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
@@ -157,10 +157,10 @@ const ProfileScreen = () => {
           </View>
 
           <View style={styles.recentSection}>
-            <Text
+            <CustomText
               style={[styles.recentTitle, {color: theme.colors.text.primary}]}>
               Recently Rented Items
-            </Text>
+            </CustomText>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
@@ -180,7 +180,7 @@ const ProfileScreen = () => {
         <TouchableOpacity
           style={[styles.logoutButton, {backgroundColor: theme.colors.primary}]}
           onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
+          <CustomText style={styles.logoutText}>Logout</CustomText>
         </TouchableOpacity>
       </ScrollView>
     );

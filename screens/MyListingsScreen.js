@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { 
   View, 
   FlatList, 
-  Text, 
   TouchableOpacity, 
   StyleSheet,
   Image,
@@ -13,6 +12,7 @@ import { useTheme } from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import ListItem from '../components/ListItem';
+import CustomText from '../src/components/CustomText';
 
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
@@ -50,9 +50,9 @@ export const MyListingsScreen = () => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Icon name="inbox" size={50} color={theme.colors.text.secondary} />
-            <Text style={[styles.emptyText, { color: theme.colors.text.secondary }]}>
+            <CustomText style={[styles.emptyText, { color: theme.colors.text.secondary }]}>
               No listings yet
-            </Text>
+            </CustomText>
           </View>
         }
       />
@@ -61,7 +61,7 @@ export const MyListingsScreen = () => {
         onPress={() => navigation.replace('List Item')}
       >
         <Icon name="plus" size={20} color="#FFFFFF" />
-        <Text style={styles.addButtonText}>List New Item</Text>
+        <CustomText style={styles.addButtonText}>List New Item</CustomText>
       </TouchableOpacity>
     </View>
   );

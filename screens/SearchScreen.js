@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useNavigation } from '@react-navigation/native';
 import { itemApi } from '../src/apis/item';
-
+import CustomText from '../src/components/CustomText';
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -38,8 +38,8 @@ const SearchScreen = () => {
       }]}
       onPress={() => navigation.navigate('ItemDetails', { item })}
     >
-      <Text style={[styles.itemTitle, { color: theme.colors.text.primary }]}>{item.title}</Text>
-      <Text style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>${item.price}/day</Text>
+      <CustomText style={[styles.itemTitle, { color: theme.colors.text.primary }]}>{item.title}</CustomText>
+      <CustomText style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>${item.price}/day</CustomText>
     </TouchableOpacity>
   );
 
@@ -58,15 +58,15 @@ const SearchScreen = () => {
       />
       
       {loading && (
-        <Text style={[styles.statusText, { color: theme.colors.text.secondary }]}>
+        <CustomText style={[styles.statusText, { color: theme.colors.text.secondary }]}>
           Searching...
-        </Text>
+        </CustomText>
       )}
       
       {!loading && results.length === 0 && searchQuery.length >= 2 && (
-        <Text style={[styles.statusText, { color: theme.colors.text.secondary }]}>
+        <CustomText style={[styles.statusText, { color: theme.colors.text.secondary }]}>
           No items found
-        </Text>
+        </CustomText>
       )}
 
       <FlatList

@@ -4,8 +4,7 @@ import {
   View, 
   TextInput, 
   StyleSheet, 
-  TouchableOpacity, 
-  Text,
+  TouchableOpacity,
   Image,
   ScrollView,
   Alert,
@@ -17,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
 import { itemApi } from '../src/apis/item';
 import { useNavigation } from '@react-navigation/native';
-
+import CustomText from '../src/components/CustomText';
 export const ListItemScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
@@ -134,7 +133,6 @@ export const ListItemScreen = () => {
 
       if(submitFormData) {
         const response = await itemApi.createItem(submitFormData);
-        console.log(response);
         if(response.item) {
           Alert.alert('Success', 'Item listed successfully', [
             { text: 'OK', onPress: () => {}}
@@ -171,14 +169,14 @@ export const ListItemScreen = () => {
             onPress={() => handleImagePicker('camera')}
           >
             <Icon name="camera" size={20} color="#FFFFFF" />
-            <Text style={styles.imageButtonText}>Camera</Text>
+            <CustomText style={styles.imageButtonText}>Camera</CustomText>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.imageButton, { backgroundColor: theme.colors.primary }]}
             onPress={() => handleImagePicker('gallery')}
           >
             <Icon name="image" size={20} color="#FFFFFF" />
-            <Text style={styles.imageButtonText}>Gallery</Text>
+            <CustomText style={styles.imageButtonText}>Gallery</CustomText>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal style={styles.imagePreviewContainer}>
@@ -271,9 +269,9 @@ export const ListItemScreen = () => {
         onPress={handleSubmit}
         disabled={loading}
       >
-        <Text style={styles.submitButtonText}>
+        <CustomText style={styles.submitButtonText}>
           {loading ? 'Listing...' : 'List Item'}
-        </Text>
+        </CustomText>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -308,6 +306,7 @@ const styles = StyleSheet.create({
   imagePreviewContainer: {
     flexDirection: 'row',
     marginTop: 10,
+    padding: 20
   },
   imagePreview: {
     marginRight: 10,

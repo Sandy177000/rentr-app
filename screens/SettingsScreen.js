@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../src/theme/ThemeProvider';
+import { useNavigation } from '@react-navigation/native';
+import CustomText from '../src/components/CustomText';
+
 const SettingsScreen = () => {
   const theme = useTheme();
+  const navigation = useNavigation();
 
   const SettingItem = ({ title, icon, onPress, showBorder = true }) => (
     <TouchableOpacity
@@ -18,7 +22,7 @@ const SettingsScreen = () => {
     >
       <View style={styles.settingContent}>
         <Icon name={icon} size={20} color={theme.colors.text.primary} />
-        <Text style={[styles.settingText, { color: theme.colors.text.primary }]}>{title}</Text>
+        <CustomText style={[styles.settingText, { color: theme.colors.text.primary }]}>{title}</CustomText>
       </View>
       <Icon name="chevron-right" size={14} color={theme.colors.text.secondary} />
     </TouchableOpacity>
@@ -28,20 +32,22 @@ const SettingsScreen = () => {
     <View style={styles.container}>
       <ScrollView style={[styles.container, { backgroundColor: theme.colors.surface }]}>
         <View style={[styles.section, { backgroundColor: theme.colors.background }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Account</Text>
+          <CustomText style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Account</CustomText>
           <SettingItem title="Personal Information" icon="user" onPress={() => { }} />
           <SettingItem title="Payment Methods" icon="credit-card" onPress={() => { }} />
           <SettingItem title="Notifications" icon="bell" onPress={() => { }} showBorder={false} />
         </View>
 
         <View style={[styles.section, { backgroundColor: theme.colors.background }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Preferences</Text>
-          <SettingItem title="Dark Mode" icon="moon-o" onPress={() => { }} />
+          <CustomText style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Preferences</CustomText>
+          <SettingItem title="Theme" icon="moon-o" onPress={() => {
+            navigation.navigate('Theme');
+           }} />
           <SettingItem title="Language" icon="globe" onPress={() => { }} showBorder={false} />
         </View>
 
         <View style={[styles.section, { backgroundColor: theme.colors.background }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Support</Text>
+          <CustomText style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Support</CustomText>
           <SettingItem title="Help Center" icon="question-circle" onPress={() => { }} />
           <SettingItem title="Contact Us" icon="envelope" onPress={() => { }} />
           <SettingItem title="Privacy Policy" icon="lock" onPress={() => { }} />

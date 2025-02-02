@@ -1,8 +1,8 @@
 // screens/ItemDetailsScreen.js
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomText from '../src/components/CustomText';
 export const ItemDetailsScreen = ({ route, navigation }) => {
   const theme = useTheme();
   const { item } = route.params;
@@ -13,14 +13,14 @@ export const ItemDetailsScreen = ({ route, navigation }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text.primary }]}>{item.title}</Text>
-      <Text style={[styles.description, { color: theme.colors.text.secondary }]}>{item.description}</Text>
-      <Text style={[styles.price, { color: theme.colors.text.secondary }]}>${item.price}/day</Text>
+      <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>{item.title}</CustomText>
+      <CustomText style={[styles.description, { color: theme.colors.text.secondary }]}>{item.description}</CustomText>
+      <CustomText style={[styles.price, { color: theme.colors.text.secondary }]}>${item.price}/day</CustomText>
       <TouchableOpacity
         style={[styles.rentButton, { backgroundColor: theme.colors.primary }]}
         onPress={handleRent}
       >
-        <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Rent Now</Text>
+        <CustomText style={{ color: '#FFFFFF', fontWeight: '600' }}>Rent Now</CustomText>
       </TouchableOpacity>
     </View>
   );

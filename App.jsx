@@ -25,6 +25,7 @@ import {LoginScreen} from './screens/LoginScreen';
 import {ThemeProvider} from './src/theme/ThemeProvider';
 import SearchScreen from './screens/SearchScreen';
 import CameraScreen from './screens/CameraScreen';
+import ThemeScreen from './screens/ThemeScreen';
 
 const Stack = createStackNavigator();
 
@@ -161,7 +162,11 @@ const App = () => {
             options={{title: 'Settings'}}
             component={SettingsScreen}
           />
-          <Stack.Screen name="Camera" component={CameraScreen} />
+          <Stack.Screen
+            name="Theme"
+            options={{title: 'Theme'}}
+            component={ThemeScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
@@ -170,11 +175,11 @@ const App = () => {
 
 const Root = () => {
   return (
-    <ThemeProvider>
       <Provider store={store}>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </Provider>
-    </ThemeProvider>
   );
 };
 

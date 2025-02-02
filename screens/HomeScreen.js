@@ -1,12 +1,11 @@
 // screens/HomeScreen.js
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {itemApi} from '../src/apis/item';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
-import {Item} from '../components/Item';
-
+import CustomText from '../src/components/CustomText';
 export const HomeScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
@@ -22,7 +21,7 @@ export const HomeScreen = () => {
   }, []);
 
   const renderItem = ({item}) => (
-    <Item item={item} navigation={navigation} theme={theme} />
+    <CustomText>{item.name}</CustomText>
   );
 
   const handleRefresh = async () => {
@@ -36,7 +35,7 @@ export const HomeScreen = () => {
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       {!items.length == 0 ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>No items found : (</Text>
+          <CustomText>No items found : (</CustomText>
         </View>
       ) : (
         <FlatList

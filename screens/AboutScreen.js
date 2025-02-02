@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-
+import { View, Button, StyleSheet } from 'react-native';
+import CustomText from '../src/components/CustomText';
 export const AboutScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>About</Text>
-      <Text>This is a sample app built with React Native.</Text>
+      <CustomText style={styles.title}>About</CustomText>
+      <CustomText>This is a sample app built with React Native.</CustomText>
       <Button title="Go to Settings" onPress={() => navigation.navigate('Settings')} />
     </View>
   );

@@ -1,11 +1,11 @@
 // screens/LoginScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurrentUser, restoreUser } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import CustomText from '../src/components/CustomText';
 export const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('admin@rentr.com');
   const [password, setPassword] = useState('Admin@123');
@@ -54,12 +54,12 @@ export const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.contentContainer}>
-        <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+        <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>
           Welcome Back
-        </Text>
-        <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+        </CustomText>
+        <CustomText style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
           Sign in to continue
-        </Text>
+        </CustomText>
 
         <TextInput
           style={[styles.input, {
@@ -85,9 +85,9 @@ export const LoginScreen = ({ navigation }) => {
         />
 
         {error && (
-          <Text style={[styles.errorText, { color: theme.colors.error }]}>
+          <CustomText style={[styles.errorText, { color: theme.colors.error }]}>
             {error}
-          </Text>
+          </CustomText>
         )}
         
         <TouchableOpacity
@@ -99,19 +99,19 @@ export const LoginScreen = ({ navigation }) => {
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>
+          <CustomText style={styles.buttonText}>
             {loading ? 'Logging in...' : 'Login'}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
 
         <View style={styles.registerContainer}>
-          <Text style={[styles.registerText, { color: theme.colors.text.secondary }]}>
+          <CustomText style={[styles.registerText, { color: theme.colors.text.secondary }]}>
             Don't have an account?{' '}
-          </Text>
+          </CustomText>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={[styles.registerLink, { color: theme.colors.primary }]}>
+            <CustomText style={[styles.registerLink, { color: theme.colors.primary }]}>
               Register
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         </View>
       </View>

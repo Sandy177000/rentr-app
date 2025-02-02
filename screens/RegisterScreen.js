@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, selectAuthError, selectAuthLoading, clearError } from '../store/authSlice';
+import CustomText from '../src/components/CustomText';
 
 export const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -120,12 +121,12 @@ export const RegisterScreen = ({ navigation }) => {
   // OTP service is not implemented yet skipping step 1 and step 2
   const renderStep1 = () => (
     <>
-      <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+      <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>
         Verify Phone Number
-      </Text>
-      <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+      </CustomText>
+      <CustomText style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
         Enter your phone number to get started
-      </Text>
+      </CustomText>
 
       <TextInput
         style={[styles.input, {
@@ -143,19 +144,19 @@ export const RegisterScreen = ({ navigation }) => {
         style={[styles.registerButton, { backgroundColor: theme.colors.primary }]}
         onPress={handleSendOTP}
       >
-        <Text style={styles.buttonText}>Send OTP</Text>
+        <CustomText style={styles.buttonText}>Send OTP</CustomText>
       </TouchableOpacity>
     </>
   );
 
   const renderStep2 = () => (
     <>
-      <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+      <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>
         Enter OTP
-      </Text>
-      <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+      </CustomText>
+      <CustomText style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
         Enter the code sent to your phone
-      </Text>
+      </CustomText>
 
       <TextInput
         style={[styles.input, {
@@ -173,19 +174,19 @@ export const RegisterScreen = ({ navigation }) => {
         style={[styles.registerButton, { backgroundColor: theme.colors.primary }]}
         onPress={handleVerifyOTP}
       >
-        <Text style={styles.buttonText}>Verify OTP</Text>
+        <CustomText style={styles.buttonText}>Verify OTP</CustomText>
       </TouchableOpacity>
     </>
   );
 
   const renderStep3 = () => (
     <>
-      <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+      <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>
         Create Account
-      </Text>
-      <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+      </CustomText>
+      <CustomText style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
         Complete your profile
-      </Text>
+      </CustomText>
 
       <TextInput
         style={[styles.input, {
@@ -229,9 +230,9 @@ export const RegisterScreen = ({ navigation }) => {
         placeholderTextColor={theme.colors.text.secondary}
       />
       {emailError ? (
-        <Text style={[styles.errorText, { color: theme.colors.error, marginTop: -8 }]}>
+        <CustomText style={[styles.errorText, { color: theme.colors.error, marginTop: -8 }]}>
           {emailError}
-        </Text>
+        </CustomText>
       ) : null}
 
       <TextInput
@@ -253,9 +254,9 @@ export const RegisterScreen = ({ navigation }) => {
         placeholderTextColor={theme.colors.text.secondary}
       />
       {passwordError ? (
-        <Text style={[styles.errorText, { color: theme.colors.error, marginTop: -8 }]}>
+        <CustomText style={[styles.errorText, { color: theme.colors.error, marginTop: -8 }]}>
           {passwordError}
-        </Text>
+        </CustomText>
       ) : null}
 
       <TextInput
@@ -279,9 +280,9 @@ export const RegisterScreen = ({ navigation }) => {
         onPress={handleRegister}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>
+        <CustomText style={styles.buttonText}>
           {loading ? 'Creating Account...' : 'Register'}
-        </Text>
+        </CustomText>
       </TouchableOpacity>
     </>
   );
@@ -290,9 +291,9 @@ export const RegisterScreen = ({ navigation }) => {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.contentContainer}>
         {error && (
-          <Text style={[styles.errorText, { color: theme.colors.error }]}>
+          <CustomText style={[styles.errorText, { color: theme.colors.error }]}>
             {error}
-          </Text>
+          </CustomText>
         )}
 
         {step === 1 && renderStep1()}
@@ -300,13 +301,13 @@ export const RegisterScreen = ({ navigation }) => {
         {step === 3 && renderStep3()}
 
         <View style={styles.loginContainer}>
-          <Text style={[styles.loginText, { color: theme.colors.text.secondary }]}>
+          <CustomText style={[styles.loginText, { color: theme.colors.text.secondary }]}>
             Already have an account?{' '}
-          </Text>
+          </CustomText>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={[styles.loginLink, { color: theme.colors.primary }]}>
+            <CustomText style={[styles.loginLink, { color: theme.colors.primary }]}>
               Login
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         </View>
       </View>

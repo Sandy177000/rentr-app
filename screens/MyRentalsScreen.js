@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import ListItem from '../components/ListItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomText from '../src/components/CustomText';
 
 // Sample data for rentals
 const rentalsData = [
@@ -32,10 +33,10 @@ const MyRentalsScreen = () => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Icon name="inbox" size={50} color={theme.colors.text.secondary} />
-            <Text
+            <CustomText
               style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
               No Rentals yet
-            </Text>
+            </CustomText>
           </View>
         }
       />

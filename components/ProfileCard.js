@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity, Modal, Alert, Platform, Linking, ActivityIndicator} from 'react-native';
+import {View, Image, TouchableOpacity, Modal, Alert, Platform, Linking, ActivityIndicator} from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {useDispatch} from 'react-redux';
 import {updateUser} from '../store/authSlice';
 import {userApi} from '../src/apis/user';
+import CustomText from '../src/components/CustomText';
 
 const ProfileCard = ({user, theme, styles, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,10 +26,10 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
               styles.modalContainer,
               {backgroundColor: theme.colors.background},
             ]}>
-            <Text
+            <CustomText
               style={[styles.modalTitle, {color: theme.colors.text.primary}]}>
               Update Profile Picture
-            </Text>
+            </CustomText>
             <TouchableOpacity
               style={[
                 styles.modalButton,
@@ -37,13 +38,13 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
               onPress={() => {
                 handleUpdateProfileImage('gallery');
               }}>
-              <Text
+              <CustomText
                 style={[
                   styles.modalButtonText,
                   {color: theme.colors.text.primary},
                 ]}>
                 Pick from Gallery
-              </Text>
+              </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -51,13 +52,13 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
                 {backgroundColor: theme.colors.primary},
               ]}
               onPress={() => handleUpdateProfileImage('camera')}>
-              <Text
+              <CustomText
                 style={[
                   styles.modalButtonText,
                   {color: theme.colors.text.primary},
                 ]}>
                 Take a Photo
-              </Text>
+              </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -66,13 +67,13 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
               ]}
               onPress={() => setModalVisible(false)} // Close the modal
             >
-              <Text
+              <CustomText
                 style={[
                   styles.modalButtonText,
                   {color: theme.colors.text.primary},
                 ]}>
                 Cancel
-              </Text>
+              </CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -128,7 +129,6 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
         return;
       }
       if (response.assets && response.assets[0]) {
-        console.log('user', user);
         setLoading(true);
 
         const formData = new FormData();
@@ -184,9 +184,9 @@ const ProfileCard = ({user, theme, styles, navigation}) => {
           <Icons name="pencil" size={14} color={theme.colors.text.primary} />
         </TouchableOpacity>
       </View>
-      <Text style={[styles.name, {color: theme.colors.text.primary}]}>
+      <CustomText style={[styles.name, {color: theme.colors.text.primary}]}>
         {user.firstName} {user.lastName}
-      </Text>
+      </CustomText>
     </View>
     </>
   );

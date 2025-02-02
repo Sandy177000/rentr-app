@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { launchImageLibrary } from 'react-native-image-picker';
-
+import CustomText from '../src/components/CustomText';
 export default function CameraScreen() {
     const device = useCameraDevice('front')
     const { hasPermission } = useCameraPermission()
@@ -24,7 +24,7 @@ export default function CameraScreen() {
                 isActive={true}
             />
             <View style={styles.buttonContainer}>  
-                <Text>Select Photo</Text>
+                <CustomText>Select Photo</CustomText>
                 {/* {launchImageLibrary(options)} */}
             </View>
         </View>
