@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getBaseUrl } from './constants';
 
@@ -9,33 +8,33 @@ export const itemApi = {
   getItems: async () => {
     const storedUser = await AsyncStorage.getItem('user');
       console.log(storedUser);
-      
+
       if (!storedUser) {
-        return []; 
+        return [];
       }
-      
+
     const { token } = JSON.parse(storedUser);
     const response = await axios.get(`${API_BASE_URL}/items`,{
         headers: {
-            'Authorization': `Bearer ${token}`
-        }
+            'Authorization': `Bearer ${token}`,
+        },
     });
     return response.data;
   },
   createItem: async (item) => {
     const storedUser = await AsyncStorage.getItem('user');
     console.log(item);
-    
+
     if (!storedUser) {
-      return {error: 'User not found'}; 
+      return {error: 'User not found'};
     }
-    
+
     const { token } = JSON.parse(storedUser);
     const response = await axios.post(`${API_BASE_URL}/items`, item, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     });
     return response.data;
   },
@@ -55,18 +54,18 @@ export const itemApi = {
     try {
       const storedUser = await AsyncStorage.getItem('user');
       console.log(storedUser);
-      
+
       if (!storedUser) {
-        return []; 
+        return [];
       }
-      
+
       const { token } = JSON.parse(storedUser);
       const response = await axios.get(
         `${API_BASE_URL}/items/user`,
         {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            'Authorization': `Bearer ${token}`,
+          },
         }
       );
       return response.data;

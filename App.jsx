@@ -1,6 +1,6 @@
 // App.js
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Provider} from 'react-redux';
@@ -23,20 +23,24 @@ import {View} from 'react-native';
 import {useTheme} from './src/theme/ThemeProvider';
 import {LoginScreen} from './screens/LoginScreen';
 import {ThemeProvider} from './src/theme/ThemeProvider';
-import SearchScreen from './screens/SearchScreen';
-import CameraScreen from './screens/CameraScreen';
 import ThemeScreen from './screens/ThemeScreen';
-
+import ChatScreen from './screens/ChatScreen';
+import SearchScreen from './screens/SearchScreen';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ChatDetails from './screens/ChatDetails';
+import CategoryItems from './screens/CategoryItems';
 const Stack = createStackNavigator();
+
+const queryClient = new QueryClient();
 
 const MainTabs = () => {
   const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(1);
+  const [index, setIndex] = useState(0);
   const theme = useTheme();
 
   const routes = [
     {key: 'home', title: 'Home', icon: 'home'},
-    {key: 'search', title: 'Search', icon: 'search'},
+    {key: 'chat', title: 'Chat', icon: 'cloud'},
     {key: 'listItem', title: 'List Item', icon: 'plus-circle'},
     {key: 'profile', title: 'Profile', icon: 'user'},
   ];
@@ -45,7 +49,7 @@ const MainTabs = () => {
     home: HomeScreen,
     listItem: ListItemScreen,
     profile: ProfileScreen,
-    search: SearchScreen,
+    chat: ChatScreen,
   });
 
   const handleSwipe = direction => {
@@ -64,6 +68,10 @@ const MainTabs = () => {
         left: 0,
         right: 0,
         zIndex: 1000,
+        shadowColor: theme.colors.primary,
+        shadowOpacity: 1,
+        shadowRadius: 15,
+        elevation: 10,
       }}>
       <GestureHandlerRootView>
         <PanGestureHandler
@@ -116,60 +124,78 @@ const MainTabs = () => {
 const App = () => {
   const theme = useTheme();
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Login"
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: theme.colors.background,
-              elevation: 0,
-              shadowOpacity: 0,
-            },
-            headerTintColor: theme.colors.text.primary,
-            headerTitleStyle: {
-              fontWeight: '600',
-              color: theme.colors.text.primary,
-            },
-            cardStyle: {backgroundColor: theme.colors.background},
-          }}>
-          <Stack.Screen name="List Item" component={ListItemScreen} />
-          <Stack.Screen name="Login" component={LoginScreen}  options={{headerShown: false}}/>
+    // <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Login"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: theme.colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: theme.colors.text.primary,
+              headerTitleStyle: {
+                fontWeight: '600',
+                color: theme.colors.text.primary,
+              },
+              cardStyle: {backgroundColor: theme.colors.background},
+            }}>
+            <Stack.Screen name="List Item" component={ListItemScreen} />
+            <Stack.Screen name="Login" component={LoginScreen}  options={{headerShown: false}}/>
 
-          <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}} />
-          <Stack.Screen
-            name="MainTabs"
-            component={MainTabs}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ItemDetails"
-            options={{title: 'Details'}}
-            component={ItemDetailsScreen}
-          />
-          <Stack.Screen
-            name="MyListings"
-            options={{title: 'My Items'}}
-            component={MyListingsScreen}
-          />
-          <Stack.Screen
-            name="MyRentals"
-            options={{title: 'My Rentals'}}
-            component={MyRentalsScreen}
-          />
-          <Stack.Screen
-            name="Settings"
-            options={{title: 'Settings'}}
-            component={SettingsScreen}
-          />
-          <Stack.Screen
-            name="Theme"
-            options={{title: 'Theme'}}
-            component={ThemeScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+            <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}} />
+            <Stack.Screen
+              name="MainTabs"
+              component={MainTabs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ItemDetails"
+              options={{title: 'Details'}}
+              component={ItemDetailsScreen}
+            />
+            <Stack.Screen
+              name="MyListings"
+              options={{title: 'My Items'}}
+              component={MyListingsScreen}
+            />
+            <Stack.Screen
+              name="MyRentals"
+              options={{title: 'My Rentals'}}
+              component={MyRentalsScreen}
+            />
+            <Stack.Screen
+              name="Settings"
+              options={{title: 'Settings'}}
+              component={SettingsScreen}
+            />
+            <Stack.Screen
+              name="Theme"
+              options={{title: 'Theme'}}
+              component={ThemeScreen}
+            />
+            <Stack.Screen
+              name="Search"
+              options={{title: 'Search'}}
+              component={SearchScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ChatDetails"
+              options={{title: 'Chat'}}
+              component={ChatDetails}
+            />
+            <Stack.Screen
+              name="CategoryItems"
+              options={{title: 'Category Items'}}
+              component={CategoryItems}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    // </QueryClientProvider>
   );
 };
 

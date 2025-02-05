@@ -1,11 +1,9 @@
 import React from 'react'
 import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
-import CustomText from '../src/components/CustomText';
+import CustomText from './CustomText';
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 const ListItem = ({ item, index, theme, navigation }) => {
-
-
   return (
     <View style={[
         styles.itemCard,

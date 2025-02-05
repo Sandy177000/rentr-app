@@ -1,21 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../src/theme/ThemeProvider';
-import ListItem from '../components/ListItem';
+import ListItem from '../src/components/ListItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../src/components/CustomText';
 
-// Sample data for rentals
-const rentalsData = [
-    {id: '1', name: 'Rental 1'},
-    {id: '2', name: 'Rental 2'},
-    {id: '3', name: 'Rental 3'},
-];
 
 const MyRentalsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const [rentalsData, setRentalsData] = useState([]);
 
   const renderItem = ({item, index}) => (
     <ListItem item={item} index={index} theme={theme} navigation={navigation} />

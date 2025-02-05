@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import { View, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../src/theme/ThemeProvider';
-import { useNavigation } from '@react-navigation/native';
-import { itemApi } from '../src/apis/item';
+import React, {useState} from 'react';
+import {
+  View,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {useTheme} from '../src/theme/ThemeProvider';
+import {useNavigation} from '@react-navigation/native';
+import {itemApi} from '../src/apis/item';
 import CustomText from '../src/components/CustomText';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -11,7 +18,7 @@ const SearchScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
 
-  const handleSearch = async (text) => {
+  const handleSearch = async text => {
     setSearchQuery(text);
     if (text.length < 2) {
       setResults([]);
@@ -30,41 +37,53 @@ const SearchScreen = () => {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      style={[styles.itemCard, { 
-        backgroundColor: theme.colors.surface,
-        borderBottomColor: theme.colors.text.secondary 
-      }]}
-      onPress={() => navigation.navigate('ItemDetails', { item })}
-    >
-      <CustomText style={[styles.itemTitle, { color: theme.colors.text.primary }]}>{item.title}</CustomText>
-      <CustomText style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>${item.price}/day</CustomText>
+  const renderItem = ({item}) => (
+    <TouchableOpacity
+      style={[
+        styles.itemCard,
+        {
+          backgroundColor: theme.colors.surface,
+          borderBottomColor: theme.colors.text.secondary,
+        },
+      ]}
+      onPress={() => navigation.navigate('ItemDetails', {item})}>
+      <CustomText
+        style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
+        {item.title}
+      </CustomText>
+      <CustomText
+        style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
+        ${item.price}/day
+      </CustomText>
     </TouchableOpacity>
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <TextInput
-        style={[styles.searchInput, {
-          backgroundColor: theme.colors.surface,
-          color: theme.colors.text.primary,
-          borderColor: theme.colors.text.secondary
-        }]}
-        placeholder="Search for items..."
-        placeholderTextColor={theme.colors.text.secondary}
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
-      
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View style={[styles.searchContainer, { backgroundColor: theme.colors.surface }]}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon name="arrow-left" size={18} color={theme.colors.text.secondary} />
+        </TouchableOpacity>
+        <TextInput
+          placeholder="Search for items..."
+          placeholderTextColor={theme.colors.text.secondary}
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+      </View>
       {loading && (
-        <CustomText style={[styles.statusText, { color: theme.colors.text.secondary }]}>
+        <CustomText
+          style={[styles.statusText, {color: theme.colors.text.secondary}]}>
           Searching...
         </CustomText>
       )}
-      
+
       {!loading && results.length === 0 && searchQuery.length >= 2 && (
-        <CustomText style={[styles.statusText, { color: theme.colors.text.secondary }]}>
+        <CustomText
+          style={[styles.statusText, {color: theme.colors.text.secondary}]}>
           No items found
         </CustomText>
       )}
@@ -82,15 +101,7 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-  },
-  searchInput: {
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    fontSize: 16,
+    padding: 15,
   },
   resultsList: {
     flex: 1,
@@ -113,7 +124,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-  }
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    paddingLeft: 12,
+    borderRadius: 12,
+    marginVertical: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    alignItems: 'center',
+    gap: 10,
+  },
 });
 
 export default SearchScreen;

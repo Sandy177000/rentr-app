@@ -8,13 +8,14 @@ import {
 } from 'react-native';
 import ColorInput from '../src/components/ColorInput';
 import {useTheme} from '../src/theme/ThemeProvider';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ScrollView} from 'react-native-gesture-handler';
 import {themeColors, themeFonts} from '../src/constants';
-import CustomBottomSheet from '../components/CustomBottomSheet';
+import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {processColor} from 'react-native';
 import CustomText from '../src/components/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { updateUser } from '../store/authSlice';
 
 export default function ThemeScreen() {
   const theme = useTheme();
@@ -24,10 +25,11 @@ export default function ThemeScreen() {
   const [fontsVisible, setFontsVisible] = useState(false);
   const colorsBottomSheetRef = useRef(null);
   const [colorsVisible, setColorsVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const updateColor = (path, value) => {
     try {
-    
+
       // Validate color using React Native's built-in processor
       const processed = processColor(value);
       if (typeof processed !== 'number') {
@@ -70,18 +72,17 @@ export default function ThemeScreen() {
   const updateFont = (key, value) => {
     theme.setCustomTheme(prev => ({
       ...prev,
-      font: key
+      font: key,
     }));
   };
 
   const handleApplyTheme = () => {
     console.log('Applying theme');
-    const themeToApply = {
-      [`${theme.isDark ? 'darkTheme' : 'lightTheme'}`]: theme.customTheme,
-      [`${theme.isDark ? 'lightTheme' : 'darkTheme'}`]:
-        user.theme[`${theme.isDark ? 'lightTheme' : 'darkTheme'}`],
-    };
-    console.log(themeToApply);
+    const themeToApply = {...theme.customTheme, ...theme.isDark ? theme.customTheme.darkTheme : theme.customTheme.lightTheme};
+    // Create theme object with both light and dark themes
+    dispatch(updateUser({...user, theme: themeToApply }));
+
+    // send theme to backend and update user
   };
 
   return (
@@ -98,7 +99,7 @@ export default function ThemeScreen() {
               Reset
             </CustomText>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[styles.button, styles.shadow, {backgroundColor: theme.colors.primary}]}
             onPress={handleApplyTheme}>
@@ -110,10 +111,10 @@ export default function ThemeScreen() {
         </View>
 
         <View style={[styles.themeToggleContainer, styles.shadow, {backgroundColor: theme.colors.surface}]}>
-          <Icon 
-            name={theme.isDark ? 'moon-o' : 'sun-o'} 
-            size={24} 
-            color={theme.colors.text.primary} 
+          <Icon
+            name={theme.isDark ? 'moon-o' : 'sun-o'}
+            size={24}
+            color={theme.colors.text.primary}
           />
           <CustomText style={[styles.themeToggleText, {color: theme.colors.text.primary}]}>
             {theme.isDark ? 'Dark Theme' : 'Light Theme'}
@@ -127,7 +128,7 @@ export default function ThemeScreen() {
         </View>
 
         <View style={styles.sectionsContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.sectionCard, styles.shadow, {backgroundColor: theme.colors.surface}]}
             onPress={() => setColorsVisible(true)}>
             <View style={styles.sectionHeader}>
@@ -141,7 +142,7 @@ export default function ThemeScreen() {
             </CustomText>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.sectionCard, styles.shadow, {backgroundColor: theme.colors.surface}]}
             onPress={() => setFontsVisible(true)}>
             <View style={styles.sectionHeader}>

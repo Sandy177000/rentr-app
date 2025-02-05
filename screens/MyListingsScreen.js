@@ -11,7 +11,7 @@ import { itemApi } from '../src/apis/item';
 import { useTheme } from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import ListItem from '../components/ListItem';
+import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/CustomText';
 
 const { width } = Dimensions.get('window');
