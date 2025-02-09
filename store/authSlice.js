@@ -8,7 +8,8 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authApi.login(credentials);
-      await AsyncStorage.setItem('user', JSON.stringify(response));
+      await AsyncStorage.setItem('user', JSON.stringify(response.user));
+      await AsyncStorage.setItem('token', response.token);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -58,7 +59,8 @@ const authSlice = createSlice({
       state.error = null;
     },
     restoreUser: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
       state.isAuthenticated = true;
       state.loading = false;
       state.error = null;
@@ -78,6 +80,8 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        console.log("State",state);
+        
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -109,6 +113,7 @@ export const { logout, clearError, restoreUser, updateUser } = authSlice.actions
 
 // Selectors
 export const selectCurrentUser = (state) => state.auth.user;
+export const selectCurrentToken = (state) => state.auth.token;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error; 

@@ -1,6 +1,13 @@
 // screens/HomeScreen.js
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {itemApi} from '../src/apis/item';
 import {useNavigation} from '@react-navigation/native';
@@ -8,6 +15,7 @@ import {RefreshControl} from 'react-native';
 import CustomText from '../src/components/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Divider from '../src/components/Divider';
+import HomeSection from '../src/components/HomeSection';
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -17,43 +25,57 @@ export const HomeScreen = () => {
 
   // Add dummy categories data
   const categories = [
-    { id: '1', name: 'Electronics', icon: 'laptop' },
-    { id: '2', name: 'Fashion', icon: 'shopping-bag' },
-    { id: '3', name: 'Home & Garden', icon: 'home' },
-    { id: '4', name: 'Sports', icon: 'futbol-o' },
-    { id: '5', name: 'Vehicles', icon: 'car' },
+    {id: '1', name: 'Electronics', icon: 'laptop'},
+    {id: '2', name: 'Fashion', icon: 'shopping-bag'},
+    {id: '3', name: 'Home & Garden', icon: 'home'},
+    {id: '4', name: 'Sports', icon: 'futbol-o'},
+    {id: '5', name: 'Vehicles', icon: 'car'},
   ];
 
   const fetchItems = async () => {
-    const items = await itemApi.getItems();
-    setItems(items);
+    // console.log('Fetching items', "itemsData");
+    const itemsData = await itemApi.getItems();
+    if(itemsData.length == 0) {
+      Alert.alert('Items data', JSON.stringify(itemsData));
+    }
+    console.log('Items data', itemsData);
+    
+
+    setItems(itemsData);
   };
 
   useEffect(() => {
     fetchItems();
   }, []);
 
-  const renderCategory = ({ item }) => (
+  const renderCategory = ({item}) => (
     <TouchableOpacity
-      style={[styles.categoryItem, { backgroundColor: theme.colors.surface }]}
-      onPress={() => navigation.navigate('CategoryItems', { category: item.name })}
-    >
+      style={[styles.categoryItem, {backgroundColor: '#FFFFFF'}]}
+      onPress={() =>
+        navigation.navigate('CategoryItems', {category: item.name})
+      }>
       <Icon name={item.icon} size={24} color={theme.colors.text.primary} />
-      <CustomText style={[styles.categoryText, { color: theme.colors.text.primary }]}>
+      <CustomText
+        variant="h4"
+        style={[{color: theme.colors.text.primary}]}>
         {item.name}
       </CustomText>
     </TouchableOpacity>
   );
 
-  const renderRecommendation = ({ item }) => (
+  const renderRecommendation = ({item}) => (
     <TouchableOpacity
-      style={[styles.recommendationItem, { backgroundColor: theme.colors.surface }]}
-      onPress={() => navigation.navigate('ItemDetails', { item })}
-    >
-      <CustomText style={[styles.itemTitle, { color: theme.colors.text.primary }]}>
+      style={[
+        styles.recommendationItem,
+        {backgroundColor: theme.colors.surface},
+      ]}
+      onPress={() => navigation.navigate('ItemDetails', {item})}>
+      <CustomText
+        style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
         {item.name}
       </CustomText>
-      <CustomText style={[styles.itemPrice, { color: theme.colors.text.secondary }]}>
+      <CustomText
+        style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
         ${item.price}/day
       </CustomText>
     </TouchableOpacity>
@@ -65,50 +87,42 @@ export const HomeScreen = () => {
     setRefreshing(false);
   };
 
-  const renderItem = ({item}) => (
-    <CustomText>{item.name}</CustomText>
-  );
+  const renderItem = ({item}) => <CustomText>{item.name}</CustomText>;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <ScrollView>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <ScrollView onRefresh={handleRefresh}>
         {/* Search Bar */}
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.navigate('Search')}
-          style={[styles.searchContainer, { backgroundColor: theme.colors.surface }]}
-        >
+          style={[
+            styles.searchContainer,
+            {backgroundColor: theme.colors.surface},
+          ]}>
           <Icon name="search" size={20} color={theme.colors.text.secondary} />
-          <CustomText style={[styles.searchPlaceholder, { color: theme.colors.text.secondary }]}>
+          <CustomText
+            style={[
+              styles.searchPlaceholder,
+              {color: theme.colors.text.secondary},
+            ]}>
             Search for items...
           </CustomText>
         </TouchableOpacity>
 
         {/* Categories Section */}
-        <CustomText style={{ color: theme.colors.text.primary }} variant="h3">
-          Categories
-        </CustomText>
-        <Divider />
-        <FlatList
-          horizontal
+        <HomeSection
+          title="Categories"
           data={categories}
+          onPress={() => navigation.navigate('CategoryItems')}
           renderItem={renderCategory}
-          keyExtractor={item => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryList}
         />
 
-        {/* Recommendations Section */}
-        <CustomText style={{ color: theme.colors.text.primary }} variant="h3">
-          Latest Deals
-        </CustomText>
-        < Divider />
-        <FlatList
-          horizontal
+        <HomeSection
+          title="Latest Deals"
           data={items}
+          onPress={() => navigation.navigate('ItemDetails')}
           renderItem={renderRecommendation}
-          keyExtractor={item => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.recommendationList}
         />
 
         {/* Existing Items List */}
@@ -119,7 +133,10 @@ export const HomeScreen = () => {
         ) : (
           <FlatList
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
             }
             data={items}
             renderItem={renderItem}
@@ -179,7 +196,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     alignItems: 'center',
@@ -190,10 +207,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginRight: 12,
     alignItems: 'center',
-    width: 100,
+    width: 120,
+    gap: 8,
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -216,7 +234,7 @@ const styles = StyleSheet.create({
     width: 160,
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -225,10 +243,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 32,
-  },
-  categoryList: {
-    padding: 4,
-    marginBottom: 8,
   },
   recommendationList: {
     padding: 4,

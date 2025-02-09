@@ -19,7 +19,6 @@ import { updateUser } from '../store/authSlice';
 
 export default function ThemeScreen() {
   const theme = useTheme();
-  console.log('ThemeScreen', theme);
   const user = useSelector(state => state.auth.user);
   const fontsBottomSheetRef = useRef(null);
   const [fontsVisible, setFontsVisible] = useState(false);
@@ -39,7 +38,7 @@ export default function ThemeScreen() {
         );
         return;
       } else {
-        console.log(path, value);
+        
         theme.setCustomTheme(prev => {
           if (path.includes('.')) {
             const [parent, child] = path.split('.');

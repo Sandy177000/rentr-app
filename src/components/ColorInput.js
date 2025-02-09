@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   label: {
-    fontSize: 16,
     marginBottom: 8
   },
   inputContainer: {
@@ -105,7 +104,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
-    fontSize: 16
   },
   colorPreview: {
     width: 40,

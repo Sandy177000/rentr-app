@@ -17,6 +17,8 @@ const CustomText = ({ style, variant = 'body', children, ...props }) => {
         return styles.subtitle;
       case 'caption':
         return styles.caption;
+      case 'h4':
+        return styles.h4;
       default:
         return styles.body;
     }
@@ -54,6 +56,9 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: 14,
+  },
+  h4: {
+    fontSize: 12,
   },
   subtitle: {
     fontSize: 8,

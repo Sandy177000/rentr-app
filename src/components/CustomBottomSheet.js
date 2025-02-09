@@ -90,11 +90,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 24,
     fontWeight: 'bold',
   },
   sectionTitle: {
-    fontSize: 20,
     fontWeight: 'bold',
   },
   button: {

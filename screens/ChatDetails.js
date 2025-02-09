@@ -1,72 +1,154 @@
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { useTheme } from '../src/theme/ThemeProvider'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import CustomText from '../src/components/CustomText'
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTheme } from '../src/theme/ThemeProvider';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomText from '../src/components/CustomText';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../store/authSlice';
+import { chatApi } from '../src/apis/chat';
+import io from 'socket.io-client';
+import { getBaseUrl } from '../src/apis/constants';
+import { avatar } from '../src/constants';
 
 const ChatDetails = ({ route, navigation }) => {
-  const theme = useTheme()
-  const {chat} = route.params
-  const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([
-    { id: '1', text: 'Hi, is this still available?', sender: 'me', timestamp: '10:00 AM' },
-    { id: '2', text: 'Yes, it is!', sender: 'them', timestamp: '10:01 AM' },
-  ])
+  const theme = useTheme();
+  const {chat, roomId, token} = route.params;
+  const user = useSelector(selectCurrentUser);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [socket, setSocket] = useState(null);
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     // Set the navigation header title to the chat recipient's name
+    const title = chat?.participants?.filter(participant => participant.user.id !== user.id).map(participant => participant.user.firstName).join(', ');
     navigation.setOptions({
-      title: chat?.name || 'Chat',
-    })
-  }, [navigation, chat])
+      title: title,
+    });
+  }, [navigation, chat, roomId, user.id]);
 
-  const sendMessage = () => {
+  // Initialize socket connection
+  useEffect(() => {
+    const baseUrl = 'http://192.168.1.44:4000';
+    const newSocket = io(baseUrl, {
+      auth: {
+        token: token
+      }
+    });
+  
+    // Remove the emit('connection') - Socket.IO handles this automatically
+    newSocket.on('connect', () => {
+      console.log("Connected to socket");
+      newSocket.emit('join_room', roomId);
+    });
+  
+    setSocket(newSocket);
+  
+    // Cleanup on unmount
+    return () => {
+      if (newSocket) {
+        newSocket.emit('leave_room', roomId);
+        newSocket.disconnect();
+      }
+    };
+  }, [roomId, token]);
+  
+
+  // Listen for new messages
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('new_message', (newMessage) => {
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
+
+    return () => {
+      socket.off('new_message');
+    };
+  }, [socket]);
+
+  const sendMessage = async () => {
     if (message.trim().length > 0) {
-      setMessages([...messages, {
-        id: Date.now().toString(),
-        text: message,
-        sender: 'me',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }])
-      setMessage('')
+      // Emit message to socket server
+      socket.emit('send_message', {
+        content: message,
+        roomId: roomId
+      });
+      setMessage('');
     }
-  }
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const messages = await chatApi.getChatMessages(roomId);
+      setMessages(messages);
+    };
+    fetchMessages();
+  }, [roomId]);
 
   const renderMessage = ({ item }) => (
     <View style={[
-      styles.messageBubble,
-      item.sender === 'me' ? styles.myMessage : styles.theirMessage,
-      { backgroundColor: item.sender === 'me' ? theme.colors.primary : theme.colors.surface }
+      styles.message,
+      item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
     ]}>
+       {item.sender.id !== user.id && <Image source={{ uri: item.sender.profileImage || avatar }} style={styles.avatar} />}
+      <View style={[
+        styles.messageBubble,
+      { backgroundColor: item.sender.id === user.id ? theme.colors.primary : theme.colors.surface },
+    ]}>
+      {item.sender.id !== user.id && <CustomText style={[
+        { color: item.sender.id === user.id ? '#FFFFFF' : theme.colors.text.primary },
+      ]}>
+        {item.sender.firstName}
+      </CustomText>}
       <CustomText style={[
         styles.messageText,
-        { color: item.sender === 'me' ? '#FFFFFF' : theme.colors.text.primary }
+        { color: item.sender.id === user.id ? '#FFFFFF' : theme.colors.text.primary },
       ]}>
-        {item.text}
+        {item.content}
       </CustomText>
       <CustomText style={[
         styles.timestamp,
-        { color: item.sender === 'me' ? 'rgba(255, 255, 255, 0.7)' : theme.colors.text.secondary }
+        { color: item.sender.id === user.id ? 'rgba(255, 255, 255, 0.7)' : theme.colors.text.secondary },
+        item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
       ]}>
-        {item.timestamp}
+        {item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
       </CustomText>
+      </View>
     </View>
-  )
+  );
+
+  // Add this function to scroll to the bottom
+  const scrollToBottom = useCallback(() => {
+    if (flatListRef.current && messages.length > 0) {
+      flatListRef.current.scrollToEnd({ animated: true, scrollTo: 'bottom' });
+    }
+  }, [messages]);
+
+  // Add this effect to scroll when new messages arrive
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <FlatList
+        ref={flatListRef}
+        style={{backgroundColor: theme.colors.surface}}
         data={messages}
         renderItem={renderMessage}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.messageList}
         inverted={false}
+        ListEmptyComponent={<CustomText>No messages yet</CustomText>}
+        onContentSizeChange={scrollToBottom} // Scroll when content size changes
+        onLayout={scrollToBottom} // Scroll on initial layout
       />
       <View style={[styles.inputContainer, { backgroundColor: theme.colors.surface }]}>
         <TextInput
-          style={[styles.input, { 
+          style={[styles.input, {
             backgroundColor: theme.colors.background,
-            color: theme.colors.text.primary 
+            color: theme.colors.text.primary,
           }]}
           value={message}
           onChangeText={setMessage}
@@ -74,8 +156,8 @@ const ChatDetails = ({ route, navigation }) => {
           placeholderTextColor={theme.colors.text.secondary}
           multiline
         />
-        <TouchableOpacity 
-          onPress={sendMessage} 
+        <TouchableOpacity
+          onPress={sendMessage}
           style={[styles.sendButton, { backgroundColor: theme.colors.primary }]}
           disabled={message.trim().length === 0}
         >
@@ -83,18 +165,27 @@ const ChatDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
   messageList: {
     padding: 16,
   },
+  message:{
+    flexDirection: 'row',
+    gap: 8,
+  },
   messageBubble: {
-    maxWidth: '80%',
+    maxWidth: '70%',
     padding: 12,
     borderRadius: 16,
     marginBottom: 8,
@@ -134,6 +225,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-})
+});
 
-export default ChatDetails
+export default ChatDetails;

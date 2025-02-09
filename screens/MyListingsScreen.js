@@ -27,7 +27,7 @@ export const MyListingsScreen = () => {
     const fetchListings = async () => {
       // Replace with actual data fetching logic
       const listings = await itemApi.getUserItems();
-      console.log(listings);
+
       setMyListings(listings);
     };
 
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
+    flex: 1,
     padding: 16,
     paddingBottom: 100, // Space for the add button
   },
@@ -148,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 100,
   },
   emptyText: {
     fontSize: 16,

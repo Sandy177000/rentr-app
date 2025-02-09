@@ -15,6 +15,8 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({children}) => {
   const user = useSelector(selectCurrentUser);
+  console.log("User in ThemeProvider",user);
+  
   const userTheme = user?.theme?.lightTheme || lightTheme;
   const [customTheme, setCustomTheme] = useState({
     isDark: false,

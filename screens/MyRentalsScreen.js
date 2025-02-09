@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     color: '#007AFF',
   },
   listContent: {
+    flex: 1,
     padding: 16,
     paddingBottom: 100, // Space for the add button
   },

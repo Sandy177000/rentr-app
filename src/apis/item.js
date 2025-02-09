@@ -7,8 +7,6 @@ const API_BASE_URL = getBaseUrl();
 export const itemApi = {
   getItems: async () => {
     const storedUser = await AsyncStorage.getItem('user');
-      console.log(storedUser);
-
       if (!storedUser) {
         return [];
       }
@@ -19,11 +17,12 @@ export const itemApi = {
             'Authorization': `Bearer ${token}`,
         },
     });
+    console.log('Items data', response.data);
     return response.data;
   },
   createItem: async (item) => {
     const storedUser = await AsyncStorage.getItem('user');
-    console.log(item);
+    
 
     if (!storedUser) {
       return {error: 'User not found'};
@@ -53,7 +52,7 @@ export const itemApi = {
   getUserItems: async () => {
     try {
       const storedUser = await AsyncStorage.getItem('user');
-      console.log(storedUser);
+      
 
       if (!storedUser) {
         return [];

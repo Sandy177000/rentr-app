@@ -25,43 +25,20 @@ const ProfileScreen = () => {
   const user = useSelector(selectCurrentUser);
   const fetchUser = async () => {
     const userData = await userApi.getUserInfo();
+    console.log('userData ProfileScreen', userData);
+    
     dispatch(updateUser(userData));
     return userData;
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // fetch user info from backend on refre
     fetchUser();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
-
-
-  const recentRentals = [
-    {id: 1, title: 'Surfboard', price: '$30/day'},
-    {id: 2, title: 'DJ Equipment', price: '$45/day'},
-    {id: 3, title: 'Drone', price: '$35/day'},
-  ];
-
-  const ItemCard = ({title, price}) => (
-    <View style={[styles.itemCard, {backgroundColor: theme.colors.background}]}>
-      <View
-        style={[
-          styles.itemImagePlaceholder,
-          {backgroundColor: theme.colors.surface},
-        ]}
-      />
-      <CustomText style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
-        {title}
-      </CustomText>
-      <CustomText style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
-        {price}
-      </CustomText>
-    </View>
-  );
 
   const ProfileSection = ({title, icon, onPress}) => (
     <TouchableOpacity
@@ -71,8 +48,8 @@ const ProfileScreen = () => {
       ]}
       onPress={onPress}>
       <View style={styles.sectionContent}>
-        <Icons name={icon} size={24} color={theme.colors.text.primary} />
-        <CustomText style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
+        <Icons name={icon} size={15} color={theme.colors.text.primary} />
+        <CustomText variant="body" style={[styles.sectionTitle, {color: theme.colors.text.secondary}]}>
           {title}
         </CustomText>
       </View>
@@ -87,6 +64,7 @@ const ProfileScreen = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('token');
       dispatch(logout());
       navigation.replace('Login');
     } catch (error) {
@@ -171,9 +149,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 16,
     marginLeft: 15,
-    color: '#333',
+    fontWeight: 'bold',
   },
   logoutButton: {
     marginTop: 30,

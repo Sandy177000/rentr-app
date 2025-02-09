@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurrentUser, restoreUser } from '../store/authSlice';
+import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurrentUser, restoreUser, selectCurrentToken } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../src/components/CustomText';
 export const LoginScreen = ({ navigation }) => {
@@ -16,8 +16,7 @@ export const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
-  const user = useSelector(selectCurrentUser);
-
+  const token = useSelector(selectCurrentToken);
   useEffect(() => {
     // Clear any existing errors when component mounts
     dispatch(clearError());
@@ -26,9 +25,12 @@ export const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       const result = await dispatch(loginUser({ email, password })).unwrap();
+      console.log('result Login Screen', result);
+      
       if(result) {
         // Store user data in AsyncStorage upon successful login
         await AsyncStorage.setItem('user', JSON.stringify(result));
+        await AsyncStorage.setItem('token', result.token);
         navigation.replace('MainTabs');
       } else {
         throw new Error('Login failed');
@@ -43,8 +45,8 @@ export const LoginScreen = ({ navigation }) => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          const { user, token } = JSON.parse(storedUser);
-          dispatch(restoreUser(user));
+          const {user, token} = JSON.parse(storedUser);
+          dispatch(restoreUser({user, token}));
           navigation.replace('MainTabs');
         }
       } catch (error) {

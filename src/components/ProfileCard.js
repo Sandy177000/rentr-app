@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux';
 import {updateUser} from '../../store/authSlice';
 import {userApi} from '../apis/user';
 import CustomText from './CustomText';
+import { avatar } from '../constants';
 
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -108,7 +109,7 @@ const ProfileCard = ({user, theme, navigation}) => {
           <ActivityIndicator size="small" color={theme.colors.primary} style={styles.profileImage} />
         ) : (
           <Image
-            source={{uri: user.profileImage || '#'}}
+            source={{uri: user.profileImage || avatar}}
             style={styles.profileImage}
           />
         )}

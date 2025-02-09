@@ -13,18 +13,12 @@ const SettingsScreen = () => {
     <TouchableOpacity
       style={[
         styles.settingItem,
-        {
-          borderBottomWidth: showBorder ? 1 : 0,
-          borderBottomColor: theme.colors.border
-        }
       ]}
       onPress={onPress}
     >
-      <View style={styles.settingContent}>
-        <Icon name={icon} size={20} color={theme.colors.text.primary} />
-        <CustomText style={[styles.settingText, { color: theme.colors.text.primary }]}>{title}</CustomText>
-      </View>
-      <Icon name="chevron-right" size={14} color={theme.colors.text.secondary} />
+        <Icon name={icon} size={15} color={theme.colors.text.primary} style={{width: 20, marginRight: 10}}/>
+        <CustomText variant="h4" style={[{ color: theme.colors.text.primary }]}>{title}</CustomText>
+      <Icon name="chevron-right" size={14} color={theme.colors.text.secondary} style={{marginLeft: 'auto'}} />
     </TouchableOpacity>
   );
 
@@ -34,7 +28,7 @@ const SettingsScreen = () => {
         <View style={[styles.section, { backgroundColor: theme.colors.background }]}>
           <CustomText style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Account</CustomText>
           <SettingItem title="Personal Information" icon="user" onPress={() => { }} />
-          <SettingItem title="Payment Methods" icon="credit-card" onPress={() => { }} />
+          {/* <SettingItem title="Payment Methods" icon="credit-card" onPress={() => { }} /> */}
           <SettingItem title="Notifications" icon="bell" onPress={() => { }} showBorder={false} />
         </View>
 
@@ -50,8 +44,8 @@ const SettingsScreen = () => {
           <CustomText style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>Support</CustomText>
           <SettingItem title="Help Center" icon="question-circle" onPress={() => { }} />
           <SettingItem title="Contact Us" icon="envelope" onPress={() => { }} />
-          <SettingItem title="Privacy Policy" icon="lock" onPress={() => { }} />
-          <SettingItem title="Terms of Service" icon="file-text-o" onPress={() => { }} showBorder={false} />
+          {/* <SettingItem title="Privacy Policy" icon="lock" onPress={() => { }} />
+          <SettingItem title="Terms of Service" icon="file-text-o" onPress={() => { }} showBorder={false} /> */}
         </View>
       </ScrollView>
     </View>
@@ -78,17 +72,12 @@ const styles = StyleSheet.create({
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 15,
   },
   settingContent: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  settingText: {
-    fontSize: 16,
-    marginLeft: 15,
   },
 });
 
