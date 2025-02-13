@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -53,6 +53,9 @@ const FavouritesScreen = () => {
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={getFavourites} />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Icon
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   row: {
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     marginBottom: 16,
   },
   emptyContainer: {

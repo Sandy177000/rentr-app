@@ -17,7 +17,7 @@ const ChatItem = ({item, token, index}) => {
 
   return (
     <TouchableOpacity
-      key={index}
+      key={item.id}
       style={[styles.chatItem, {backgroundColor: theme.colors.surface}]}
       onPress={() =>
         navigation.navigate('ChatDetails', {

@@ -2,7 +2,6 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  FlatList,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -14,7 +13,6 @@ import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
 import CustomText from '../src/components/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Divider from '../src/components/Divider';
 import HomeSection from '../src/components/HomeSection';
 import ListItem from '../src/components/ListItem';
 
@@ -166,7 +164,6 @@ const styles = StyleSheet.create({
   categoryItem: {
     padding: 16,
     borderRadius: 12,
-    marginRight: 12,
     alignItems: 'center',
     width: 120,
     gap: 8,

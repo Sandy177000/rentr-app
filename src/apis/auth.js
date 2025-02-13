@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { getBaseUrl } from './constants';
+import { getApiUrl } from './constants';
 
-const API_BASE_URL = getBaseUrl();
+const API_BASE_URL = getApiUrl();
 
 export const authApi = {
   login: async (credentials) => {

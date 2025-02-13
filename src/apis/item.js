@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getBaseUrl } from './constants';
+import { getApiUrl } from './constants';
 
-const API_BASE_URL = getBaseUrl();
+const API_BASE_URL = getApiUrl();
 
 export const itemApi = {
   getItems: async () => {

@@ -11,14 +11,14 @@ import {
   Platform,
   Linking,
 } from 'react-native';
-import {useTheme} from '../src/theme/ThemeProvider';
+import {useTheme} from '../theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
-import {itemApi} from '../src/apis/item';
+import {itemApi} from '../apis/item';
 import {useNavigation} from '@react-navigation/native';
-import CustomText from '../src/components/CustomText';
-import Divider from '../src/components/Divider';
-export const ListItemScreen = () => {
+import CustomText from './CustomText';
+import Divider from './Divider';
+export const ListItemForm = ({setVisible}) => {
   const theme = useTheme();
   const navigation = useNavigation();
 
@@ -30,6 +30,7 @@ export const ListItemScreen = () => {
     minimumPeriod: '',
     maximumPeriod: '',
     images: [],
+    category: 'others',
   });
   const [loading, setLoading] = useState(false);
 
@@ -128,6 +129,7 @@ export const ListItemScreen = () => {
       submitFormData.append('rentalPeriod', formData.rentalPeriod);
       submitFormData.append('minimumPeriod', formData.minimumPeriod);
       submitFormData.append('maximumPeriod', formData.maximumPeriod);
+      submitFormData.append('category', formData.category);
 
       formData.images.forEach((image, index) => {
         submitFormData.append('images', {
@@ -152,7 +154,7 @@ export const ListItemScreen = () => {
             maximumPeriod: '',
             images: [],
           });
-          navigation.navigate('MyListingsScreen');
+          setVisible(false);
         } else {
           Alert.alert('Error', 'Failed to list item', [
             {text: 'OK', onPress: () => navigation.goBack()},
@@ -371,7 +373,6 @@ export const ListItemScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 22,
   },
   sectionTitle: {
     fontWeight: '600',

@@ -32,7 +32,8 @@ const HomeSection = ({title, data, renderItem}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingHorizontal: 8, marginBottom: 8}}
+        ItemSeparatorComponent={() => <View style={{width: 10}} />}
+        contentContainerStyle={{paddingHorizontal: 4, marginBottom: 2}}
       />
     </View>
   );

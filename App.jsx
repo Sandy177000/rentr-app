@@ -8,7 +8,6 @@ import store from './store/store';
 import {ItemDetailsScreen} from './screens/ItemDetailScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import {HomeScreen} from './screens/HomeScreen';
-import {ListItemScreen} from './screens/ListItemScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import {MyListingsScreen} from './screens/MyListingsScreen';
 import {RegisterScreen} from './screens/RegisterScreen';
@@ -139,15 +138,11 @@ const App = () => {
             headerTitleStyle: {
               fontWeight: '600',
               color: theme.colors.text.primary,
-              fontSize: 17,
+              fontSize: 15,
             },
+            headerTitleAlign: 'center',
             cardStyle: {backgroundColor: theme.colors.background},
           }}>
-          <Stack.Screen
-            name="List Item"
-            component={ListItemScreen}
-            options={{headerShown: false}}
-          />
           <Stack.Screen
             name="Login"
             component={LoginScreen}

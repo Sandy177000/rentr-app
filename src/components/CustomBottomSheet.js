@@ -3,7 +3,7 @@ import React from 'react';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 import { FlatList as GestureFlatList } from 'react-native-gesture-handler';
 import CustomText from './CustomText';
-
+import { ListItemForm } from './ListItemForm';
 const CustomBottomSheet = ({
   theme,
   data,
@@ -13,7 +13,16 @@ const CustomBottomSheet = ({
   visible,
   setVisible,
   bottomSheetRef,
+  children,
 }) => {
+  let Component;
+  switch(children){
+    case 'ListNewItem':
+      Component = <ListItemForm setVisible={setVisible}/>;
+      break;
+    default:
+      Component = <GestureFlatList data={data} renderItem={renderItem}/>;
+  }
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -29,9 +38,9 @@ const CustomBottomSheet = ({
         backgroundColor: theme.colors.background,
       }}
       onChange={index => {
-        if (index === -1 && showCloseButton) {
+        if (index === -1) {
           bottomSheetRef.current?.close();
-          setVisible(false);
+          setVisible(!visible);
         }
       }}
       >
@@ -69,11 +78,7 @@ const CustomBottomSheet = ({
               </TouchableOpacity>
             )}
           </View>
-          <GestureFlatList
-            data={data}
-            renderItem={renderItem}
-            nestedScrollEnabled={true}
-          />
+          {Component}
         </View>
       </BottomSheetView>
     </BottomSheet>

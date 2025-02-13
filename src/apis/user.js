@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getBaseUrl} from './constants';
+import {getApiUrl} from './constants';
 
-const API_BASE_URL = getBaseUrl();
+const API_BASE_URL = getApiUrl();
 
 export const userApi = {
   updateUserInfo: async userData => {
@@ -95,14 +95,19 @@ export const userApi = {
         return {error: 'User not found'};
       }
       const {token} = JSON.parse(storedUser);
-      const response = await axios.delete(
-        `${API_BASE_URL}/users/remove-favourite`,
+      console.log('itemId in removeFromFavourites', itemId);
+      const response = await axios.post(
+        `${API_BASE_URL}/users/remove-favorite`,
+        {
+          itemId,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
       );
+      console.log('response in removeFromFavourites', response.data);
       return response.data;
     } catch (error) {
       return {error: 'Failed to remove from favourites'};

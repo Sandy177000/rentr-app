@@ -1,11 +1,12 @@
 // screens/LoginScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurrentUser, restoreUser, selectCurrentToken } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../src/components/CustomText';
+import { avatar } from '../src/constants';
 export const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('admin@rentr.com'); // hello@world.com
   const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
@@ -59,7 +60,7 @@ export const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.contentContainer}>
-        <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>
+        <CustomText variant='h2' style={[styles.title, { color: theme.colors.text.primary }]}>
           Welcome Back
         </CustomText>
         <CustomText style={[styles.subtitle, { color: theme.colors.text.secondary }]}>

@@ -11,27 +11,29 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { userApi } from '../apis/user';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
-const ListItem = ({item, index, theme, navigation}) => {
+const ListItem = ({item, theme, index, navigation}) => {
   const [isFavourite, setIsFavourite] = useState(item.isFavorite);
   const handleFavourite = async () => {
-    if(isFavourite) {
-      await userApi.removeFromFavourites(item.id);
-    } else {
+    try {
+      if(isFavourite) {
+        await userApi.removeFromFavourites(item.id);
+      } else {
       await userApi.addToFavourites(item.id);
+      }
+      setIsFavourite(!isFavourite);
+    } catch (error) {
+      console.log('error in handleFavourite', error);
     }
-    setIsFavourite(!isFavourite);
   };
+
   return (
     <View
       style={[
         styles.itemCard,
         {
           backgroundColor: theme.colors.surface,
-          marginLeft: index % 2 === 0 ? 0 : 8,
-          shadowColor: theme.colors.text.primary,
         },
       ]}>
-      {/* add heart icon to top right */}
       <TouchableOpacity style={styles.heartIcon} onPress={handleFavourite}>
         <Icon name="heart" size={24} color={isFavourite ? theme.colors.primary : theme.colors.secondary} />
       </TouchableOpacity>
@@ -40,7 +42,6 @@ const ListItem = ({item, index, theme, navigation}) => {
         <Image
           source={{uri: item.images?.[0] || 'https://via.placeholder.com/150'}}
           style={styles.itemImage}
-          resizeMode="cover"
         />
       </TouchableOpacity>
       <View style={styles.itemContent}>
@@ -92,30 +93,16 @@ const styles = StyleSheet.create({
   itemImage: {
     width: '100%',
     height: 150,
-    backgroundColor: '#f0f0f0',
   },
   itemContent: {
     padding: 12,
   },
   itemTitle: {
-    fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
   },
   itemPrice: {
-    fontSize: 14,
     marginBottom: 12,
-  },
-  viewButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  viewButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
   },
   addButton: {
     position: 'absolute',
@@ -138,7 +125,6 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
   },
@@ -149,7 +135,6 @@ const styles = StyleSheet.create({
     paddingTop: 100,
   },
   emptyText: {
-    fontSize: 16,
     marginTop: 16,
   },
 });

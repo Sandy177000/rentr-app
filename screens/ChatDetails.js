@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, RefreshControl } from 'react-native';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTheme } from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,6 +13,7 @@ import { avatar } from '../src/constants';
 const ChatDetails = ({ route, navigation }) => {
   const theme = useTheme();
   const {chat, roomId, token} = route.params;
+  const [loading, setLoading] = useState(false);
   const user = useSelector(selectCurrentUser);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -29,7 +30,7 @@ const ChatDetails = ({ route, navigation }) => {
 
   // Initialize socket connection
   useEffect(() => {
-    const baseUrl = 'http://192.168.1.44:4000';
+    const baseUrl = getBaseUrl();
     const newSocket = io(baseUrl, {
       auth: {
         token: token
@@ -78,11 +79,13 @@ const ChatDetails = ({ route, navigation }) => {
     }
   };
 
+  const fetchMessages = async () => {
+    setLoading(true);
+    const messages = await chatApi.getChatMessages(roomId);
+    setMessages(messages);
+    setLoading(false);
+  };
   useEffect(() => {
-    const fetchMessages = async () => {
-      const messages = await chatApi.getChatMessages(roomId);
-      setMessages(messages);
-    };
     fetchMessages();
   }, [roomId]);
 
@@ -94,13 +97,10 @@ const ChatDetails = ({ route, navigation }) => {
        {item.sender.id !== user.id && <Image source={{ uri: item.sender.profileImage || avatar }} style={styles.avatar} />}
       <View style={[
         styles.messageBubble,
-      { backgroundColor: item.sender.id === user.id ? theme.colors.primary : theme.colors.surface },
+      { backgroundColor: item.sender.id === user.id ? theme.colors.primary : theme.colors.background,
+      },
     ]}>
-      {item.sender.id !== user.id && <CustomText style={[
-        { color: item.sender.id === user.id ? '#FFFFFF' : theme.colors.text.primary },
-      ]}>
-        {item.sender.firstName}
-      </CustomText>}
+      {item.sender.id !== user.id && <CustomText style={[{ color: theme.colors.text.primary }]}>{item.sender.firstName}</CustomText>}
       <CustomText style={[
         styles.messageText,
         { color: item.sender.id === user.id ? '#FFFFFF' : theme.colors.text.primary },
@@ -129,18 +129,21 @@ const ChatDetails = ({ route, navigation }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+  
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <FlatList
         ref={flatListRef}
         style={{backgroundColor: theme.colors.surface}}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={fetchMessages} />
+        }
         data={messages}
         renderItem={renderMessage}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.messageList}
         inverted={false}
-        ListEmptyComponent={<CustomText>No messages yet</CustomText>}
         onContentSizeChange={scrollToBottom} // Scroll when content size changes
         onLayout={scrollToBottom} // Scroll on initial layout
       />

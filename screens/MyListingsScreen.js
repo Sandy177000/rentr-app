@@ -1,69 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  FlatList, 
-  TouchableOpacity, 
+import React, {useEffect, useState, useRef} from 'react';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
   StyleSheet,
   Image,
-  Dimensions
+  Dimensions,
+  RefreshControl,
 } from 'react-native';
-import { itemApi } from '../src/apis/item';
-import { useTheme } from '../src/theme/ThemeProvider';
+import {itemApi} from '../src/apis/item';
+import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/CustomText';
+import CustomBottomSheet from '../src/components/CustomBottomSheet';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 
 export const MyListingsScreen = () => {
   const [myListings, setMyListings] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const theme = useTheme();
+  const [visible, setVisible] = useState(false);
+  const bottomSheetRef = useRef(null);
 
+  const fetchListings = async () => {
+    setLoading(true);
+    const listings = await itemApi.getUserItems();
+    setMyListings(listings);
+    setLoading(false);
+  };
   useEffect(() => {
-    // Fetch user's listings from API or local storage
-    const fetchListings = async () => {
-      // Replace with actual data fetching logic
-      const listings = await itemApi.getUserItems();
-
-      setMyListings(listings);
-    };
 
     fetchListings();
   }, []);
 
-  const renderItem = ({ item, index }) => (
-    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
+  const renderItem = ({item, index}) => (
+    <ListItem
+      item={item}
+      index={index}
+      theme={theme}
+      navigation={navigation}
+    />
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <FlatList
-        data={myListings}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Icon name="inbox" size={50} color={theme.colors.text.secondary} />
-            <CustomText style={[styles.emptyText, { color: theme.colors.text.secondary }]}>
-              No listings yet
-            </CustomText>
-          </View>
-        }
-      />
-      <TouchableOpacity
-        style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
-        onPress={() => navigation.replace('List Item')}
-      >
-        <Icon name="plus" size={20} color="#FFFFFF" />
-        <CustomText style={styles.addButtonText}>List New Item</CustomText>
-      </TouchableOpacity>
-    </View>
+    <>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <FlatList
+          data={myListings}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.listContent}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={fetchListings} />
+          }
+        />
+        { !loading && myListings.length === 0 && <View style={styles.emptyContainer}>
+              <Icon
+                name="inbox"
+                size={50}
+                color={theme.colors.text.secondary}
+              />
+              <CustomText
+                style={[
+                  styles.emptyText,
+                  {color: theme.colors.text.secondary},
+                ]}>
+                No listings yet
+              </CustomText>
+            </View>}
+        <TouchableOpacity
+          style={[styles.addButton, {backgroundColor: theme.colors.primary}]}
+          onPress={() => setVisible(!visible)}>
+          <Icon name="plus" size={20} color="#FFFFFF" />
+          <CustomText style={styles.addButtonText}>List New Item</CustomText>
+        </TouchableOpacity>
+      </View>
+      {visible && (
+        <CustomBottomSheet
+          theme={theme}
+          data={myListings}
+          renderItem={renderItem}
+          visible={visible}
+          setVisible={setVisible}
+          bottomSheetRef={bottomSheetRef}
+          title="List New Item"
+          form={true}
+          children="ListNewItem"
+        />
+      )}
+    </>
   );
 };
 
@@ -73,10 +106,10 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
-    paddingBottom: 100, // Space for the add button
+    paddingBottom: 100
   },
   row: {
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     marginBottom: 16,
   },
   itemCard: {
@@ -105,7 +138,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   itemPrice: {
-    fontSize: 14,
     marginBottom: 12,
   },
   viewButton: {
@@ -140,7 +172,6 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
   },
@@ -150,7 +181,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontSize: 16,
     marginTop: 16,
   },
 });
