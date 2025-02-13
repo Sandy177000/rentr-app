@@ -17,7 +17,7 @@ const SettingsScreen = () => {
       onPress={onPress}
     >
         <Icon name={icon} size={15} color={theme.colors.text.primary} style={{width: 20, marginRight: 10}}/>
-        <CustomText variant="h4" style={[{ color: theme.colors.text.primary }]}>{title}</CustomText>
+        <CustomText variant="body" style={[{ color: theme.colors.text.primary }]}>{title}</CustomText>
       <Icon name="chevron-right" size={14} color={theme.colors.text.secondary} style={{marginLeft: 'auto'}} />
     </TouchableOpacity>
   );

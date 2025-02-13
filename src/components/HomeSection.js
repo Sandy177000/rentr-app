@@ -4,7 +4,7 @@ import CustomText from './CustomText';
 import {useTheme} from '../theme/ThemeProvider';
 import Divider from './Divider';
 
-const HomeSection = ({title, data, onPress, renderItem}) => {
+const HomeSection = ({title, data, renderItem}) => {
   const theme = useTheme();
   return (
     <View
@@ -21,14 +21,9 @@ const HomeSection = ({title, data, onPress, renderItem}) => {
           alignItems: 'center',
           paddingBottom: 8,
         }}>
-        <CustomText style={{color: theme.colors.text.primary}} variant="body">
+        <CustomText style={{color: theme.colors.text.primary, marginLeft: 10}} variant="body">
           {title}
         </CustomText>
-        <TouchableOpacity onPress={onPress}>
-          <CustomText style={{color: theme.colors.text.primary}} variant="h4">
-            View All
-          </CustomText>
-        </TouchableOpacity>
       </View>
 
       <FlatList

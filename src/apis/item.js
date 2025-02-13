@@ -17,7 +17,6 @@ export const itemApi = {
             'Authorization': `Bearer ${token}`,
         },
     });
-    console.log('Items data', response.data);
     return response.data;
   },
   createItem: async (item) => {

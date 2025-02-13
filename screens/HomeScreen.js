@@ -16,6 +16,7 @@ import CustomText from '../src/components/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Divider from '../src/components/Divider';
 import HomeSection from '../src/components/HomeSection';
+import ListItem from '../src/components/ListItem';
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -23,24 +24,18 @@ export const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
 
-  // Add dummy categories data
   const categories = [
     {id: '1', name: 'Electronics', icon: 'laptop'},
-    {id: '2', name: 'Fashion', icon: 'shopping-bag'},
-    {id: '3', name: 'Home & Garden', icon: 'home'},
+    {id: '6', name: 'Books', icon: 'book'},
     {id: '4', name: 'Sports', icon: 'futbol-o'},
     {id: '5', name: 'Vehicles', icon: 'car'},
   ];
 
   const fetchItems = async () => {
-    // console.log('Fetching items', "itemsData");
     const itemsData = await itemApi.getItems();
     if(itemsData.length == 0) {
       Alert.alert('Items data', JSON.stringify(itemsData));
     }
-    console.log('Items data', itemsData);
-    
-
     setItems(itemsData);
   };
 
@@ -54,7 +49,7 @@ export const HomeScreen = () => {
       onPress={() =>
         navigation.navigate('CategoryItems', {category: item.name})
       }>
-      <Icon name={item.icon} size={24} color={theme.colors.text.primary} />
+      <Icon name={item.icon} size={24} color={theme.colors.primary} />
       <CustomText
         variant="h4"
         style={[{color: theme.colors.text.primary}]}>
@@ -63,22 +58,8 @@ export const HomeScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderRecommendation = ({item}) => (
-    <TouchableOpacity
-      style={[
-        styles.recommendationItem,
-        {backgroundColor: theme.colors.surface},
-      ]}
-      onPress={() => navigation.navigate('ItemDetails', {item})}>
-      <CustomText
-        style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
-        {item.name}
-      </CustomText>
-      <CustomText
-        style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
-        ${item.price}/day
-      </CustomText>
-    </TouchableOpacity>
+  const renderRecommendation = ({item, index}) => (
+    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
   );
 
   const handleRefresh = async () => {
@@ -87,12 +68,16 @@ export const HomeScreen = () => {
     setRefreshing(false);
   };
 
-  const renderItem = ({item}) => <CustomText>{item.name}</CustomText>;
 
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScrollView onRefresh={handleRefresh}>
+      <ScrollView refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+        />
+      }>
         {/* Search Bar */}
         <TouchableOpacity
           onPress={() => navigation.navigate('Search')}
@@ -109,40 +94,16 @@ export const HomeScreen = () => {
             Search for items...
           </CustomText>
         </TouchableOpacity>
-
-        {/* Categories Section */}
         <HomeSection
           title="Categories"
           data={categories}
-          onPress={() => navigation.navigate('CategoryItems')}
           renderItem={renderCategory}
         />
-
         <HomeSection
           title="Latest Deals"
           data={items}
-          onPress={() => navigation.navigate('ItemDetails')}
           renderItem={renderRecommendation}
         />
-
-        {/* Existing Items List */}
-        {items.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <CustomText>No items found : (</CustomText>
-          </View>
-        ) : (
-          <FlatList
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-              />
-            }
-            data={items}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-          />
-        )}
       </ScrollView>
     </View>
   );

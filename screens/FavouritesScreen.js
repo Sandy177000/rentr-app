@@ -1,50 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  FlatList, 
-  StyleSheet,
-} from 'react-native';
-import { useTheme } from '../src/theme/ThemeProvider';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {View, FlatList, StyleSheet} from 'react-native';
+import {useTheme} from '../src/theme/ThemeProvider';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/CustomText';
+import {userApi} from '../src/apis/user';
 
+
+// maintain a state to quickly update the favourites list
 const FavouritesScreen = () => {
   const [favourites, setFavourites] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const theme = useTheme();
 
-  // TODO: Replace with actual API call to get favourited items
+  const getFavourites = async () => {
+    setLoading(true);
+
+    try {
+      const response = await userApi.getFavourites();
+      console.log('response getFavourites', response);
+      if (response.error) {
+        console.log(response.error);
+      } else {
+        setFavourites(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Dummy data for now
-    setFavourites([
-      {
-        id: '1',
-        name: 'Mountain Bike',
-        price: '25',
-        images: ['https://via.placeholder.com/150'],
-      },
-      {
-        id: '2',
-        name: 'DSLR Camera',
-        price: '45',
-        images: ['https://via.placeholder.com/150'],
-      },
-    ]);
+    console.log('favourites useEffect');
+    getFavourites();
+    console.log('favourites useEffect after getFavourites');
   }, []);
 
-  const renderItem = ({ item, index }) => (
-    <ListItem 
-      item={item} 
-      index={index} 
-      theme={theme} 
-      navigation={navigation} 
-    />
+  const renderItem = ({item, index}) => (
+    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <FlatList
         data={favourites}
         renderItem={renderItem}
@@ -54,10 +55,13 @@ const FavouritesScreen = () => {
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="heart-o" size={50} color={theme.colors.text.secondary} />
-            <CustomText 
-              style={[styles.emptyText, { color: theme.colors.text.secondary }]}
-            >
+            <Icon
+              name="heart-o"
+              size={50}
+              color={theme.colors.text.secondary}
+            />
+            <CustomText
+              style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
               No favourites yet
             </CustomText>
           </View>

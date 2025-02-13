@@ -152,6 +152,7 @@ export const ListItemScreen = () => {
             maximumPeriod: '',
             images: [],
           });
+          navigation.navigate('MyListingsScreen');
         } else {
           Alert.alert('Error', 'Failed to list item', [
             {text: 'OK', onPress: () => navigation.goBack()},

@@ -9,8 +9,8 @@ import CustomText from '../src/components/CustomText';
 export const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('admin@rentr.com'); // hello@world.com
   const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
-  // const [email, setEmail] = useState('hello@world.com'); // hello@world.com
-  // const [password, setPassword] = useState('Sandesh@2000'); // Sandesh@2000
+  // const [email, setEmail] = useState('t@t.c'); // hello@world.com
+  // const [password, setPassword] = useState('Test@123'); // Sandesh@2000
   
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     color: '#1a1a1a',
+    height: 50,
   },
   loginButton: {
     backgroundColor: '#007AFF',
