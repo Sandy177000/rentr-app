@@ -10,6 +10,7 @@ export const themeColors = [
 
 export const themeFonts = [
   {label: 'Roboto', path: 'roboto'},
+  {label: 'Proxima Nova', path: 'ProximaNova-Regular'},
   {label: 'Monospace', path: 'monospace'},
   {label: 'Helvetica', path: 'helvetica'},
   {label: 'Times New Roman', path: 'times'},

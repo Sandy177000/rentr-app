@@ -44,7 +44,7 @@ const ProfileScreen = () => {
     <TouchableOpacity
       style={[
         styles.sectionContainer,
-        {backgroundColor: theme.colors.background},
+        {backgroundColor: theme.colors.surface},
       ]}
       onPress={onPress}>
       <View style={styles.sectionContent}>
@@ -75,7 +75,7 @@ const ProfileScreen = () => {
   const renderProfile = () => {
     return (
       <ScrollView
-        style={[styles.container, {backgroundColor: theme.colors.surface}]}
+        style={[styles.container, {backgroundColor: theme.colors.background}]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

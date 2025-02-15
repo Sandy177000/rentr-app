@@ -93,8 +93,8 @@ export default function ThemeScreen() {
           <TouchableOpacity
             style={[styles.button, styles.shadow, {backgroundColor: theme.colors.primary}]}
             onPress={() => theme.setCustomTheme({colors: theme.colors, fonts: theme.fonts})}>
-            <Icon name="refresh" size={20} color={theme.colors.text.primary} />
-            <CustomText style={[styles.buttonText, {color: theme.colors.text.primary}]}>
+            <Icon name="refresh" size={20} color={'#ffffff'} />
+            <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
               Reset
             </CustomText>
           </TouchableOpacity>
@@ -102,8 +102,8 @@ export default function ThemeScreen() {
           <TouchableOpacity
             style={[styles.button, styles.shadow, {backgroundColor: theme.colors.primary}]}
             onPress={handleApplyTheme}>
-            <Icon name="save" size={20} color={theme.colors.text.primary} />
-            <CustomText style={[styles.buttonText, {color: theme.colors.text.primary}]}>
+            <Icon name="save" size={20} color={'#ffffff'} />
+            <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
               Save
             </CustomText>
           </TouchableOpacity>

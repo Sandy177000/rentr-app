@@ -8,34 +8,56 @@ import {
 } from 'react-native';
 import CustomText from './CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userApi } from '../apis/user';
+import { useDispatch } from 'react-redux';
+import { addToFavourites, removeFromFavourites, addFavourite, removeFavourite } from '../../store/itemsSlice';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
-const ListItem = ({item, theme, index, navigation}) => {
+
+const ListItem = ({item, theme, index, navigation, animate = true}) => {
+  const dispatch = useDispatch();
   const [isFavourite, setIsFavourite] = useState(item.isFavorite);
+
+
   const handleFavourite = async () => {
+    const initialFavouriteState = isFavourite;
     try {
-      if(isFavourite) {
-        await userApi.removeFromFavourites(item.id);
-      } else {
-      await userApi.addToFavourites(item.id);
-      }
       setIsFavourite(!isFavourite);
+      if(initialFavouriteState) {
+        // ui update
+        dispatch(removeFavourite(item));
+        // update in backend
+        await dispatch(removeFromFavourites(item.id)).unwrap();
+      } else {
+        // ui update
+        dispatch(addFavourite(item));
+        // update in backend
+        await dispatch(addToFavourites(item.id)).unwrap();
+      }
     } catch (error) {
+      setIsFavourite(initialFavouriteState);
       console.log('error in handleFavourite', error);
     }
   };
 
   return (
+    <Animated.View
+      entering={FadeInDown.delay(index * 1)}
+    >
     <View
       style={[
         styles.itemCard,
         {
           backgroundColor: theme.colors.surface,
+          shadowColor: theme.colors.primary,
         },
       ]}>
       <TouchableOpacity style={styles.heartIcon} onPress={handleFavourite}>
-        <Icon name="heart" size={24} color={isFavourite ? theme.colors.primary : theme.colors.secondary} />
+        {isFavourite ? (
+          <Icon name="heart" size={22} color={theme.colors.primary} />
+        ) : (
+          <Icon name="heart-o" size={22} color={'#FFFFFF'} />
+        )}
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('ItemDetails', {item})}>
@@ -56,6 +78,7 @@ const ListItem = ({item, theme, index, navigation}) => {
         </CustomText>
       </View>
     </View>
+    </Animated.View>
   );
 };
 
@@ -78,17 +101,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   itemCard: {
-    position: 'relative',
     width: COLUMN_WIDTH,
     borderRadius: 12,
     overflow: 'hidden',
-    elevation: 2,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   itemImage: {
     width: '100%',

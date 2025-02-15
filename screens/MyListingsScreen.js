@@ -15,7 +15,10 @@ import {useNavigation} from '@react-navigation/native';
 import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/CustomText';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
-
+import { ListItemForm } from '../src/components/ListItemForm';
+import { LinearGradient } from 'react-native-linear-gradient';
+import { BottomGradient } from '../src/components/BottomGradient';
+import EmptyListComponent from '../src/components/EmptyListComponent';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 
@@ -34,7 +37,6 @@ export const MyListingsScreen = () => {
     setLoading(false);
   };
   useEffect(() => {
-
     fetchListings();
   }, []);
 
@@ -61,8 +63,9 @@ export const MyListingsScreen = () => {
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={fetchListings} />
           }
-        />
-        { !loading && myListings.length === 0 && <View style={styles.emptyContainer}>
+          ListEmptyComponent={
+            !loading && myListings.length === 0 && (
+            <EmptyListComponent>
               <Icon
                 name="inbox"
                 size={50}
@@ -75,9 +78,11 @@ export const MyListingsScreen = () => {
                 ]}>
                 No listings yet
               </CustomText>
-            </View>}
+            </EmptyListComponent>
+          )}
+        />
         <TouchableOpacity
-          style={[styles.addButton, {backgroundColor: theme.colors.primary}]}
+          style={[styles.addButton, {backgroundColor: theme.colors.primary, zIndex: 2}]}
           onPress={() => setVisible(!visible)}>
           <Icon name="plus" size={20} color="#FFFFFF" />
           <CustomText style={styles.addButtonText}>List New Item</CustomText>
@@ -93,9 +98,11 @@ export const MyListingsScreen = () => {
           bottomSheetRef={bottomSheetRef}
           title="List New Item"
           form={true}
-          children="ListNewItem"
-        />
+        >
+          <ListItemForm setVisible={setVisible}/>
+        </CustomBottomSheet>
       )}
+      <BottomGradient theme={theme} zIndex={1}/>
     </>
   );
 };

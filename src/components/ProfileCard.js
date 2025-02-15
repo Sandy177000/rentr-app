@@ -1,18 +1,27 @@
 import React, {useState} from 'react';
-import {View, Image, TouchableOpacity, Modal, Alert, Platform, Linking, ActivityIndicator, StyleSheet} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  Platform,
+  Linking,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {useDispatch} from 'react-redux';
 import {updateUser} from '../../store/authSlice';
 import {userApi} from '../apis/user';
 import CustomText from './CustomText';
-import { avatar } from '../constants';
-
+import {avatar} from '../constants';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
 
   const handleUpdateProfileImage = async source => {
     const options = {
@@ -75,12 +84,10 @@ const ProfileCard = ({user, theme, navigation}) => {
           name: `${user.firstName}_image_0.jpg`,
         });
 
-
         const {profileImage} = await userApi.updateUserInfo(formData);
-        if(profileImage){
-            dispatch(updateUser({...user, profileImage}));
+        if (profileImage) {
+          dispatch(updateUser({...user, profileImage}));
         }
-
       }
     } catch (error) {
       console.error('Error updating profile image:', JSON.stringify(error));
@@ -92,45 +99,69 @@ const ProfileCard = ({user, theme, navigation}) => {
 
   return (
     <>
-    <ProfilePickerModal
-      handleUpdateProfileImage={handleUpdateProfileImage}
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible}
-      theme={theme}
-    />
-    <View style={[styles.header, {backgroundColor: theme.colors.background, shadowColor: theme.colors.primary}]}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Settings')}
-        style={styles.settingsButton}>
-        <Icons name="gear" size={24} color={theme.colors.text.primary} />
-      </TouchableOpacity>
-      <View style={styles.profileImageContainer}>
-        {loading ? (
-          <ActivityIndicator size="small" color={theme.colors.primary} style={styles.profileImage} />
-        ) : (
-          <Image
-            source={{uri: user.profileImage || avatar}}
-            style={styles.profileImage}
-          />
-        )}
+      <ProfilePickerModal
+        handleUpdateProfileImage={handleUpdateProfileImage}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        theme={theme}
+      />
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: theme.colors.background,
+            shadowColor: theme.colors.primary,
+          },
+        ]}>
         <TouchableOpacity
-          style={[
-            styles.editImageButton,
-            {backgroundColor: theme.colors.primary, borderColor: theme.colors.primary},
-          ]}
-          onPress={() => setModalVisible(!modalVisible)}>
-          <Icons name="pencil" size={14} color="white"/>
+          onPress={() => navigation.navigate('Settings')}
+          style={styles.settingsButton}>
+          <Icons name="gear" size={24} color={theme.colors.secondary} />
         </TouchableOpacity>
+        <View style={styles.profileImageContainer}>
+          {loading ? (
+            <ActivityIndicator
+              size="small"
+              color={theme.colors.primary}
+              style={styles.profileImage}
+            />
+          ) : (
+            <Image
+              source={{uri: user.profileImage || avatar}}
+              style={styles.profileImage}
+            />
+          )}
+          <TouchableOpacity
+            style={[
+              styles.editImageButton,
+              {
+                backgroundColor: theme.colors.primary,
+                borderColor: theme.colors.primary,
+              },
+            ]}
+            onPress={() => setModalVisible(!modalVisible)}>
+            <Icons name="pencil" size={14} color="white" />
+          </TouchableOpacity>
+        </View>
+        <CustomText style={{color: theme.colors.text.primary}} variant="h1">
+          {user.firstName} {user.lastName}
+        </CustomText>
       </View>
-      <CustomText style={{color: theme.colors.text.primary}} variant="h1">
-        {user.firstName} {user.lastName}
-      </CustomText>
-    </View>
     </>
   );
 };
 
-const ProfilePickerModal = ({handleUpdateProfileImage, modalVisible, setModalVisible, theme}) => {
+const getColor = (theme, flag) => {
+  return theme.isDark && flag
+    ? 'rgba(0, 0, 0, 0.7)'
+    : 'rgba(255, 255, 255, 0.7)';
+};
+const ProfilePickerModal = ({
+  handleUpdateProfileImage,
+  modalVisible,
+  setModalVisible,
+  theme,
+}) => {
   return (
     <Modal
       visible={modalVisible}
@@ -141,54 +172,48 @@ const ProfilePickerModal = ({handleUpdateProfileImage, modalVisible, setModalVis
         <View
           style={[
             styles.modalContainer,
-            {backgroundColor: theme.colors.background},
+            {
+              backgroundColor: getColor(theme, true),
+              borderColor: getColor(theme, false),
+              borderWidth: 0.2,
+            },
           ]}>
           <CustomText
             style={[styles.modalTitle, {color: theme.colors.text.primary}]}>
             Update Profile Picture
           </CustomText>
-          <TouchableOpacity
-            style={[
-              styles.modalButton,
-              {backgroundColor: theme.colors.primary},
-            ]}
-            onPress={() => {
-              handleUpdateProfileImage('gallery');
-            }}>
-            <CustomText
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity
               style={[
-                styles.modalButtonText,
-                {color: theme.colors.text.primary},
-              ]}>
-              Pick from Gallery
-            </CustomText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.modalButton,
-              {backgroundColor: theme.colors.primary},
-            ]}
-            onPress={() => handleUpdateProfileImage('camera')}>
-            <CustomText
+                styles.modalButton,
+                {borderColor: getColor(theme, false), padding: 30},
+              ]}
+              onPress={() => {
+                handleUpdateProfileImage('gallery');
+              }}>
+              <Icon name="image" size={20} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
               style={[
-                styles.modalButtonText,
-                {color: theme.colors.text.primary},
-              ]}>
-              Take a Photo
-            </CustomText>
-          </TouchableOpacity>
+                styles.modalButton,
+                {borderColor: getColor(theme, false), padding: 30},
+              ]}
+              onPress={() => handleUpdateProfileImage('camera')}>
+              <Icon name="camera" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity
             style={[
               styles.modalButton,
-              {backgroundColor: theme.colors.primary},
+              {
+                backgroundColor: theme.colors.primary,
+                padding: 10,
+              },
             ]}
             onPress={() => setModalVisible(false)} // Close the modal
           >
-            <CustomText
-              style={[
-                styles.modalButtonText,
-                {color: theme.colors.text.primary},
-              ]}>
+            <CustomText style={[styles.modalButtonText, {color: '#FFFFFF'}]}>
               Cancel
             </CustomText>
           </TouchableOpacity>
@@ -254,20 +279,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '70%',
   },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+  },
   modalButton: {
-    padding: 10,
-    borderRadius: 5,
+    borderWidth: 1,
+    borderRadius: 100,
     marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalButtonText: {
     fontWeight: '600',
     textAlign: 'center',
   },
   modalTitle: {
-    fontWeight: '600',
+    fontWeight: '900',
     marginBottom: 20,
     textAlign: 'center',
+    textTransform: 'uppercase',
   },
-
 });
 export default ProfileCard;

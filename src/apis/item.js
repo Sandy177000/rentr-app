@@ -21,8 +21,6 @@ export const itemApi = {
   },
   createItem: async (item) => {
     const storedUser = await AsyncStorage.getItem('user');
-    
-
     if (!storedUser) {
       return {error: 'User not found'};
     }

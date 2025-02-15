@@ -32,7 +32,7 @@ export const ThemeProvider = ({children}) => {
       },
     },
     fonts: userTheme.fonts,
-    font: userTheme.font || 'Roboto-Regular',
+    font: 'ProximaNova-Regular',
   });
   console.log(user);
   const toggleTheme = () => {

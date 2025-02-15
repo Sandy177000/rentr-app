@@ -101,7 +101,7 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    padding: 10,
   },
   resultsList: {
     flex: 1,
@@ -127,12 +127,12 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    paddingLeft: 12,
-    borderRadius: 12,
-    marginVertical: 8,
+    padding: 5,
+    borderRadius: 14,
+    margin: 8,
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     alignItems: 'center',

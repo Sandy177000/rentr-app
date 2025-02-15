@@ -15,6 +15,7 @@ import CustomText from '../src/components/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeSection from '../src/components/HomeSection';
 import ListItem from '../src/components/ListItem';
+import {BottomGradient} from '../src/components/BottomGradient';
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -31,7 +32,7 @@ export const HomeScreen = () => {
 
   const fetchItems = async () => {
     const itemsData = await itemApi.getItems();
-    if(itemsData.length == 0) {
+    if (itemsData.length == 0) {
       Alert.alert('Items data', JSON.stringify(itemsData));
     }
     setItems(itemsData);
@@ -43,14 +44,12 @@ export const HomeScreen = () => {
 
   const renderCategory = ({item}) => (
     <TouchableOpacity
-      style={[styles.categoryItem, {backgroundColor: '#FFFFFF'}]}
+      style={[styles.categoryItem, {backgroundColor: theme.colors.surface}]}
       onPress={() =>
         navigation.navigate('CategoryItems', {category: item.name})
       }>
       <Icon name={item.icon} size={24} color={theme.colors.primary} />
-      <CustomText
-        variant="h4"
-        style={[{color: theme.colors.text.primary}]}>
+      <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
         {item.name}
       </CustomText>
     </TouchableOpacity>
@@ -66,22 +65,15 @@ export const HomeScreen = () => {
     setRefreshing(false);
   };
 
-
   return (
-    <View
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScrollView refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-      }>
-        {/* Search Bar */}
+    <>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.surface}]}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Search')}
           style={[
             styles.searchContainer,
-            {backgroundColor: theme.colors.surface},
+            {backgroundColor: theme.colors.background},
           ]}>
           <Icon name="search" size={20} color={theme.colors.text.secondary} />
           <CustomText
@@ -92,25 +84,42 @@ export const HomeScreen = () => {
             Search for items...
           </CustomText>
         </TouchableOpacity>
-        <HomeSection
-          title="Categories"
-          data={categories}
-          renderItem={renderCategory}
-        />
-        <HomeSection
-          title="Latest Deals"
-          data={items}
-          renderItem={renderRecommendation}
-        />
-      </ScrollView>
-    </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }>
+          <HomeSection
+            title="Categories"
+            data={categories}
+            renderItem={renderCategory}
+          />
+          <HomeSection
+            title="Latest Deals"
+            data={items}
+            renderItem={renderRecommendation}
+          />
+          <HomeSection
+            title="Books"
+            data={items.filter(item => item.category === 'Books')}
+            renderItem={renderRecommendation}
+          />
+          <HomeSection
+            title="Electronics"
+            data={items.filter(item => item.category === 'Electronics')}
+            renderItem={renderRecommendation}
+          />
+        </ScrollView>
+      </View>
+      <BottomGradient theme={theme} zIndex={1} />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 5,
   },
   input: {
     borderWidth: 1,
@@ -152,7 +161,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     borderRadius: 14,
-    marginVertical: 8,
+    margin: 8,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
@@ -160,6 +169,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     alignItems: 'center',
     gap: 10,
+    zIndex: 2,
   },
   categoryItem: {
     padding: 16,

@@ -9,7 +9,6 @@ const HomeSection = ({title, data, renderItem}) => {
   return (
     <View
       style={{
-        backgroundColor: theme.colors.surface,
         padding: 8,
         borderRadius: 12,
         marginBottom: 8,
