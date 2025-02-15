@@ -92,7 +92,7 @@ const ProfileScreen = () => {
           navigation={navigation}
           fetchUser={fetchUser}
         />
-        <View style={styles.sectionsContainer}>
+        <View style={[styles.sectionsContainer, {backgroundColor: theme.colors.background}]}>
           <ProfileSection
             title="My Listed Items"
             icon="list"

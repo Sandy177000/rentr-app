@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {itemApi} from '../src/apis/item';
@@ -16,9 +17,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeSection from '../src/components/HomeSection';
 import ListItem from '../src/components/ListItem';
 import {BottomGradient} from '../src/components/BottomGradient';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../store/authSlice';
+import { avatar } from '../src/constants';
 
 export const HomeScreen = () => {
   const theme = useTheme();
+  const user = useSelector(selectCurrentUser);
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState([]);
@@ -68,12 +73,18 @@ export const HomeScreen = () => {
   return (
     <>
       <View
-        style={[styles.container, {backgroundColor: theme.colors.surface}]}>
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        {/* <View style={{padding: 16, flexDirection: 'row', alignItems: 'center', gap: 10}}>
+           <Image source={{uri: user.profileImage || avatar}} style={{width: 40, height: 40, borderRadius: 20}} />
+           <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
+            Hello, {user.firstName}
+           </CustomText>
+        </View> */}
         <TouchableOpacity
           onPress={() => navigation.navigate('Search')}
           style={[
             styles.searchContainer,
-            {backgroundColor: theme.colors.background},
+            {backgroundColor: theme.colors.surface},
           ]}>
           <Icon name="search" size={20} color={theme.colors.text.secondary} />
           <CustomText

@@ -47,11 +47,11 @@ const ChatItem = ({item, token, index}) => {
             {item.time}
           </CustomText>
         </View>
-        <View style={styles.chatFooter}>
+        {/* <View style={styles.chatFooter}>
           <CustomText
             style={[styles.lastMessage, {color: theme.colors.text.secondary}]}
             numberOfLines={1}>
-            {item.lastMessage}
+            {"item.lastMessage"}
           </CustomText>
           {item.unread > 0 && (
             <View
@@ -62,7 +62,7 @@ const ChatItem = ({item, token, index}) => {
               <CustomText style={styles.unreadText}>{item.unread}</CustomText>
             </View>
           )}
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
@@ -72,13 +72,14 @@ const styles = StyleSheet.create({
   chatItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderRadius: 10,
+    padding: 14,
+    borderRadius: 16,
   },
   avatar: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 25,
+    marginRight: 10,
   },
   chatContent: {
     flex: 1,

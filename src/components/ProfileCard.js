@@ -151,10 +151,8 @@ const ProfileCard = ({user, theme, navigation}) => {
   );
 };
 
-const getColor = (theme, flag) => {
-  return theme.isDark && flag
-    ? 'rgba(0, 0, 0, 0.7)'
-    : 'rgba(255, 255, 255, 0.7)';
+const getColor = flag => {
+  return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)';
 };
 const ProfilePickerModal = ({
   handleUpdateProfileImage,
@@ -173,8 +171,8 @@ const ProfilePickerModal = ({
           style={[
             styles.modalContainer,
             {
-              backgroundColor: getColor(theme, true),
-              borderColor: getColor(theme, false),
+              backgroundColor: getColor(theme.isDark),
+              borderColor: getColor(!theme.isDark),
               borderWidth: 0.2,
             },
           ]}>
@@ -186,20 +184,20 @@ const ProfilePickerModal = ({
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                {borderColor: getColor(theme, false), padding: 30},
+                {padding: 30, backgroundColor: theme.colors.surface},
               ]}
               onPress={() => {
                 handleUpdateProfileImage('gallery');
               }}>
-              <Icon name="image" size={20} color="white" />
+              <Icon name="image" size={20} color={theme.colors.text.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                {borderColor: getColor(theme, false), padding: 30},
+                {padding: 30, backgroundColor: theme.colors.surface},
               ]}
               onPress={() => handleUpdateProfileImage('camera')}>
-              <Icon name="camera" size={20} color="white" />
+              <Icon name="camera" size={20} color={theme.colors.text.primary} />
             </TouchableOpacity>
           </View>
 
@@ -285,8 +283,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalButton: {
-    borderWidth: 1,
-    borderRadius: 100,
+    borderRadius: 12,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',

@@ -28,6 +28,10 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import ChatDetails from './screens/ChatDetails';
 import CategoryItems from './screens/CategoryItems';
 import FavouritesScreen from './screens/FavouritesScreen';
+import { Image } from 'react-native';
+import { avatar } from './src/constants';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from './store/authSlice';
 const Stack = createStackNavigator();
 
 const queryClient = new QueryClient();
@@ -36,12 +40,13 @@ const MainTabs = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const theme = useTheme();
+  const user = useSelector(selectCurrentUser);
 
   const routes = [
     {key: 'home', title: 'Home', icon: 'home'},
     {key: 'favorites', title: 'Favorites', icon: 'heart'},
     {key: 'chat', title: 'Chat', icon: 'comment'},
-    {key: 'profile', title: 'Profile', icon: 'user'},
+    {key: 'profile', title: 'Profile', icon: user?.profileImage || avatar, type: 'image'},
   ];
 
   const renderScene = SceneMap({
@@ -106,6 +111,9 @@ const MainTabs = () => {
         navigationState={{index, routes}}
         commonOptions={{
           icon: ({route, focused, color}) => (
+            route.type === 'image' ?
+            <Image source={{uri: route.icon}} style={{width: 25, height: 25, borderRadius: 100}} /> 
+            : 
             <Icon name={route.icon} color={color} size={20} />
           ),
           label: () => null,
