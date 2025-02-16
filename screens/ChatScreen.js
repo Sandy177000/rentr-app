@@ -35,7 +35,7 @@ const ChatScreen = () => {
     }
   };
 
-  const filteredChats = user && chatRooms.filter(room => room.participants.some(participant => participant.user.id !== user.id && participant.user.firstName.toLowerCase().includes(searchQuery.toLowerCase())));
+  const filteredChats = user && chatRooms?.filter(room => room.participants.some(participant => participant.user.id !== user.id && participant.user.firstName.toLowerCase().includes(searchQuery.toLowerCase())));
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -90,10 +90,11 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 14,
   },
   chatList: {
     flex: 1,
+    gap: 10,
   },
   emptyContainer: {
     flex: 1,

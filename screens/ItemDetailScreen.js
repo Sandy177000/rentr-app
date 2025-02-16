@@ -1,20 +1,48 @@
 // screens/ItemDetailsScreen.js
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, FlatList, useWindowDimensions } from 'react-native';
-import { useTheme } from '../src/theme/ThemeProvider';
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  useWindowDimensions,
+} from 'react-native';
+import {useTheme} from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/CustomText';
+import {useSelector} from 'react-redux';
+import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
+import { chatApi } from '../src/apis/chat';
 
-export const ItemDetailsScreen = ({ route, navigation }) => {
+export const ItemDetailsScreen = ({route, navigation}) => {
+  const token = useSelector(selectCurrentToken);
   const theme = useTheme();
-  const { item } = route.params;
-  const { width } = useWindowDimensions();
+  const {item} = route.params;
+  const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
+  const currentUser = useSelector(selectCurrentUser);
 
   const handleRent = () => {
     // Implement rental logic
   };
 
-  const onScroll = (event) => {
+  const handleDelete = () => {
+    // Implement delete logic
+  };
+
+  const handleEdit = () => {
+    // Implement edit logic
+  };
+
+  const handleContact = async () => {
+    const {ownerId} = item;
+    if(ownerId) {
+      const chatRoom = await chatApi.createChatRoom(ownerId);
+      navigation.navigate('ChatDetails', {chat: chatRoom, roomId: chatRoom.id, token: token});
+    }
+  };
+
+  const onScroll = event => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
     const index = event.nativeEvent.contentOffset.x / slideSize;
     const roundIndex = Math.round(index);
@@ -29,7 +57,7 @@ export const ItemDetailsScreen = ({ route, navigation }) => {
             key={index}
             style={[
               styles.dot,
-              { backgroundColor: theme.colors.primary },
+              {backgroundColor: theme.colors.primary},
               index === activeIndex ? styles.activeDot : styles.inactiveDot,
             ]}
           />
@@ -39,15 +67,17 @@ export const ItemDetailsScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.carouselContainer}>
         <FlatList
           data={item.images}
           renderItem={({item: image}) => (
             <Image
               source={{uri: image}}
-              style={[styles.image, { width }]}
+              style={[styles.image, {width}]}
               resizeMode="cover"
+              loadingIndicatorSource={''}
             />
           )}
           keyExtractor={(_, index) => index.toString()}
@@ -60,15 +90,35 @@ export const ItemDetailsScreen = ({ route, navigation }) => {
         />
         {item.images?.length > 1 && renderPaginationDots()}
       </View>
-      <CustomText style={[styles.title, { color: theme.colors.text.primary }]}>{item.title}</CustomText>
-      <CustomText style={[styles.description, { color: theme.colors.text.secondary }]}>{item.description}</CustomText>
-      <CustomText style={[styles.price, { color: theme.colors.text.secondary }]}>${item.price}/day</CustomText>
-      <TouchableOpacity
-        style={[styles.rentButton, { backgroundColor: theme.colors.primary }]}
-        onPress={handleRent}
-      >
-        <CustomText style={{ color: '#FFFFFF', fontWeight: '600' }}>Rent Now</CustomText>
-      </TouchableOpacity>
+      <CustomText style={[styles.title, {color: theme.colors.text.primary}]}>
+        {item.title}
+      </CustomText>
+      <CustomText
+        style={[styles.description, {color: theme.colors.text.secondary}]}>
+        {item.description}
+      </CustomText>
+      <CustomText style={[styles.price, {color: theme.colors.text.secondary}]}>
+        ${item.price}/day
+      </CustomText>
+
+      {item.ownerId !== currentUser.id && <CustomText style={{color: theme.colors.text.secondary}}>Owner: {item.ownerId}</CustomText> } 
+      {item.ownerId === currentUser.id ? (
+        <TouchableOpacity
+          style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
+          onPress={handleRent}>
+          <CustomText style={{color: '#FFFFFF', fontWeight: '600'}}>
+            Rent Now
+          </CustomText>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
+          onPress={handleContact}>
+          <CustomText style={{color: '#FFFFFF', fontWeight: '600'}}>
+            Contact Owner
+          </CustomText>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -126,4 +176,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})

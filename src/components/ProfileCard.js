@@ -24,8 +24,8 @@ const ProfileCard = ({user, theme, navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const handleUpdateProfileImage = async source => {
+    // remove mediaType as photos from options
     const options = {
-      mediaType: 'photo',
       quality: 0.8,
       maxWidth: 1200,
       maxHeight: 1200,

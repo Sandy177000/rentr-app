@@ -123,14 +123,6 @@ export const ListItemForm = ({setVisible}) => {
     setLoading(true);
     try {
       const submitFormData = new FormData();
-      submitFormData.append('name', formData.name);
-      submitFormData.append('description', formData.description);
-      submitFormData.append('price', formData.price);
-      submitFormData.append('rentalPeriod', formData.rentalPeriod);
-      submitFormData.append('minimumPeriod', formData.minimumPeriod);
-      submitFormData.append('maximumPeriod', formData.maximumPeriod);
-      submitFormData.append('category', formData.category);
-
       formData.images.forEach((image, index) => {
         submitFormData.append('images', {
           uri: image.uri,
@@ -138,6 +130,13 @@ export const ListItemForm = ({setVisible}) => {
           name: `${formData.name}_image_${index}.jpg`,
         });
       });
+      submitFormData.append('name', formData.name);
+      submitFormData.append('description', formData.description);
+      submitFormData.append('price', formData.price);
+      submitFormData.append('rentalPeriod', formData.rentalPeriod);
+      submitFormData.append('minimumPeriod', formData.minimumPeriod);
+      submitFormData.append('maximumPeriod', formData.maximumPeriod);
+      submitFormData.append('category', formData.category);
 
       if (submitFormData) {
         const response = await itemApi.createItem(submitFormData);
@@ -173,7 +172,7 @@ export const ListItemForm = ({setVisible}) => {
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <CustomText
-        variant="h3"
+        variant="body"
         style={[
           styles.sectionTitle,
           {
@@ -302,7 +301,7 @@ export const ListItemForm = ({setVisible}) => {
           alignItems: 'center',
         }}>
         <CustomText
-          variant="h3"
+          variant="body"
           style={[
             styles.sectionTitle,
             {

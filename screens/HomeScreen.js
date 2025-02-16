@@ -37,9 +37,6 @@ export const HomeScreen = () => {
 
   const fetchItems = async () => {
     const itemsData = await itemApi.getItems();
-    if (itemsData.length == 0) {
-      Alert.alert('Items data', JSON.stringify(itemsData));
-    }
     setItems(itemsData);
   };
 

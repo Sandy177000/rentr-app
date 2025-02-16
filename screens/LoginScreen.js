@@ -1,23 +1,23 @@
 // screens/LoginScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, selectAuthError, selectAuthLoading, clearError, selectCurrentUser, restoreUser, selectCurrentToken } from '../store/authSlice';
+import { loginUser, selectAuthError, selectAuthLoading, clearError, restoreUser } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../src/components/CustomText';
-import { avatar } from '../src/constants';
 export const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('admin@rentr.com'); // hello@world.com
-  const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
+  // const [email, setEmail] = useState('admin@rentr.com'); // hello@world.com
+  // const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
   // const [email, setEmail] = useState('t@t.c'); // hello@world.com
   // const [password, setPassword] = useState('Test@123'); // Sandesh@2000
+  const [email, setEmail] = useState('abc@rentr.com'); // hello@world.com
+  const [password, setPassword] = useState('Test@123'); // Sandesh@2000
   
   const theme = useTheme();
   const dispatch = useDispatch();
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
-  const token = useSelector(selectCurrentToken);
   useEffect(() => {
     // Clear any existing errors when component mounts
     dispatch(clearError());
