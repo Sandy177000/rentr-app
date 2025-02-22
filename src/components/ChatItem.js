@@ -6,6 +6,7 @@ import {useTheme} from '../theme/ThemeProvider';
 import {avatar} from '../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/authSlice';
+import { CustomImage } from './CustomImage';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();
@@ -30,39 +31,28 @@ const ChatItem = ({item, token, index}) => {
         <View style={styles.chatHeader}>
           {participants.map(participant => (
             <View style={styles.avatar}>
-              <Image
-                source={{uri: participant.user.profileImage || avatar}}
+              <CustomImage
+                source={participant.user.profileImage || avatar}
                 style={styles.avatar}
               />
             </View>
           ))}
           {participants.map(participant => (
             <CustomText
-              style={[styles.chatName, {color: theme.colors.text.primary}]}>
+              style={{color: theme.colors.text.primary, fontWeight: 'bold'}}>
               {participant.user.firstName}
             </CustomText>
           ))}
+        </View>
+        <View style={styles.chatFooter}>
           <CustomText
-            style={[styles.chatTime, {color: theme.colors.text.secondary}]}>
-            {item.time}
+            variant="h4"
+            style={{color: theme.colors.text.secondary}}
+            numberOfLines={1}
+          >
+            {item.messages[0].content}
           </CustomText>
         </View>
-        {/* <View style={styles.chatFooter}>
-          <CustomText
-            style={[styles.lastMessage, {color: theme.colors.text.secondary}]}
-            numberOfLines={1}>
-            {"item.lastMessage"}
-          </CustomText>
-          {item.unread > 0 && (
-            <View
-              style={[
-                styles.unreadBadge,
-                {backgroundColor: theme.colors.primary},
-              ]}>
-              <CustomText style={styles.unreadText}>{item.unread}</CustomText>
-            </View>
-          )}
-        </View> */}
       </View>
     </TouchableOpacity>
   );
@@ -92,13 +82,9 @@ const styles = StyleSheet.create({
   chatName: {
     fontWeight: 'bold',
   },
-  chatTime: {
-  },
   chatFooter: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  lastMessage: {
+    marginLeft: 60,
   },
   unreadBadge: {
     paddingHorizontal: 8,

@@ -43,22 +43,22 @@ const CustomText = ({ style, variant = 'body', children, ...props }) => {
 
 const styles = StyleSheet.create({
   h1: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  h2: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  h3: {
+  h2: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
+  },
+  h3: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   body: {
-    fontSize: 14,
+    fontSize: 12,
   },
   h4: {
-    fontSize: 12,
+    fontSize: 10,
   },
   subtitle: {
     fontSize: 8,

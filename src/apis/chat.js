@@ -81,13 +81,32 @@ export const chatApi = {
       const response = await axios.post(`${API_BASE_URL}/chat/rooms/messages`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
         },
       });
       return response.data;
     } catch (error) {
       console.error('Send message error:', error);
-      console.log(error.response.data);
+      throw error;
+    }
+  },
+
+  mediaUpload: async (data) => {
+    try {
+      const storedUser = await AsyncStorage.getItem('user');
+      if (!storedUser) {
+        return { error: 'User not found' };
+      }
+      const { token } = JSON.parse(storedUser);
+
+      const response = await axios.post(`${API_BASE_URL}/chat/media-upload`, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Media upload error:', JSON.stringify(error));
       throw error;
     }
   },

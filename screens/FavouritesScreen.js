@@ -81,7 +81,6 @@ const FavouritesScreen = () => {
         }
       />
     </View>
-    <BottomGradient theme={theme} zIndex={1}/>
     </>
   );
 };

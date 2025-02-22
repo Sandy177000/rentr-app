@@ -1,16 +1,15 @@
 import React from 'react';  
 import {LinearGradient} from 'react-native-linear-gradient';
 
-export const BottomGradient = ({theme, zIndex}) => {
+export const BottomGradient = ({theme, zIndex, children}) => {
   return (
     <LinearGradient
       colors={[
-        'transparent',
-        'transparent',
-        'transparent',
-        'transparent',
-        theme.colors.surface,
+        theme.isDark ? 'transparent' : 'rgba(255, 255, 255, 1)',
+        theme.isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
       ]}
+      start={{x: 0.5, y: 0}}
+      end={{x: 0.5, y: 0.8}}
       style={{
         position: 'absolute',
         top: 0,
@@ -20,7 +19,9 @@ export const BottomGradient = ({theme, zIndex}) => {
         zIndex: zIndex,
       }}
       pointerEvents="none"
-    />
+    >
+      {children}
+    </LinearGradient>
   );
 };
 

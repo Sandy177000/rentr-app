@@ -72,10 +72,6 @@ const MainTabs = () => {
         left: 0,
         right: 0,
         zIndex: 1000,
-        shadowColor: theme.colors.primary,
-        shadowOpacity: 1,
-        shadowRadius: 15,
-        elevation: 10,
       }}>
       <GestureHandlerRootView>
         <PanGestureHandler
@@ -92,12 +88,14 @@ const MainTabs = () => {
               style={{
                 backgroundColor: theme.colors.primary,
                 borderRadius: 300,
-                width: '95%',
+                width: '80%',
                 alignSelf: 'center',
                 height: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
+              pressColor='transparent'
               indicatorStyle={{display: 'none'}}
-              tabStyle={{flex: 1}}
             />
           </View>
         </PanGestureHandler>

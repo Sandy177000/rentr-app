@@ -46,10 +46,8 @@ const ColorInput = ({ label, value, path, onChangeColor }) => {
             {
                 backgroundColor: theme.colors.surface,
                 color: theme.colors.text.primary,
-                borderColor: theme.colors.border
             }
           ]}
-          editable={false}
           value={value}
           onChangeText={handleTextInputChange}
           placeholderTextColor={theme.colors.text.secondary}

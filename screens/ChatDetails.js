@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Image,
   RefreshControl,
   Animated,
   Alert,
@@ -21,13 +20,16 @@ import {selectCurrentUser} from '../store/authSlice';
 import {chatApi} from '../src/apis/chat';
 import io from 'socket.io-client';
 import {getBaseUrl} from '../src/apis/constants';
-import {avatar} from '../src/constants';
+import { placeholderImage} from '../src/constants';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import FastImage from 'react-native-fast-image';
+import { CustomImage } from '../src/components/CustomImage';
 
 const ChatDetails = ({route, navigation}) => {
   const theme = useTheme();
   const {chat, roomId, token} = route.params;
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(false);
   const user = useSelector(selectCurrentUser);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -36,12 +38,12 @@ const ChatDetails = ({route, navigation}) => {
   const [showModal, setShowModal] = useState(false);
   const modalHeight = useRef(new Animated.Value(0)).current;
   const [media, setMedia] = useState([]);
+  const participant = chat?.participants?.filter(
+    participant => participant.user.id !== user.id,
+  );
 
   useEffect(() => {
-    const title = chat?.participants
-      ?.filter(participant => participant.user.id !== user.id)
-      .map(participant => participant.user.firstName)
-      .join(', ');
+    let title = participant.map(p => p.user.firstName).join(', ');
     navigation.setOptions({
       title: title,
     });
@@ -49,12 +51,16 @@ const ChatDetails = ({route, navigation}) => {
 
   // Initialize socket connection
   useEffect(() => {
-    const baseUrl = getBaseUrl();
-    const newSocket = io(baseUrl, {
-      auth: {
-        token: token,
-      },
-    });
+    if (!token) return;
+    setLoading(true);
+    let newSocket;
+    try {
+      const baseUrl = getBaseUrl();
+      newSocket = io(baseUrl, {
+        auth: {
+          token: token,
+        },
+      });
 
     // Remove the emit('connection') - Socket.IO handles this automatically
     newSocket.on('connect', () => {
@@ -63,6 +69,11 @@ const ChatDetails = ({route, navigation}) => {
     });
 
     setSocket(newSocket);
+    } catch (error) {
+      console.log('error in socket', error);
+    } finally {
+      setLoading(false);
+    }
 
     // Cleanup on unmount
     return () => {
@@ -87,27 +98,53 @@ const ChatDetails = ({route, navigation}) => {
   }, [socket]);
 
   const sendMessage = async () => {
-    try{
-    if (message.trim().length > 0) {
-      // Emit message to socket server
-      const data = new FormData();
-      media.forEach((item, index) => {
-        data.append('images', {
-          uri: item.uri,
-          type: item.type || 'image/jpeg',
-          name: `${user.id}_image_${index}.jpg`,
+
+    setLoadingMessage(true);
+    let tempMedia = media;
+    let tempMessage = message;
+    setMedia([]);
+    setMessage('');
+
+    try {
+      if (tempMessage.trim().length > 0) {
+        // Emit message to socket server
+        let imageUrls = [];
+        if (tempMedia.length > 0) {
+          const mediaData = new FormData();
+          tempMedia.forEach(item => {
+            mediaData.append('images', {
+              uri: item.uri,
+              type: item.type,
+              name: item.fileName,
+            });
+          });
+          imageUrls = await chatApi.mediaUpload(mediaData);
+        }
+
+        let newMessage = {
+          content: tempMessage,
+          senderId: user.id,
+          chatRoomId: roomId,
+          media: imageUrls,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          sender: {
+            id: user.id,
+          },
+        };
+
+        socket.emit('send_message', newMessage);
+
+        await chatApi.sendMessage({
+          content: tempMessage,
+          chatRoomId: roomId,
+          media: imageUrls,
         });
-      });
-      data.append('content', message);
-      data.append('roomId', roomId);
-      // TODO: rethink this approach 
-      // sending message to backend and then socket is emitting the message
-      await chatApi.sendMessage(data);
-      setMessage('');
-      setMedia([]);
-    }
+      }
     } catch (error) {
-      console.log(error);
+      console.log('error in send message', error);
+    } finally {
+      setLoadingMessage(false);
     }
   };
 
@@ -121,81 +158,86 @@ const ChatDetails = ({route, navigation}) => {
     fetchMessages();
   }, [roomId]);
 
-  const renderMessage = ({item}) => (
-    <View
-      style={[
-        styles.message,
-        item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
-      ]}>
-      {item.sender.id !== user.id && (
-        <Image
-          source={{uri: item.sender.profileImage || avatar}}
-          style={styles.avatar}
-        />
-      )}
+  const renderMessage = ({item, index}) => {
+    return (
       <View
+        key={index}
         style={[
-          styles.messageBubble,
-          {
-            backgroundColor:
-              item.sender.id === user.id
-                ? theme.colors.primary
-                : theme.colors.background,
-          },
+          styles.message,
+          item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
         ]}>
         {item.sender.id !== user.id && (
-          <CustomText style={[{color: theme.colors.text.primary}]}>
-            {item.sender.firstName}
+          <CustomImage
+            source={item.sender.profileImage}
+            style={styles.avatar}
+            placeholder={placeholderImage}
+          />
+        )}
+        <View
+          style={[
+            styles.messageBubble,
+            {
+              backgroundColor:
+                item.sender.id === user.id
+                  ? theme.colors.primary
+                  : theme.colors.background,
+            },
+          ]}>
+          {item.sender.id !== user.id && (
+            <CustomText
+              variant="body"
+              style={[{color: theme.colors.text.primary}]}>
+              {item.sender.firstName || 'User'}
+            </CustomText>
+          )}
+          {item.media && item.media.length > 0 && (
+            <View style={{flexDirection: 'column', gap: 8, flex: 1}}>
+              {item.media.map((image, index) => (
+                <FastImage
+                  key={index}
+                  source={{uri: image}}
+                  style={styles.messageImage}
+                  resizeMode={FastImage.resizeMode.cover}
+                  onLoadStart={() => <View style={styles.messageImage} />}
+                />
+              ))}
+            </View>
+          )}
+          <CustomText
+            variant="h3"
+            style={[
+              {
+                color:
+                  item.sender.id === user.id
+                    ? '#FFFFFF'
+                    : theme.colors.text.primary,
+              },
+            ]}>
+            {item.content}
           </CustomText>
-        )}
-        {item.media && item.media.length > 0 && (
-          <View style={{flexDirection:'column', gap:8}}>
-            {item.media.map((image, index) => (
-              <View key={index} style={{borderRadius:1, borderColor:'white', width: 100, height:100}}>
-                <Image source={{uri: image}} style={styles.previewImage} />
-              </View>
-          ))}
-          </View>
-
-        )}
-        <CustomText
-          style={[
-            styles.messageText,
-            {
-              color:
-                item.sender.id === user.id
-                  ? '#FFFFFF'
-                  : theme.colors.text.primary,
-            },
-          ]}>
-          {item.content}
-        </CustomText>
-        <CustomText
-          style={[
-            styles.timestamp,
-            {
-              color:
-                item.sender.id === user.id
-                  ? 'rgba(255, 255, 255, 0.7)'
-                  : theme.colors.text.secondary,
-            },
-            item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
-          ]}>
-          {item.createdAt
-            ? new Date(item.createdAt).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-            : ''}
-        </CustomText>
+          <CustomText
+            variant="h4"
+            style={[styles.timestamp, {
+              color: item.sender.id === user.id
+                ? 'rgba(255, 255, 255, 0.7)'
+                : theme.colors.text.secondary,
+            }]}>
+            {item.createdAt
+              ? new Date(item.createdAt).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : ''}
+          </CustomText>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   // Add this function to scroll to the bottom
   const scrollToBottom = useCallback(() => {
     if (flatListRef.current && messages.length > 0) {
-      flatListRef.current.scrollToEnd({animated: true, scrollTo: 'bottom'});
+      flatListRef.current.scrollToEnd({animated: true});
     }
   }, [messages]);
 
@@ -283,7 +325,7 @@ const ChatDetails = ({route, navigation}) => {
         ]}>
         <FlatList
           ref={flatListRef}
-          style={{backgroundColor: theme.colors.surface}}
+          style={{backgroundColor: theme.colors.background}}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={fetchMessages} />
           }
@@ -292,7 +334,7 @@ const ChatDetails = ({route, navigation}) => {
           keyExtractor={item => item.id}
           contentContainerStyle={styles.messageList}
           inverted={false}
-          onContentSizeChange={scrollToBottom} // Scroll when content size changes
+          // onContentSizeChange={scrollToBottom} // Scroll when content size changes
           onLayout={scrollToBottom} // Scroll on initial layout
         />
         <Animated.View style={[styles.modalContainer, {height: modalHeight}]}>
@@ -309,7 +351,7 @@ const ChatDetails = ({route, navigation}) => {
         </Animated.View>
 
         <View style={{backgroundColor: theme.colors.background}}>
-          {media.length > 0  && (
+          {media.length > 0 && (
             <View style={styles.imageSection}>
               <ScrollView
                 style={styles.imagePreviewContainer}
@@ -317,8 +359,8 @@ const ChatDetails = ({route, navigation}) => {
                 horizontal={true}>
                 {media.map((image, index) => (
                   <View key={index} style={styles.imagePreview}>
-                    <Image
-                      source={{uri: image.uri}}
+                    <CustomImage
+                      source={image.uri}
                       style={styles.previewImage}
                     />
                     <TouchableOpacity
@@ -341,7 +383,7 @@ const ChatDetails = ({route, navigation}) => {
               {backgroundColor: theme.colors.surface},
             ]}>
             <TouchableOpacity
-              style={[styles.button, {backgroundColor: theme.colors.primary}]}
+              style={[styles.button, {backgroundColor: theme.colors.primary, marginLeft: 5}]}
               onPress={handleModal}>
               <Icon
                 name={showModal ? 'close' : 'plus'}
@@ -350,19 +392,21 @@ const ChatDetails = ({route, navigation}) => {
               />
             </TouchableOpacity>
             <TextInput
-              style={{flex: 1, marginLeft: 5}}
+              style={{flex: 1, marginLeft: 5, color: theme.colors.text.primary}}
               value={message}
               onChangeText={setMessage}
               placeholder="Message..."
               placeholderTextColor={theme.colors.text.secondary}
               multiline
             />
-            <TouchableOpacity
-              onPress={sendMessage}
-              style={[styles.button, { backgroundColor: theme.colors.primary}]}
-              disabled={message.trim().length === 0}>
-              <Icon name="send" size={15} color="#FFFFFF" />
-            </TouchableOpacity>
+            {message.trim().length > 0 && (
+              <TouchableOpacity
+                onPress={sendMessage}
+                style={[styles.button, {backgroundColor: theme.colors.primary, padding: 0}]}
+                disabled={message.trim().length === 0}>
+                {loadingMessage ? <View style={{padding: 5}}><CustomText variant="h4" style={{color: '#FFFFFF'}}>Sending...</CustomText></View> : <Icon name="send" size={15} color="#FFFFFF" />}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
@@ -389,8 +433,9 @@ const styles = StyleSheet.create({
   },
   messageBubble: {
     maxWidth: '70%',
-    padding: 12,
-    borderRadius: 16,
+    minWidth: 70,
+    padding: 5,
+    borderRadius: 12,
     marginBottom: 8,
   },
   myMessage: {
@@ -399,20 +444,18 @@ const styles = StyleSheet.create({
   theirMessage: {
     alignSelf: 'flex-start',
   },
-  messageText: {
-    fontSize: 16,
-  },
   timestamp: {
-    fontSize: 12,
     marginTop: 4,
+    alignSelf: 'flex-end',
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 6,
+    padding: 4,
     borderRadius: 30,
     margin: 8,
     width: '95%',
     maxHeight: 100,
+    alignItems: 'center',
   },
   input: {
     flex: 1,
@@ -431,7 +474,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: 40,
-    marginHorizontal: 11,
+    marginHorizontal: 12,
     gap: 8,
     flexDirection: 'column',
     alignItems: 'center',
@@ -449,6 +492,7 @@ const styles = StyleSheet.create({
     bottom: 80,
     right: 10,
     zIndex: 0,
+    borderRadius: 10,
   },
   imagePreviewContainer: {
     padding: 10,
@@ -476,7 +520,12 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
-  }
+  },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
 });
 
 export default ChatDetails;

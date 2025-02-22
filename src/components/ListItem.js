@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import CustomText from './CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useDispatch } from 'react-redux';
-import { addToFavourites, removeFromFavourites, addFavourite, removeFavourite } from '../../store/itemsSlice';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import {useDispatch} from 'react-redux';
+import {
+  addToFavourites,
+  removeFromFavourites,
+  addFavourite,
+  removeFavourite,
+} from '../../store/itemsSlice';
+import Animated, {FadeInDown} from 'react-native-reanimated';
+import {CustomImage} from './CustomImage';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 
@@ -18,12 +18,11 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
   const dispatch = useDispatch();
   const [isFavourite, setIsFavourite] = useState(item.isFavorite);
 
-
   const handleFavourite = async () => {
     const initialFavouriteState = isFavourite;
     try {
       setIsFavourite(!isFavourite);
-      if(initialFavouriteState) {
+      if (initialFavouriteState) {
         // ui update
         dispatch(removeFavourite(item));
         // update in backend
@@ -41,31 +40,25 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
   };
 
   return (
-    <Animated.View
-      entering={FadeInDown.delay(index * 1)}
-    >
-    <View
-      style={[
-        styles.itemCard,
-        {
-          backgroundColor: theme.colors.surface,
-          shadowColor: theme.colors.primary,
-        },
-      ]}>
-      <TouchableOpacity style={styles.heartIcon} onPress={handleFavourite}>
-        {isFavourite ? (
-          <Icon name="heart" size={22} color={theme.colors.primary} />
-        ) : (
-          <Icon name="heart-o" size={22} color={'#FFFFFF'} />
-        )}
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ItemDetails', {item})}>
-        <Image
-          source={{uri: item.images?.[0] || 'https://via.placeholder.com/150'}}
-          style={styles.itemImage}
-        />
-      </TouchableOpacity>
+    <Animated.View entering={FadeInDown.delay(index * 1)}>
+      <View style={styles.itemCard}>
+        <TouchableOpacity style={styles.heartIcon} onPress={handleFavourite}>
+          {isFavourite ? (
+            <Icon name="heart" size={22} color={theme.colors.primary} />
+          ) : (
+            <Icon name="heart-o" size={22} color={'#FFFFFF'} />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.imageContainer}
+          onPress={() => navigation.navigate('ItemDetails', {item})}>
+          <CustomImage
+            source={item.images?.[0]}
+            style={styles.itemImage}
+            overlay
+          />
+        </TouchableOpacity>
+      </View>
       <View style={styles.itemContent}>
         <CustomText
           style={[styles.itemTitle, {color: theme.colors.text.primary}]}
@@ -77,7 +70,6 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
           ${item.price}/day
         </CustomText>
       </View>
-    </View>
     </Animated.View>
   );
 };
@@ -105,12 +97,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
   },
+  imageContainer: {
+    width: '100%',
+    height: 200,
+    position: 'relative',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   itemImage: {
     width: '100%',
-    height: 150,
+    height: '100%',
   },
   itemContent: {
-    padding: 12,
+    paddingTop: 10,
   },
   itemTitle: {
     fontWeight: '600',

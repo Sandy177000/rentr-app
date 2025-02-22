@@ -20,6 +20,7 @@ import {BottomGradient} from '../src/components/BottomGradient';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../store/authSlice';
 import { avatar } from '../src/constants';
+import Footer from '../src/components/Footer';
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -68,12 +69,11 @@ export const HomeScreen = () => {
   };
 
   return (
-    <>
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         {/* <View style={{padding: 16, flexDirection: 'row', alignItems: 'center', gap: 10}}>
            <Image source={{uri: user.profileImage || avatar}} style={{width: 40, height: 40, borderRadius: 20}} />
-           <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
+           <CustomText variant="h3" style={[{color: theme.colors.text.primary}]}>
             Hello, {user.firstName}
            </CustomText>
         </View> */}
@@ -117,10 +117,9 @@ export const HomeScreen = () => {
             data={items.filter(item => item.category === 'Electronics')}
             renderItem={renderRecommendation}
           />
+        <Footer/>
         </ScrollView>
       </View>
-      <BottomGradient theme={theme} zIndex={1} />
-    </>
   );
 };
 

@@ -101,7 +101,7 @@ export const MyListingsScreen = () => {
           <ListItemForm setVisible={setVisible} />
         </CustomBottomSheet>
       )}
-      {!visible && <BottomGradient theme={theme} zIndex={1} />}
+      {/* {!visible && <BottomGradient theme={theme} zIndex={1} />} */}
     </>
   );
 };
