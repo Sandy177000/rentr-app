@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { itemsApi } from './../src/apis/item';
+import { itemApi } from './../src/apis/item';
 import { userApi } from './../src/apis/user';
 import _ from 'lodash';
 
@@ -14,7 +14,7 @@ const initialState = {
 // all items except user's items
 export const getItems = createAsyncThunk('items/getItems', async (_, { rejectWithValue }) => {
   try {
-    const response = await itemsApi.getItems();
+    const response = await itemApi.getItems();
     return response;
   } catch (error) {
     return rejectWithValue(error.message);
@@ -64,13 +64,13 @@ const itemsSlice = createSlice({
     },
     addFavourite: (state, action) => {
        let payloadItem = action.payload;
-       payloadItem.isFavorite = true;
+       _.set(payloadItem, 'isFavorite', true);
        let newFavourites = _.uniqBy([...state.favourites, payloadItem], 'id');
        state.favourites = newFavourites;
     },
     removeFavourite: (state, action) => {
       let payloadItem = action.payload;
-      payloadItem.isFavorite = false;
+      _.set(payloadItem, 'isFavorite', false);
       let newFavourites = _.uniqBy(state.favourites.filter(item => item.id !== payloadItem.id), 'id');
       state.favourites = newFavourites;
     },

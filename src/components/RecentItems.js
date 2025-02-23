@@ -3,6 +3,8 @@ import React, {useLayoutEffect, useState} from 'react';
 import CustomText from './CustomText';
 import {ScrollView} from 'react-native-gesture-handler';
 import {itemApi} from '../apis/item';
+import ListItem from './ListItem';
+import { useNavigation } from '@react-navigation/native';
 
 const ItemCard = ({title, price, theme, images}) => (
   <View style={[styles.itemCard, {backgroundColor: theme.colors.background}]}>
@@ -23,9 +25,10 @@ const ItemCard = ({title, price, theme, images}) => (
 
 const RecentItems = ({theme, type, title, limit}) => {
   const [recentItems, setRecentItems] = useState([]);
+  const navigation = useNavigation();
 
   useLayoutEffect(() => {
-    switch(type){ 
+    switch(type){
       case 'listings':
         const fetchRecentItems = async () => {
           const listings = await itemApi.getUserItems();
@@ -47,13 +50,13 @@ const RecentItems = ({theme, type, title, limit}) => {
       </CustomText>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View style={styles.recentItemsContainer}>
-          {recentItems.map(item => (
-            <ItemCard
+          {recentItems.map((item, index) => (
+            <ListItem
               key={item.id}
-              title={item.title}
-              price={item.price}
+              item={item}
               theme={theme}
-              images={item.images}
+              index={index}
+              navigation={navigation}
             />
           ))}
           </View>

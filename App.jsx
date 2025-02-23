@@ -15,7 +15,7 @@ import MyRentalsScreen from './screens/MyRentalsScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import {useWindowDimensions} from 'react-native';
+import {StyleSheet, useWindowDimensions} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {useTheme} from './src/theme/ThemeProvider';
@@ -85,16 +85,10 @@ const MainTabs = () => {
           <View>
             <TabBar
               {...props}
-              style={{
+              style={[styles.tabBar, {
                 backgroundColor: theme.colors.primary,
-                borderRadius: 300,
-                width: '80%',
-                alignSelf: 'center',
-                height: 50,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              pressColor='transparent'
+              }]}
+              pressColor="transparent"
               indicatorStyle={{display: 'none'}}
             />
           </View>
@@ -223,3 +217,13 @@ const Root = () => {
 };
 
 export default Root;
+
+const styles = StyleSheet.create({
+  tabBar: {
+    borderRadius: 300,
+    width: '80%',
+    alignSelf: 'center',
+    height: 50,
+    alignItems: 'center',
+  },
+});

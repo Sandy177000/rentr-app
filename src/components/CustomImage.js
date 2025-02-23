@@ -4,7 +4,7 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 import { placeholderImage } from '../constants';
 
-export const CustomImage = ({source, style, overlay, placeholder}) => {
+export const CustomImage = ({source, style, overlay, placeholder, showLoading = true}) => {
   const [imageLoading, setImageLoading] = useState(true);
   const theme = useTheme();
   return (
@@ -17,7 +17,7 @@ export const CustomImage = ({source, style, overlay, placeholder}) => {
         onLoadEnd={() => setImageLoading(false)}
         onError={() => setImageLoading(false)}
       />
-      {imageLoading && (
+      {showLoading && imageLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>

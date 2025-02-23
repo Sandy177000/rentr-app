@@ -91,7 +91,7 @@ export default function ThemeScreen() {
         contentContainerStyle={styles.contentContainer}>
         <View style={styles.headerContainer}>
           <TouchableOpacity
-            style={[styles.button, styles.shadow, {backgroundColor: theme.colors.primary}]}
+            style={[styles.button, {backgroundColor: theme.colors.primary}]}
             onPress={() => theme.setCustomTheme({colors: theme.colors, fonts: theme.fonts})}>
             <Icon name="refresh" size={20} color={'#ffffff'} />
             <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
@@ -100,7 +100,7 @@ export default function ThemeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.shadow, {backgroundColor: theme.colors.primary}]}
+            style={[styles.button, {backgroundColor: theme.colors.primary}]}
             onPress={handleApplyTheme}>
             <Icon name="save" size={20} color={'#ffffff'} />
             <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
@@ -109,7 +109,7 @@ export default function ThemeScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.themeToggleContainer, styles.shadow, {backgroundColor: theme.colors.surface}]}>
+        <View style={[styles.themeToggleContainer, {backgroundColor: theme.colors.surface}]}>
           <Icon
             name={theme.isDark ? 'moon-o' : 'sun-o'}
             size={24}
@@ -128,7 +128,7 @@ export default function ThemeScreen() {
 
         <View style={styles.sectionsContainer}>
           <TouchableOpacity
-            style={[styles.sectionCard, styles.shadow, {backgroundColor: theme.colors.surface}]}
+            style={[styles.sectionCard, {backgroundColor: theme.colors.surface}]}
             onPress={() => setColorsVisible(true)}>
             <View style={styles.sectionHeader}>
               <Icon name="paint-brush" size={15} color={theme.colors.primary} />
@@ -142,7 +142,7 @@ export default function ThemeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.sectionCard, styles.shadow, {backgroundColor: theme.colors.surface}]}
+            style={[styles.sectionCard, {backgroundColor: theme.colors.surface}]}
             onPress={() => setFontsVisible(true)}>
             <View style={styles.sectionHeader}>
               <Icon name="font" size={15} color={theme.colors.primary} />
@@ -271,13 +271,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   fontPreview: {
-    padding: 10,
-  },
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    padding: 1,
   },
 });

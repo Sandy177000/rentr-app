@@ -10,6 +10,7 @@ import {
   Alert,
   Platform,
   Linking,
+  Dimensions,
 } from 'react-native';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useTheme} from '../src/theme/ThemeProvider';
@@ -24,10 +25,11 @@ import { placeholderImage} from '../src/constants';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
 import { CustomImage } from '../src/components/CustomImage';
+import Carousel from 'react-native-reanimated-carousel';
 
 const ChatDetails = ({route, navigation}) => {
   const theme = useTheme();
-  const {chat, roomId, token} = route.params;
+  const {chat, roomId, token, item} = route.params;
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(false);
   const user = useSelector(selectCurrentUser);
@@ -97,6 +99,50 @@ const ChatDetails = ({route, navigation}) => {
     };
   }, [socket]);
 
+  //  effect to handle initial message when coming from Contact Owner
+  useEffect(() => {
+    const sendInitialMessage = async () => {
+      if (item && !loading) {  // Only send if we have an item and loading is complete
+        try {
+          let imageUrls = item.images || [];  // Use the item's images
+
+          const content = `I am interested in this item for rent.Can we connect to discuss the details.
+          Item Name: ${item.name}
+          Item Price: ${item.price}
+          Item Description: ${item.description}
+          `;
+          
+          let newMessage = {
+            content: content,
+            senderId: user.id,
+            chatRoomId: roomId,
+            media: imageUrls.length > 0 ? [imageUrls[0]] : [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            sender: {
+              id: user.id,
+            },
+          };
+
+          socket.emit('send_message', newMessage);
+
+          await chatApi.sendMessage({
+            content: content,
+            chatRoomId: roomId,
+            media: imageUrls,
+          });
+
+        } catch (error) {
+          console.log('error sending initial message', error);
+        }
+      }
+    };
+
+    if (item) {  // Only run this if we came from Contact Owner
+      sendInitialMessage();
+    }
+  }, [item, loading, roomId, user.id, socket]);
+
   const sendMessage = async () => {
 
     setLoadingMessage(true);
@@ -134,6 +180,7 @@ const ChatDetails = ({route, navigation}) => {
         };
 
         socket.emit('send_message', newMessage);
+        console.log('newMessage', newMessage);
 
         await chatApi.sendMessage({
           content: tempMessage,
@@ -161,7 +208,7 @@ const ChatDetails = ({route, navigation}) => {
   const renderMessage = ({item, index}) => {
     return (
       <View
-        key={index}
+        key={`${index} ${item.id}`}
         style={[
           styles.message,
           item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
@@ -171,6 +218,7 @@ const ChatDetails = ({route, navigation}) => {
             source={item.sender.profileImage}
             style={styles.avatar}
             placeholder={placeholderImage}
+            showLoading={false}
           />
         )}
         <View
@@ -191,16 +239,27 @@ const ChatDetails = ({route, navigation}) => {
             </CustomText>
           )}
           {item.media && item.media.length > 0 && (
-            <View style={{flexDirection: 'column', gap: 8, flex: 1}}>
-              {item.media.map((image, index) => (
+            <View style={{width: 250}}>
+              {item.media.length === 1 ? (
                 <FastImage
-                  key={index}
-                  source={{uri: image}}
+                  source={{uri: item.media[0]}}
                   style={styles.messageImage}
                   resizeMode={FastImage.resizeMode.cover}
                   onLoadStart={() => <View style={styles.messageImage} />}
                 />
-              ))}
+              ) : (
+                // render a grid of 2 x n images
+                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                  {item.media.map((image, index) => (
+                    <FastImage
+                      key={index}
+                      source={{uri: image}}
+                      style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
+                      resizeMode={FastImage.resizeMode.cover}
+                    />
+                  ))}
+                </View>
+              )}
             </View>
           )}
           <CustomText
@@ -432,7 +491,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   messageBubble: {
-    maxWidth: '70%',
+    maxWidth: 270,
     minWidth: 70,
     padding: 5,
     borderRadius: 12,
@@ -474,7 +533,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: 40,
-    marginHorizontal: 12,
+    marginHorizontal: 14,
     gap: 8,
     flexDirection: 'column',
     alignItems: 'center',
@@ -522,8 +581,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   messageImage: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
     borderRadius: 10,
   },
 });

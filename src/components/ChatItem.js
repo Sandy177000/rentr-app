@@ -18,7 +18,7 @@ const ChatItem = ({item, token, index}) => {
 
   return (
     <TouchableOpacity
-      key={item.id}
+      key={`${item.participants[0].user.id}`}
       style={[styles.chatItem, {backgroundColor: theme.colors.surface}]}
       onPress={() =>
         navigation.navigate('ChatDetails', {
@@ -34,6 +34,7 @@ const ChatItem = ({item, token, index}) => {
               <CustomImage
                 source={participant.user.profileImage || avatar}
                 style={styles.avatar}
+                showLoading={false}
               />
             </View>
           ))}

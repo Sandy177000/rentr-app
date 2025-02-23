@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList,
   useWindowDimensions,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
@@ -13,6 +12,7 @@ import CustomText from '../src/components/CustomText';
 import {useSelector} from 'react-redux';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import { chatApi } from '../src/apis/chat';
+import Carousel from 'react-native-reanimated-carousel';
 
 export const ItemDetailsScreen = ({route, navigation}) => {
   const token = useSelector(selectCurrentToken);
@@ -38,15 +38,8 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     const {ownerId} = item;
     if(ownerId) {
       const chatRoom = await chatApi.createChatRoom(ownerId);
-      navigation.navigate('ChatDetails', {chat: chatRoom, roomId: chatRoom.id, token: token});
+      navigation.navigate('ChatDetails', {chat: chatRoom, roomId: chatRoom.id, token: token, item: item});
     }
-  };
-
-  const onScroll = event => {
-    const slideSize = event.nativeEvent.layoutMeasurement.width;
-    const index = event.nativeEvent.contentOffset.x / slideSize;
-    const roundIndex = Math.round(index);
-    setActiveIndex(roundIndex);
   };
 
   const renderPaginationDots = () => {
@@ -70,23 +63,19 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.carouselContainer}>
-        <FlatList
-          data={item.images}
+        <Carousel
+          loop
+          width={width - 40}
+          height={300}
+          data={item.images || []}
+          onSnapToItem={setActiveIndex}
           renderItem={({item: image}) => (
             <Image
               source={{uri: image}}
-              style={[styles.image, {width}]}
+              style={[styles.image, {width: width - 40}]}
               resizeMode="cover"
-              loadingIndicatorSource={''}
             />
           )}
-          keyExtractor={(_, index) => index.toString()}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          ItemSeparatorComponent={() => <View style={{width: 10}} />}
         />
         {item.images?.length > 1 && renderPaginationDots()}
       </View>
@@ -134,7 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    height: 'auto',
+    height: 300,
     borderRadius: 12,
   },
   paginationDots: {
