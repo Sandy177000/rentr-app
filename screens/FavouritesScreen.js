@@ -8,7 +8,6 @@ import CustomText from '../src/components/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { BottomGradient } from '../src/components/BottomGradient';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();

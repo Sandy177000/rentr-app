@@ -63,13 +63,13 @@ const itemsSlice = createSlice({
       state.favourites = action.payload;
     },
     addFavourite: (state, action) => {
-       let payloadItem = action.payload;
+       let payloadItem = {...action.payload};
        _.set(payloadItem, 'isFavorite', true);
        let newFavourites = _.uniqBy([...state.favourites, payloadItem], 'id');
        state.favourites = newFavourites;
     },
     removeFavourite: (state, action) => {
-      let payloadItem = action.payload;
+      let payloadItem = {...action.payload};
       _.set(payloadItem, 'isFavorite', false);
       let newFavourites = _.uniqBy(state.favourites.filter(item => item.id !== payloadItem.id), 'id');
       state.favourites = newFavourites;

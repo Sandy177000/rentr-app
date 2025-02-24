@@ -32,6 +32,7 @@ import { Image } from 'react-native';
 import { avatar } from './src/constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from './store/authSlice';
+import { CustomImage } from './src/components/CustomImage';
 const Stack = createStackNavigator();
 
 const queryClient = new QueryClient();
@@ -191,7 +192,33 @@ const App = () => {
           />
           <Stack.Screen
             name="ChatDetails"
-            options={{title: 'Chat'}}
+            options={({ route }) => ({
+              title: route.params?.name || 'Chat',
+              headerTitleAlign: 'left',
+              headerLeft: (props) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  {props.canGoBack && props.onPress && (
+                    <Icon 
+                      name="angle-left" 
+                      size={25} 
+                      style={{ marginLeft: 10 }}
+                      onPress={props.onPress}
+                      color={props.tintColor}
+                    />
+                  )}
+                  <CustomImage 
+                    source={ route.params?.profileImage || avatar }
+                    style={{
+                      width: 35,
+                      height: 35,
+                      borderRadius: 17.5,
+                      marginLeft: 15,
+                      marginRight: 8
+                    }}
+                  />
+                </View>
+              )
+            })}
             component={ChatDetails}
           />
           <Stack.Screen

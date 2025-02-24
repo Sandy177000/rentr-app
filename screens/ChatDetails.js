@@ -21,10 +21,9 @@ import {selectCurrentUser} from '../store/authSlice';
 import {chatApi} from '../src/apis/chat';
 import io from 'socket.io-client';
 import {getBaseUrl} from '../src/apis/constants';
-import { placeholderImage} from '../src/constants';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
-import { CustomImage } from '../src/components/CustomImage';
+import {CustomImage} from '../src/components/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
 
 const ChatDetails = ({route, navigation}) => {
@@ -43,6 +42,9 @@ const ChatDetails = ({route, navigation}) => {
   const participant = chat?.participants?.filter(
     participant => participant.user.id !== user.id,
   );
+  const [selectedImages, setSelectedImages] = useState(null);
+  const [showImageCarousel, setShowImageCarousel] = useState(false);
+  const width = Dimensions.get('window').width;
 
   useEffect(() => {
     let title = participant.map(p => p.user.firstName).join(', ');
@@ -64,13 +66,13 @@ const ChatDetails = ({route, navigation}) => {
         },
       });
 
-    // Remove the emit('connection') - Socket.IO handles this automatically
-    newSocket.on('connect', () => {
-      console.log('Connected to socket');
-      newSocket.emit('join_room', roomId);
-    });
+      // Remove the emit('connection') - Socket.IO handles this automatically
+      newSocket.on('connect', () => {
+        console.log('Connected to socket');
+        newSocket.emit('join_room', roomId);
+      });
 
-    setSocket(newSocket);
+      setSocket(newSocket);
     } catch (error) {
       console.log('error in socket', error);
     } finally {
@@ -102,16 +104,17 @@ const ChatDetails = ({route, navigation}) => {
   //  effect to handle initial message when coming from Contact Owner
   useEffect(() => {
     const sendInitialMessage = async () => {
-      if (item && !loading) {  // Only send if we have an item and loading is complete
+      if (item && !loading) {
+        // Only send if we have an item and loading is complete
         try {
-          let imageUrls = item.images || [];  // Use the item's images
+          let imageUrls = item.images || []; // Use the item's images
 
           const content = `I am interested in this item for rent.Can we connect to discuss the details.
           Item Name: ${item.name}
           Item Price: ${item.price}
           Item Description: ${item.description}
           `;
-          
+
           let newMessage = {
             content: content,
             senderId: user.id,
@@ -131,20 +134,19 @@ const ChatDetails = ({route, navigation}) => {
             chatRoomId: roomId,
             media: imageUrls,
           });
-
         } catch (error) {
           console.log('error sending initial message', error);
         }
       }
     };
 
-    if (item) {  // Only run this if we came from Contact Owner
+    if (item) {
+      // Only run this if we came from Contact Owner
       sendInitialMessage();
     }
   }, [item, loading, roomId, user.id, socket]);
 
   const sendMessage = async () => {
-
     setLoadingMessage(true);
     let tempMedia = media;
     let tempMessage = message;
@@ -213,14 +215,6 @@ const ChatDetails = ({route, navigation}) => {
           styles.message,
           item.sender.id === user.id ? styles.myMessage : styles.theirMessage,
         ]}>
-        {item.sender.id !== user.id && (
-          <CustomImage
-            source={item.sender.profileImage}
-            style={styles.avatar}
-            placeholder={placeholderImage}
-            showLoading={false}
-          />
-        )}
         <View
           style={[
             styles.messageBubble,
@@ -231,35 +225,60 @@ const ChatDetails = ({route, navigation}) => {
                   : theme.colors.background,
             },
           ]}>
-          {item.sender.id !== user.id && (
-            <CustomText
-              variant="body"
-              style={[{color: theme.colors.text.primary}]}>
-              {item.sender.firstName || 'User'}
-            </CustomText>
-          )}
           {item.media && item.media.length > 0 && (
-            <View style={{width: 250}}>
-              {item.media.length === 1 ? (
-                <FastImage
-                  source={{uri: item.media[0]}}
-                  style={styles.messageImage}
-                  resizeMode={FastImage.resizeMode.cover}
-                  onLoadStart={() => <View style={styles.messageImage} />}
-                />
-              ) : (
-                // render a grid of 2 x n images
-                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  {item.media.map((image, index) => (
-                    <FastImage
+            <View
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                padding: 3,
+                borderRadius: 10,
+              }}>
+              <View style={{width: 250}}>
+                {item.media.length <= 3 ? (
+                  item.media.map((image, index) => (
+                    <TouchableOpacity
                       key={index}
+                      onPress={() => {
+                        setSelectedImages(item.media);
+                      setShowImageCarousel(true);
+                    }}>
+                    <FastImage
                       source={{uri: image}}
-                      style={{width: 120, height: 120, borderRadius: 10, margin: 2}}
+                      style={[styles.messageImage, {marginBottom: 5}]}
                       resizeMode={FastImage.resizeMode.cover}
+                      onLoadStart={() => <View style={styles.messageImage} />}
                     />
-                  ))}
-                </View>
-              )}
+                  </TouchableOpacity>))
+                ) : (
+                  <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    {item.media.slice(0, 4).map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          setSelectedImages(item.media);
+                          setShowImageCarousel(true);
+                        }}>
+                        <FastImage
+                          source={{uri: image}}
+                          style={{
+                            width: 120,
+                            height: 120,
+                            borderRadius: 10,
+                            margin: 2,
+                          }}
+                          resizeMode={FastImage.resizeMode.cover}
+                        />
+                        {index === 3 && item.media.length > 4 && (
+                          <View style={styles.imageCountOverlay}>
+                            <CustomText style={styles.imageCountText}>
+                              +{item.media.length - 4}
+                            </CustomText>
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </View>
             </View>
           )}
           <CustomText
@@ -270,17 +289,22 @@ const ChatDetails = ({route, navigation}) => {
                   item.sender.id === user.id
                     ? '#FFFFFF'
                     : theme.colors.text.primary,
+                marginLeft: 5,
               },
             ]}>
             {item.content}
           </CustomText>
           <CustomText
             variant="h4"
-            style={[styles.timestamp, {
-              color: item.sender.id === user.id
-                ? 'rgba(255, 255, 255, 0.7)'
-                : theme.colors.text.secondary,
-            }]}>
+            style={[
+              styles.timestamp,
+              {
+                color:
+                  item.sender.id === user.id
+                    ? 'rgba(255, 255, 255, 0.7)'
+                    : theme.colors.text.secondary,
+              },
+            ]}>
             {item.createdAt
               ? new Date(item.createdAt).toLocaleTimeString([], {
                   hour: '2-digit',
@@ -384,7 +408,7 @@ const ChatDetails = ({route, navigation}) => {
         ]}>
         <FlatList
           ref={flatListRef}
-          style={{backgroundColor: theme.colors.background}}
+          style={{backgroundColor: theme.colors.surface}}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={fetchMessages} />
           }
@@ -442,7 +466,10 @@ const ChatDetails = ({route, navigation}) => {
               {backgroundColor: theme.colors.surface},
             ]}>
             <TouchableOpacity
-              style={[styles.button, {backgroundColor: theme.colors.primary, marginLeft: 5}]}
+              style={[
+                styles.button,
+                {backgroundColor: theme.colors.primary, marginLeft: 5},
+              ]}
               onPress={handleModal}>
               <Icon
                 name={showModal ? 'close' : 'plus'}
@@ -461,14 +488,47 @@ const ChatDetails = ({route, navigation}) => {
             {message.trim().length > 0 && (
               <TouchableOpacity
                 onPress={sendMessage}
-                style={[styles.button, {backgroundColor: theme.colors.primary, padding: 0}]}
+                style={[
+                  styles.button,
+                  {backgroundColor: theme.colors.primary, padding: 0},
+                ]}
                 disabled={message.trim().length === 0}>
-                {loadingMessage ? <View style={{padding: 5}}><CustomText variant="h4" style={{color: '#FFFFFF'}}>Sending...</CustomText></View> : <Icon name="send" size={15} color="#FFFFFF" />}
+                {loadingMessage ? (
+                  <View style={{padding: 5}}>
+                    <CustomText variant="h4" style={{color: '#FFFFFF'}}>
+                      Sending...
+                    </CustomText>
+                  </View>
+                ) : (
+                  <Icon name="send" size={15} color="#FFFFFF" />
+                )}
               </TouchableOpacity>
             )}
           </View>
         </View>
       </View>
+      {showImageCarousel && selectedImages && (
+        <View style={styles.carouselModal}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setShowImageCarousel(false)}>
+            <Icon name="close" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Carousel
+            loop
+            width={width}
+            height={width}
+            data={selectedImages}
+            renderItem={({item}) => (
+              <FastImage
+                source={{uri: item}}
+                style={{width: width, height: width}}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+            )}
+          />
+        </View>
+      )}
     </>
   );
 };
@@ -584,6 +644,40 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 10,
+  },
+  imageCountOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageCountText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  carouselModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1001,
+    padding: 10,
   },
 });
 

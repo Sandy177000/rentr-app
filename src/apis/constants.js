@@ -1,6 +1,6 @@
 export const getBaseUrl = () => {
   // return 'http://172.16.16.248:4000'
-  return 'http://192.168.1.11:4000';
+  return 'http://192.168.1.20:4000';
   // return 'https://rentr-backend.onrender.com';
 };
 

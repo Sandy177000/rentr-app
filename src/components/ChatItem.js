@@ -25,6 +25,7 @@ const ChatItem = ({item, token, index}) => {
           chat: item,
           roomId: item.id,
           token: token,
+          profileImage: participants[0]?.user?.profileImage,
         })
       }>
       <View style={styles.chatContent}>
@@ -38,16 +39,18 @@ const ChatItem = ({item, token, index}) => {
               />
             </View>
           ))}
-          {participants.map(participant => (
+         
+        </View>
+        <View style={styles.chatFooter}>
+        {participants.map(participant => (
             <CustomText
-              style={{color: theme.colors.text.primary, fontWeight: 'bold'}}>
+              variant="h3"
+              style={{color: theme.colors.text.primary, fontWeight: 'bold', marginTop: 5}}>
               {participant.user.firstName}
             </CustomText>
           ))}
-        </View>
-        <View style={styles.chatFooter}>
           <CustomText
-            variant="h4"
+            variant="body"
             style={{color: theme.colors.text.secondary}}
             numberOfLines={1}
           >
@@ -61,31 +64,24 @@ const ChatItem = ({item, token, index}) => {
 
 const styles = StyleSheet.create({
   chatItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
+    padding: 13,
     borderRadius: 16,
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 25,
-    marginRight: 10,
   },
   chatContent: {
-    flex: 1,
+    flexDirection: 'row',
   },
   chatHeader: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center',
   },
   chatName: {
     fontWeight: 'bold',
   },
   chatFooter: {
-    flexDirection: 'row',
-    marginLeft: 60,
+    marginLeft: 13,
   },
   unreadBadge: {
     paddingHorizontal: 8,

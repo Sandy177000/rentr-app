@@ -51,6 +51,7 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.imageContainer}
+          activeOpacity={0.8}
           onPress={() => navigation.navigate('ItemDetails', {item})}>
           <CustomImage
             source={item.images?.[0]}
