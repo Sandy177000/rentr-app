@@ -32,9 +32,11 @@ export const useLogin = () => {
         navigation.navigate('MainTabs');
       } else {
         dispatch(setError('Login failed'));
+        throw new Error('Login failed');
       }
     } catch (err) {
       dispatch(setError('Login error'));
+      throw new Error('Login error');
     } finally {
       setLoading(false);
     }

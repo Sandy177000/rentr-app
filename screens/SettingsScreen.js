@@ -5,7 +5,7 @@ import { useTheme } from '../src/theme/ThemeProvider';
 import { useNavigation } from '@react-navigation/native';
 import CustomText from '../src/components/common/CustomText';
 import CustomButton from '../src/components/common/CustomButton';
-import { colors } from '../src/constants';
+import { colors } from '../src/theme/theme';
 import globalStyles from '../src/theme/global.styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';

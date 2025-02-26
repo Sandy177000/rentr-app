@@ -24,8 +24,9 @@ export const HorizontalListSection = ({title, data, renderItem}) => {
             }}>
             <CustomText
               style={{color: theme.colors.text.primary, marginLeft: 10}}
-              variant="body">
-              {title}
+              variant="h4"
+              bold={900}>
+              {title?.toUpperCase()}
             </CustomText>
           </View>
           <FlatList

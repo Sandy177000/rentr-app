@@ -71,11 +71,11 @@ const useChatMessages = (roomId, token, user, item) => {
         try {
           let imageUrls = item.images || [];
 
-          const content = `I am interested in this item for rent.Can we connect to discuss the details.
-          Item Name: ${item.name}
-          Item Price: ${item.price}
-          Item Description: ${item.description}
-          `;
+          const content = `I am interested in this item for rent. Can we connect to discuss the details?
+          Item Details:
+          • Name: ${item.name}
+          • Price: ${item.price}
+          • Description: ${item.description}`;
 
           let newMessage = {
             content: content,

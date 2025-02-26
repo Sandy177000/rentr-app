@@ -12,7 +12,7 @@ import CustomText from '../src/components/common/CustomText';
 import {useRegister} from '../src/hooks/auth/useRegister';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import CustomButton from '../src/components/common/CustomButton';
-import {colors} from '../src/constants';
+import {colors} from '../src/theme/theme';
 import { registerFormInputFields } from '../src/utils/form/registeration';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';

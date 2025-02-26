@@ -13,7 +13,7 @@ import {useLogin} from '../src/hooks/auth/useLogin';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import CustomButton from '../src/components/common/CustomButton';
-import {colors} from '../src/constants';
+import {colors} from '../src/theme/theme';
 import Toast from 'react-native-toast-message';
 
 export const LoginScreen = () => {

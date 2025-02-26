@@ -11,7 +11,7 @@ const CustomTextInputField = ({ label, value, onChangeText, placeholder, secureT
     <View style={{gap: 5}}>
       {label && <CustomText variant="h4" >{label}</CustomText>}
       <TextInput
-        style={[styles.input, {backgroundColor: theme.colors.surface}]}
+        style={[styles.input, {backgroundColor: theme.colors.surface, color: theme.colors.text.primary}]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}

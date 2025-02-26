@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/common/CustomText';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import { chatApi } from '../src/apis/chat';
 import Carousel from 'react-native-reanimated-carousel';
-
+import { colors } from '../src/theme/theme';
+import CustomButton from '../src/components/common/CustomButton';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { addFavourite, addToFavourites, removeFavourite, removeFromFavourites } from '../store/itemsSlice';
 export const ItemDetailsScreen = ({route, navigation}) => {
   const token = useSelector(selectCurrentToken);
   const theme = useTheme();
@@ -21,6 +24,8 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
+  const [isFavourite, setIsFavourite] = useState(false);
+  const dispatch = useDispatch();
 
   const handleRent = () => {
     // Implement rental logic
@@ -59,10 +64,34 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     );
   };
 
+  const handleFavourite = async () => {
+    const initialFavouriteState = isFavourite;
+    try {
+      setIsFavourite(!isFavourite);
+      if (initialFavouriteState) {
+        dispatch(removeFavourite(item));
+        await dispatch(removeFromFavourites(item.id)).unwrap();
+      } else {
+        dispatch(addFavourite(item));
+        await dispatch(addToFavourites(item.id)).unwrap();
+      }
+    } catch (error) {
+      setIsFavourite(initialFavouriteState);
+      console.log('error in handleFavourite', error);
+    }
+  };
+
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.carouselContainer}>
+        <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
+          {isFavourite ? (
+            <Icon name="heart" size={22} color={theme.colors.primary} />
+          ) : (
+            <Icon name="heart-o" size={22} color={colors.white} />
+          )}
+        </CustomButton>
         <Carousel
           loop
           width={width - 40}
@@ -94,7 +123,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         <TouchableOpacity
           style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
           onPress={handleRent}>
-          <CustomText style={{color: '#FFFFFF', fontWeight: '600'}}>
+          <CustomText variant="h4" style={{color: colors.white, fontWeight: '600'}}>
             Rent Now
           </CustomText>
         </TouchableOpacity>
@@ -102,7 +131,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         <TouchableOpacity
           style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
           onPress={handleContact}>
-          <CustomText style={{color: '#FFFFFF', fontWeight: '600'}}>
+          <CustomText variant="h4" style={{color: colors.white, fontWeight: '600'}}>
             Contact Owner
           </CustomText>
         </TouchableOpacity>
@@ -115,6 +144,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+   heartIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1000,
   },
   carouselContainer: {
     position: 'relative',

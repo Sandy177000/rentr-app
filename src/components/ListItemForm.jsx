@@ -23,7 +23,7 @@ import Divider from './Divider';
 import CustomButton from './common/CustomButton';
 import globalStyles from '../theme/global.styles';
 import {createItemFormConfig} from '../utils/form/createItem';
-import {colors} from '../constants';
+import {colors} from '../theme/theme';
 import Toast from 'react-native-toast-message';
 
 export const ListItemForm = ({setVisible}) => {
@@ -67,7 +67,7 @@ export const ListItemForm = ({setVisible}) => {
           Toast.show({
             type: 'info',
             text1: 'Camera Permission Required',
-            text2: 'Please enable camera access in your device settings.',
+            text2: 'Please click on this to enable camera access.',
             onPress: () => {
               if (Platform.OS === 'ios') {
                 Linking.openURL('app-settings:');

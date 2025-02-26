@@ -26,6 +26,7 @@ import {CustomImage} from '../src/components/common/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
 import { formatDate, renderDateSeparator } from '../src/utils/utils';
 import useChatMessages from '../src/hooks/chat/useChatMessages';
+import Markdown from 'react-native-markdown-display';
 
 const ChatDetails = ({route, navigation}) => {
   const theme = useTheme();
@@ -210,19 +211,35 @@ const ChatDetails = ({route, navigation}) => {
                 </View>
               </View>
             )}
-            <CustomText
-              variant="h3"
-              style={[
-                {
-                  color:
-                    messageItem.sender.id === user.id
-                      ? '#FFFFFF'
-                      : theme.colors.text.primary,
+            <Markdown
+              style={{
+                body: {
+                  color: messageItem.sender.id === user.id 
+                    ? '#FFFFFF' 
+                    : theme.colors.text.primary,
+                  fontSize: 14,
                   marginLeft: 5,
                 },
-              ]}>
+                // Style for links
+                link: {
+                  color: theme.colors.primary,
+                  textDecorationLine: 'underline',
+                },
+                // Style for code blocks
+                code_block: {
+                  backgroundColor: theme.colors.surface,
+                  padding: 8,
+                  borderRadius: 4,
+                },
+                // Style for inline code
+                code_inline: {
+                  backgroundColor: theme.colors.surface,
+                  padding: 4,
+                  borderRadius: 2,
+                }
+              }}>
               {messageItem.content}
-            </CustomText>
+            </Markdown>
             <CustomText
               variant="h4"
               style={[

@@ -54,7 +54,7 @@ const ChatItem = ({item, token, index}) => {
             style={{color: theme.colors.text.secondary}}
             numberOfLines={1}
           >
-            {item.messages[0].content}
+            {item.messages[0].content.length > 50 ? item.messages[0].content.slice(0, 50) + '...' : item.messages[0].content}
           </CustomText>
         </View>
       </View>

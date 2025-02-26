@@ -4,11 +4,7 @@ import React from 'react'
 export default function Footer() {
   return (
     <View style={styles.container}>
-      <Text>Made</Text>
-      <Text>with</Text>
-      <Text>❤️</Text>
-      <Text>by</Text>
-      <Text>Sandesh</Text>
+     
     </View>
   )
 }

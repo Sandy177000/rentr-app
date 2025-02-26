@@ -1,15 +1,14 @@
-import {View, Text, StyleSheet, Image, ActivityIndicator} from 'react-native';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import CustomText from './common/CustomText';
-import {ScrollView} from 'react-native-gesture-handler';
 import {itemApi} from '../apis/item';
 import ListItem from './ListItem';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {HorizontalListSection} from './common/horizontal.list.section/HorizontalListSection';
 
 const RecentItems = ({theme, type, title, limit}) => {
   const [recentItems, setRecentItems] = useState([]);
   const navigation = useNavigation();
-
 
   const fetchRecentItems = async () => {
     try {
@@ -21,7 +20,7 @@ const RecentItems = ({theme, type, title, limit}) => {
   };
 
   useEffect(() => {
-    switch(type){
+    switch (type) {
       case 'listings':
         fetchRecentItems();
         break;
@@ -32,26 +31,28 @@ const RecentItems = ({theme, type, title, limit}) => {
 
   return (
     <>
-    {recentItems.length > 0 && (<View style={styles.recentSection}>
-      <CustomText
-        bold={600}
-        variant="h4"
-        style={[styles.recentTitle, {color: theme.colors.text.primary}]}>
-        {title}
-      </CustomText>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <View style={styles.recentItemsContainer}>
-          {recentItems.map((item, index) => (
-            <ListItem
-              key={item.id}
-              item={item}
-              theme={theme}
-              index={index}
-              navigation={navigation}
-            />
-          ))}
-          </View>
-          </ScrollView>
+      {recentItems.length > 0 && (
+        <View style={styles.recentSection}>
+          <CustomText
+            bold={600}
+            variant="h4"
+            style={[{color: theme.colors.text.primary}]}>
+            {title}
+          </CustomText>
+          <HorizontalListSection
+            data={recentItems}
+            renderItem={({item, index}) => {
+              return (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  theme={theme}
+                  index={index}
+                  navigation={navigation}
+                />
+              );
+            }}
+          />
         </View>
       )}
     </>
@@ -61,10 +62,6 @@ const RecentItems = ({theme, type, title, limit}) => {
 const styles = StyleSheet.create({
   recentSection: {
     marginTop: 20,
-  },
-  recentTitle: {
-    marginBottom: 10,
-    marginLeft: 5,
   },
   recentItemsContainer: {
     flexDirection: 'row',
@@ -76,6 +73,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-  }
+  },
 });
 export default RecentItems;

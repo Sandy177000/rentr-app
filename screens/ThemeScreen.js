@@ -9,7 +9,7 @@ import {
 import ColorInput from '../src/components/ColorInput';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useDispatch, useSelector} from 'react-redux';
-import {colors, themeColors, themeFonts} from '../src/constants';
+import {themeColors, themeFonts, colors} from '../src/theme/theme';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {processColor} from 'react-native';
 import CustomText from '../src/components/common/CustomText';

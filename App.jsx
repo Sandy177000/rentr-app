@@ -34,7 +34,6 @@ import {avatar} from './src/constants';
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from './store/authSlice';
 import {CustomImage} from './src/components/common/CustomImage';
-import CustomText from './src/components/common/CustomText';
 import Toast from 'react-native-toast-message';
 const Stack = createStackNavigator();
 
