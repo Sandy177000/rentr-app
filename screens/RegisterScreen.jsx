@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/common/CustomText';
-import {useRegister} from '../src/utils/auth/useRegister';
+import {useRegister} from '../src/hooks/auth/useRegister';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import CustomButton from '../src/components/common/CustomButton';
 import {registerFormInputFields} from '../src/utils/auth/auth.utils';

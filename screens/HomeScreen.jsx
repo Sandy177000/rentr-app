@@ -1,5 +1,5 @@
 // screens/HomeScreen.js
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
@@ -10,7 +10,7 @@ import {HorizontalListSection as Section} from '../src/components/common/horizon
 import ListItem from '../src/components/ListItem';
 import {useDispatch, useSelector} from 'react-redux';
 import Footer from '../src/components/Footer';
-import {getItems, selectItems} from '../store/itemsSlice';
+import {getItems, selectItems, setItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import globalStyles from '../src/theme/global.styles';
 import { HorizontalListSectionShimmer } from '../src/components/common/horizontal.list.section/HorizontalListSectionShimmer';
@@ -31,17 +31,17 @@ export const HomeScreen = () => {
 
   const fetchItems = async () => {
     try {
-      setLoading(true);
+      setRefreshing(true);
       await dispatch(getItems()).unwrap();
-      setLoading(false);
+      setRefreshing(false);
     } catch (error) {
       console.log('error', error);
     } finally {
-      setLoading(false);
+      setRefreshing(false);
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     fetchItems();
   }, []);
 
@@ -92,21 +92,25 @@ export const HomeScreen = () => {
           data={categories}
           renderItem={renderCategory}
         />
-        <Section
-          title="Latest Deals"
-          data={items}
-          renderItem={renderRecommendation}
-        />
-        <Section
-          title="Books"
-          data={items.filter(item => item.category === 'Books')}
-          renderItem={renderRecommendation}
-        />
-        <Section
-          title="Electronics"
-          data={items.filter(item => item.category === 'Electronics')}
-          renderItem={renderRecommendation}
-        />
+        {items && (
+          <>
+            <Section
+              title="Latest Deals"
+              data={items}
+              renderItem={renderRecommendation}
+            />
+            <Section
+              title="Books"
+              data={items.filter(item => item.category === 'Books')}
+              renderItem={renderRecommendation}
+            />
+            <Section
+              title="Electronics"
+              data={items.filter(item => item.category === 'Electronics')}
+              renderItem={renderRecommendation}
+            />
+          </>
+        )}
         {/* {loading && <HorizontalListSectionShimmer />} */}
         <Footer />
       </ScrollView>

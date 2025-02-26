@@ -45,6 +45,7 @@ export const addToFavourites = createAsyncThunk('items/addToFavourites', async (
 export const removeFromFavourites = createAsyncThunk('items/removeFromFavourites', async (itemId, { rejectWithValue }) => {
   try {
     const response = await userApi.removeFromFavourites(itemId);
+    console.log('Response in removeFromFavourites:', response);
     return response;
   } catch (error) {
     return rejectWithValue(error.message);
@@ -67,13 +68,31 @@ const itemsSlice = createSlice({
        _.set(payloadItem, 'isFavorite', true);
        let newFavourites = _.uniqBy([...state.favourites, payloadItem], 'id');
        state.favourites = newFavourites;
+       // update the items
+       let newItems = state.items.map(item => {
+        if (item.id === payloadItem.id) {
+          return {...item, isFavorite: true};
+        }
+        return item;
+       });
+       console.log('Updated items in addFavourite:', newItems);
+       state.items = newItems;
     },
     removeFavourite: (state, action) => {
       let payloadItem = {...action.payload};
       _.set(payloadItem, 'isFavorite', false);
       let newFavourites = _.uniqBy(state.favourites.filter(item => item.id !== payloadItem.id), 'id');
       state.favourites = newFavourites;
-    },
+      // update the items
+      let newItems = state.items.map(item => {
+        if (item.id === payloadItem.id) {
+          return {...item, isFavorite: false};
+        }
+        return item;
+      });
+      console.log('Updated items in removeFavourite:', newItems);
+      state.items = newItems;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getItems.pending, (state) => {

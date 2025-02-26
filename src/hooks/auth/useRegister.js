@@ -6,7 +6,7 @@ import {
   clearError,
   setError,
 } from '../../../store/authSlice';
-import {validateEmail, validatePassword} from './auth.utils';
+import {validateEmail, validatePassword} from '../../utils/auth/auth.utils';
 import {useNavigation} from '@react-navigation/native';
 export const useRegister = () => {
   const navigation = useNavigation();

@@ -47,14 +47,14 @@ export const chatApi = {
     }
   },
 
-  getChatMessages: async (roomId) => {
+  getChatMessages: async (roomId, limit = 10, page = 1) => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
         return { error: 'User not found' };
       }
 
-      const response = await axios.get(`${API_BASE_URL}/chat/rooms/${roomId}/messages`, {
+      const response = await axios.get(`${API_BASE_URL}/chat/rooms/${roomId}/messages?limit=${limit}&page=${page}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

@@ -105,6 +105,7 @@ export const userApi = {
       console.log('response in removeFromFavourites', response.data);
       return response.data;
     } catch (error) {
+      console.log('error in removeFromFavourites', error);
       return {error: 'Failed to remove from favourites'};
     }
   },

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
-import {useLogin} from '../src/utils/auth/useLogin';
+import {useLogin} from '../src/hooks/auth/useLogin';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import CustomButton from '../src/components/common/CustomButton';
