@@ -7,6 +7,7 @@ import ColorPicker, {
 } from 'reanimated-color-picker';
 import { useTheme } from '../theme/ThemeProvider';
 import CustomText from './common/CustomText';
+import globalStyles from '../theme/global.styles';
 const ColorInput = ({ label, value, path, onChangeColor }) => {
   const theme = useTheme();
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -62,7 +63,7 @@ const ColorInput = ({ label, value, path, onChangeColor }) => {
               styles.colorPreview, 
               { 
                 backgroundColor: value,
-                borderColor: theme.colors.border 
+                borderColor: theme.colors.text.secondary 
               }
             ]} 
           />
@@ -98,15 +99,12 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
+    ...globalStyles.borderRadius,
   },
   colorPreview: {
     width: 40,
     height: 40,
-    borderRadius: 8,
+    ...globalStyles.borderRadius,
     borderWidth: 1
   },
   picker: {

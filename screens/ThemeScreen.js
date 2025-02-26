@@ -4,19 +4,21 @@ import {
   StyleSheet,
   Switch,
   Alert,
+  ScrollView,
 } from 'react-native';
 import ColorInput from '../src/components/ColorInput';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useDispatch, useSelector} from 'react-redux';
-import {ScrollView} from 'react-native-gesture-handler';
-import {themeColors, themeFonts} from '../src/constants';
+import {colors, themeColors, themeFonts} from '../src/constants';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {processColor} from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { updateUser, updateUserTheme } from '../store/authSlice';
+import {updateUser, updateUserTheme} from '../store/authSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import Toast from 'react-native-toast-message';
+import {darkTheme, lightTheme} from '../src/theme/theme';
+
 export default function ThemeScreen() {
   const theme = useTheme();
   const user = useSelector(state => state.auth.user);
@@ -67,10 +69,22 @@ export default function ThemeScreen() {
   };
 
   const updateFont = (key) => {
-    theme.setCustomTheme(prev => ({
-      ...prev,
-      font: key,
-    }));
+    try {
+      theme.setCustomTheme(prev => ({
+        ...prev,
+        font: key,
+      }));
+      Toast.show({
+        type: 'success',
+        text1: 'Font changed successfully',
+      });
+    } catch (error) {
+      console.log('Error changing font:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error Changing font',
+      });
+    }
   };
 
   const handleApplyTheme = async () => {
@@ -92,52 +106,75 @@ export default function ThemeScreen() {
       await dispatch(updateUserTheme(themeToApply)).unwrap();
       Toast.show({
         type: 'success',
-        text1: 'Theme applied successfully',
+        text1: 'Theme Saved successfully',
       });
     } catch (error) { 
       console.log('Error applying theme:', error);
       Toast.show({
         type: 'error',
-        text1: 'Error applying theme',
+        text1: 'Error Saving theme',
+        text2: error.message,
+      });
+    }
+  };
+
+  const handleResetTheme = async () => {
+    try {
+      const themeToApply =  {
+          lightTheme: lightTheme,
+          darkTheme: darkTheme,
+      };
+      dispatch(updateUser({...user, theme: themeToApply}));
+      await dispatch(updateUserTheme(themeToApply)).unwrap();
+      Toast.show({
+        type: 'success',
+        text1: 'Theme Reset successfully',
+      });
+    } catch (error) {
+      console.log('Error resetting theme:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error Resetting theme',
         text2: error.message,
       });
     }
   };
 
   const renderHeader = () => (
-    <View style={styles.headerContainer}>
-      <CustomButton
-        variant="primary"
-        type="action"
-        onPress={() => theme.setCustomTheme({colors: theme.colors, fonts: theme.fonts})}>
-        <Icon name="refresh" size={20} color="#ffffff" />
-        <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
-          Reset
-        </CustomText>
-      </CustomButton>
+    <View style={[styles.headerContainer, {backgroundColor: theme.colors.surface}]}>
+    
+        <CustomButton
+          variant="secondary"
+          type="action"
+          style={styles.headerButton}
+          onPress={handleResetTheme}>
+          <Icon name="refresh" size={16} color={theme.colors.text.primary} />
+          <CustomText variant="h4" style={{color: theme.colors.text.primary}}>Reset</CustomText>
+        </CustomButton>
 
-      <CustomButton
-        variant="primary"
-        type="action"
-        onPress={handleApplyTheme}>
-        <Icon name="save" size={20} color="#ffffff" />
-        <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
-          Save
-        </CustomText>
-      </CustomButton>
+        <CustomButton
+          variant="primary"
+          type="action"
+          style={styles.headerButton}
+          onPress={handleApplyTheme}>
+          <Icon name="save" size={16} color={colors.white} />
+          <CustomText variant="h4" style={{color: colors.white}}>Save</CustomText>
+        </CustomButton>
     </View>
   );
 
   const renderThemeToggle = () => (
     <View style={[styles.themeToggleContainer, {backgroundColor: theme.colors.surface}]}>
-      <Icon
-        name={theme.isDark ? 'moon-o' : 'sun-o'}
-        size={24}
-        color={theme.colors.text.primary}
-      />
-      <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
-        {theme.isDark ? 'Dark Theme' : 'Light Theme'}
-      </CustomText>
+      <View style={styles.themeToggleLeft}>
+        <Icon
+          name={theme.isDark ? 'moon-o' : 'sun-o'}
+          size={24}
+          color={theme.colors.text.primary}
+        />
+        <CustomText variant="h4" bold={600} style={{color: theme.colors.text.primary}}>
+          {theme.isDark ? 'Dark Theme' : 'Light Theme'}
+        </CustomText>
+      </View>
       <Switch
         value={theme.isDark}
         onValueChange={theme.toggleTheme}
@@ -147,37 +184,50 @@ export default function ThemeScreen() {
     </View>
   );
 
+  const renderCustomizationSection = () => (
+    <View style={styles.customizationContainer}>
+      <CustomText 
+        variant="h4" 
+        bold={600} 
+        style={[styles.sectionTitle, {color: theme.colors.text.primary}]}
+      >
+        Customization
+      </CustomText>
+      
+      <View style={styles.customizationButtons}>
+        <CustomButton
+          variant="secondary"
+          type="action"
+          style={[styles.customizationButton, {backgroundColor: theme.colors.surface}]}
+          onPress={() => setColorsVisible(true)}>
+          <Icon name="paint-brush" size={20} color={theme.colors.primary} />
+          <CustomText style={{color: theme.colors.text.primary}}>
+            Color Scheme
+          </CustomText>
+        </CustomButton>
+
+        <CustomButton
+          variant="secondary"
+          type="action"
+          style={[styles.customizationButton, {backgroundColor: theme.colors.surface}]}
+          onPress={() => setFontsVisible(true)}>
+          <Icon name="font" size={20} color={theme.colors.primary} />
+          <CustomText style={{color: theme.colors.text.primary}}>
+            Typography
+          </CustomText>
+        </CustomButton>
+      </View>
+    </View>
+  );
+
   return (
     <>
       <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
         contentContainerStyle={styles.contentContainer}>
-        {renderHeader()}
         {renderThemeToggle()}
-        
-        <View style={styles.sectionsContainer}>
-          <CustomButton
-            variant="primary"
-            type="action"
-            style={{backgroundColor: theme.colors.surface, gap: 10}}
-            onPress={() => setColorsVisible(true)}>
-            <Icon name="paint-brush" size={15} color={theme.colors.primary} />
-            <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
-              Color Scheme
-            </CustomText>
-          </CustomButton>
-
-          <CustomButton
-            variant="primary"
-            type="action"
-            style={{backgroundColor: theme.colors.surface, gap: 10}}
-            onPress={() => setFontsVisible(true)}>
-            <Icon name="font" size={15} color={theme.colors.primary} />
-            <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
-              Typography
-            </CustomText>
-          </CustomButton>
-        </View>
+        {renderCustomizationSection()}
+        {renderHeader()}
       </ScrollView>
 
       {colorsVisible && (
@@ -210,7 +260,7 @@ export default function ThemeScreen() {
           showCloseButton={true}
           renderItem={({item}) => (
             <CustomButton
-              variant="primary"
+              variant=""
               type="action"
               style={{padding: 10}}
               onPress={() => {
@@ -239,56 +289,58 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  button: {
-    padding: 10,
-    borderRadius: 10,
-    width: 120,
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 10,
+    padding: 16,
   },
   headerContainer: {
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 16,
+    gap: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  buttonText: {
-    marginLeft: 10,
+  headerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+    marginTop: 16,
+  },
+  headerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
   themeToggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderRadius: 10,
     justifyContent: 'space-between',
-    marginTop: 10,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 24,
   },
-  themeToggleText: {
-    marginLeft: 10,
-  },
-  sectionsContainer: {
-    marginTop: 20,
-    gap: 10,
-  },
-  sectionCard: {
-    marginBottom: 10,
-  },
-  sectionHeader: {
+  themeToggleLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-    gap: 10,
+    gap: 12,
   },
-  sectionSubtitle: {
-    marginLeft: 10,
+  customizationContainer: {
+    gap: 16,
   },
-  fontPreview: {
-    padding: 1,
+  sectionTitle: {
+    marginBottom: 8,
+  },
+  customizationButtons: {
+    gap: 12,
+  },
+  customizationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 16,
+    borderRadius: 12,
   },
 });

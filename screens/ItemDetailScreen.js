@@ -90,7 +90,6 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         ${item.price}/day
       </CustomText>
 
-      {item.ownerId !== currentUser.id && <CustomText style={{color: theme.colors.text.secondary}}>Owner: {item.ownerId}</CustomText> } 
       {item.ownerId === currentUser.id ? (
         <TouchableOpacity
           style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
