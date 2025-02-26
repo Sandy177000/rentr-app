@@ -27,6 +27,7 @@ export const registerFormInputFields = [
     secureTextEntry: true,
   },
 ];
+
 export const validatePassword = (password) => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);

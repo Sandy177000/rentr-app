@@ -2,75 +2,35 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useCallback} from 'react';
 import {
   View,
-  TouchableOpacity,
   StyleSheet,
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import Icons from 'react-native-vector-icons/FontAwesome';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectCurrentUser, logout, updateUser} from '../store/authSlice';
+import {selectCurrentUser, logout, getUserInfo} from '../store/authSlice';
 import {useTheme} from '../src/theme/ThemeProvider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {userApi} from '../src/apis/user';
 import ProfileCard from '../src/components/ProfileCard';
-import CustomText from '../src/components/common/CustomText';
 import RecentItems from '../src/components/RecentItems';
+import {ProfileSection} from '../src/components/profle/ProfileSection';
 
 const ProfileScreen = () => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const theme = useTheme();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
   const fetchUser = async () => {
-    const userData = await userApi.getUserInfo();
-    console.log('userData ProfileScreen', userData);
-    
-    dispatch(updateUser(userData));
+    const userData = await dispatch(getUserInfo()).unwrap();
     return userData;
   };
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
+    setLoading(true);
     fetchUser();
     setTimeout(() => {
-      setRefreshing(false);
+      setLoading(false);
     }, 2000);
   }, []);
-
-
-  const ProfileSection = ({title, icon, onPress}) => (
-    <TouchableOpacity
-      style={[
-        styles.sectionContainer,
-        {backgroundColor: theme.colors.surface},
-      ]}
-      onPress={onPress}>
-      <View style={styles.sectionContent}>
-        <Icons name={icon} size={15} color={theme.colors.text.primary} />
-        <CustomText variant="body" style={[styles.sectionTitle, {color: theme.colors.text.secondary}]}>
-          {title}
-        </CustomText>
-      </View>
-      <Icons
-        name="chevron-right"
-        size={14}
-        color={theme.colors.text.secondary}
-      />
-    </TouchableOpacity>
-  );
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('user');
-      await AsyncStorage.removeItem('token');
-      dispatch(logout());
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
 
   const renderProfile = () => {
     return (
@@ -79,7 +39,7 @@ const ProfileScreen = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+              refreshing={loading}
             onRefresh={onRefresh}
             tintColor={theme.colors.text.primary}
             colors={[theme.colors.text.primary]}
@@ -92,26 +52,36 @@ const ProfileScreen = () => {
           navigation={navigation}
           fetchUser={fetchUser}
         />
-        <View style={[styles.sectionsContainer, {backgroundColor: theme.colors.background}]}>
+        <View
+          style={[
+            styles.sectionsContainer,
+            {backgroundColor: theme.colors.background},
+          ]}>
           <ProfileSection
             title="My Listed Items"
             icon="list"
             onPress={() => navigation.navigate('MyListings')}
+            theme={theme}
           />
           <ProfileSection
             title="Items Rented by Me"
             icon="shopping-cart"
             onPress={() => navigation.navigate('MyRentals')}
+            theme={theme}
           />
-          <RecentItems theme={theme} type="listings" title="Recently Listed Items" limit={5}/>
-          <RecentItems theme={theme} type="rentals" title="Recently Rented Items" limit={5}/>
+          <RecentItems
+            theme={theme}
+            type="listings"
+            title="Recently Listed Items"
+            limit={5}
+          />
+          <RecentItems
+            theme={theme}
+            type="rentals"
+            title="Recently Rented Items"
+            limit={5}
+          />
         </View>
-
-        <TouchableOpacity
-          style={[styles.logoutButton, {backgroundColor: theme.colors.primary}]}
-          onPress={handleLogout}>
-          <CustomText style={styles.logoutText}>Logout</CustomText>
-        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -126,31 +96,6 @@ const styles = StyleSheet.create({
   sectionsContainer: {
     marginTop: 20,
     paddingHorizontal: 15,
-  },
-  sectionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  sectionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  sectionTitle: {
-    marginLeft: 15,
-    fontWeight: 'bold',
   },
   logoutButton: {
     marginTop: 30,

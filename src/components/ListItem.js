@@ -11,6 +11,7 @@ import {
 } from '../../store/itemsSlice';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import {CustomImage} from './common/CustomImage';
+import CustomButton from './common/CustomButton';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
@@ -23,14 +24,10 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
     try {
       setIsFavourite(!isFavourite);
       if (initialFavouriteState) {
-        // ui update
         dispatch(removeFavourite(item));
-        // update in backend
         await dispatch(removeFromFavourites(item.id)).unwrap();
       } else {
-        // ui update
         dispatch(addFavourite(item));
-        // update in backend
         await dispatch(addToFavourites(item.id)).unwrap();
       }
     } catch (error) {
@@ -42,33 +39,36 @@ const ListItem = ({item, theme, index, navigation, animate = true}) => {
   return (
     <Animated.View entering={FadeInDown.delay(index * 1)}>
       <View style={styles.itemCard}>
-        <TouchableOpacity style={styles.heartIcon} onPress={handleFavourite}>
+        <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
           {isFavourite ? (
             <Icon name="heart" size={22} color={theme.colors.primary} />
           ) : (
             <Icon name="heart-o" size={22} color={'#FFFFFF'} />
           )}
-        </TouchableOpacity>
-        <TouchableOpacity
+        </CustomButton>
+        <CustomButton
           style={styles.imageContainer}
-          activeOpacity={0.8}
           onPress={() => navigation.navigate('ItemDetails', {item})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}
             overlay
           />
-        </TouchableOpacity>
+        </CustomButton>
       </View>
       <View style={styles.itemContent}>
         <CustomText
-          style={[styles.itemTitle, {color: theme.colors.text.primary}]}
+          bold={600}
+          variant="h4"
+          style={{color: theme.colors.text.primary}}
           numberOfLines={1}>
           {item.name}
         </CustomText>
         <CustomText
-          style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
-          ${item.price}/day
+          bold={600}
+          variant="h4"
+          style={{color: theme.colors.text.secondary}}>
+          Rs. {item.price}/day
         </CustomText>
       </View>
     </Animated.View>
@@ -118,10 +118,6 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     paddingTop: 10,
-  },
-  itemTitle: {
-    fontWeight: '600',
-    marginBottom: 4,
   },
   itemPrice: {
     marginBottom: 12,

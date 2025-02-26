@@ -5,12 +5,11 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
-import {useAuth} from '../src/utils/login/useAuth';
+import {useLogin} from '../src/utils/auth/useLogin';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import CustomButton from '../src/components/common/CustomButton';
@@ -18,7 +17,7 @@ import {colors} from '../src/constants';
 export const LoginScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const {loading, error, handleLogin, formData, handleFormData} = useAuth();
+  const {loading, error, handleLogin, formData, handleFormData} = useLogin();
 
   return (
     <SafeAreaView
@@ -63,7 +62,7 @@ export const LoginScreen = () => {
             {error}
           </CustomText>
         )}
-        <CustomButton variant="primary" onPress={handleLogin}>
+        <CustomButton variant="primary" type="action" onPress={handleLogin}>
           {loading ? (
             <ActivityIndicator size="small" color={colors.white} />
           ) : (

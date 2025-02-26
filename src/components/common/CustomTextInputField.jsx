@@ -3,6 +3,7 @@ import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import CustomText from './CustomText';
 import { useTheme } from '../../theme/ThemeProvider';
+import globalStyles from '../../theme/global.styles';
 
 const CustomTextInputField = ({ label, value, onChangeText, placeholder, secureTextEntry = false, placeholderColor }) => {
   const theme = useTheme();
@@ -24,7 +25,7 @@ const CustomTextInputField = ({ label, value, onChangeText, placeholder, secureT
 const styles = StyleSheet.create({
   input: {
     fontSize: 13,
-    borderRadius: 10,
+    ...globalStyles.borderRadius,
     padding: 15,
   },
 });

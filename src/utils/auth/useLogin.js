@@ -6,11 +6,12 @@ import {
   clearError,
   restoreUser,
   setError,
+  logout,
 } from '../../../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-export const useAuth = () => {
+export const useLogin = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
@@ -23,6 +24,7 @@ export const useAuth = () => {
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       const result = await dispatch(loginUser(formData)).unwrap();
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
@@ -33,6 +35,8 @@ export const useAuth = () => {
       }
     } catch (err) {
       dispatch(setError('Login error'));
+    } finally {
+      setLoading(false);
     }
   };
 

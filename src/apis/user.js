@@ -7,11 +7,10 @@ const API_BASE_URL = getApiUrl();
 export const userApi = {
   updateUserInfo: async userData => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return {error: 'User not found'};
       }
-      const {token} = JSON.parse(storedUser);
 
       const response = await axios.post(
         `${API_BASE_URL}/users/update`,
@@ -32,11 +31,10 @@ export const userApi = {
   },
   getUserInfo: async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return {error: 'User not found'};
       }
-      const {token} = JSON.parse(storedUser);
       const response = await axios.get(`${API_BASE_URL}/users/`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,11 +47,10 @@ export const userApi = {
   },
   getFavourites: async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return {error: 'User not found'};
       }
-      const {token} = JSON.parse(storedUser);
       const response = await axios.get(`${API_BASE_URL}/users/favorites`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -67,11 +64,10 @@ export const userApi = {
   },
   addToFavourites: async itemId => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return {error: 'User not found'};
       }
-      const {token} = JSON.parse(storedUser);
       const response = await axios.post(
         `${API_BASE_URL}/users/add-favorite`,
         {
@@ -90,11 +86,10 @@ export const userApi = {
   },
   removeFromFavourites: async itemId => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return {error: 'User not found'};
       }
-      const {token} = JSON.parse(storedUser);
       console.log('itemId in removeFromFavourites', itemId);
       const response = await axios.post(
         `${API_BASE_URL}/users/remove-favorite`,

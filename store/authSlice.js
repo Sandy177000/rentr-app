@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authApi } from '../src/apis/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { userApi } from '../src/apis/user';
 
 export const loginUser = createAsyncThunk(
   'auth/login',
@@ -31,11 +31,28 @@ export const registerUser = createAsyncThunk(
 
 export const checkAuth = createAsyncThunk(
     'auth/checkAuth',
-    async () => {
-      const userData = await AsyncStorage.getItem('user');
-      return userData ? JSON.parse(userData) : null;
+    async (_, { rejectWithValue }) => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        return userData ? JSON.parse(userData) : null;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
     }
   );
+
+export const getUserInfo = createAsyncThunk(
+  'auth/getUserInfo',
+    async (_, { rejectWithValue }) => {
+    try {
+      const userData = await userApi.getUserInfo();
+      return userData;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 
 const initialState = {
   user: null,
@@ -105,6 +122,13 @@ const authSlice = createSlice({
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.user = action.payload;
         state.loading = false;
+      }).addCase(getUserInfo.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(getUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

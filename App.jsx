@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 // App.js
 import 'react-native-gesture-handler';
 import React, {useState} from 'react';
@@ -28,11 +29,11 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import ChatDetails from './screens/ChatDetails';
 import CategoryItems from './screens/CategoryItems';
 import FavouritesScreen from './screens/FavouritesScreen';
-import { Image } from 'react-native';
-import { avatar } from './src/constants';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from './store/authSlice';
-import { CustomImage } from './src/components/common/CustomImage';
+import {Image} from 'react-native';
+import {avatar} from './src/constants';
+import {useSelector} from 'react-redux';
+import {selectCurrentUser} from './store/authSlice';
+import {CustomImage} from './src/components/common/CustomImage';
 import CustomText from './src/components/common/CustomText';
 const Stack = createStackNavigator();
 
@@ -48,7 +49,12 @@ const MainTabs = () => {
     {key: 'home', title: 'Home', icon: 'home'},
     {key: 'favorites', title: 'Favorites', icon: 'heart'},
     {key: 'chat', title: 'Chat', icon: 'comment'},
-    {key: 'profile', title: 'Profile', icon: user?.profileImage || avatar, type: 'image'},
+    {
+      key: 'profile',
+      title: 'Profile',
+      icon: user?.profileImage || avatar,
+      type: 'image',
+    },
   ];
 
   const renderScene = SceneMap({
@@ -87,9 +93,12 @@ const MainTabs = () => {
           <View>
             <TabBar
               {...props}
-              style={[styles.tabBar, {
-                backgroundColor: theme.colors.primary,
-              }]}
+              style={[
+                styles.tabBar,
+                {
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
               pressColor="transparent"
               indicatorStyle={{display: 'none'}}
             />
@@ -99,17 +108,23 @@ const MainTabs = () => {
     </View>
   );
 
+  const renderIcon = (route, color) => {
+    return route.type === 'image' ? (
+      <Image
+        source={{uri: route.icon}}
+        style={{width: 25, height: 25, borderRadius: 100}}
+      />
+    ) : (
+      <Icon name={route.icon} color={color} size={20} />
+    );
+  };
+
   return (
     <View style={{flex: 1}}>
       <TabView
         navigationState={{index, routes}}
         commonOptions={{
-          icon: ({route, focused, color}) => (
-            route.type === 'image' ?
-            <Image source={{uri: route.icon}} style={{width: 25, height: 25, borderRadius: 100}} /> 
-            : 
-            <Icon name={route.icon} color={color} size={20} />
-          ),
+          icon: ({route, focused, color}) => renderIcon(route, color),
           label: () => null,
         }}
         renderScene={renderScene}
@@ -117,6 +132,38 @@ const MainTabs = () => {
         initialLayout={{width: layout.width}}
         renderTabBar={renderTabBar}
         swipeEnabled={false}
+      />
+    </View>
+  );
+};
+
+const renderHeader = (props, route) => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      {props.canGoBack && props.onPress && (
+        <Icon
+          name="angle-left"
+          size={25}
+          style={{marginLeft: 10}}
+          onPress={props.onPress}
+          color={props.tintColor}
+        />
+      )}
+      <CustomImage
+        source={route.params?.profileImage || avatar}
+        style={{
+          width: 35,
+          height: 35,
+          borderRadius: 17.5,
+          marginLeft: 15,
+          marginRight: 8,
+        }}
+        showLoading={false}
       />
     </View>
   );
@@ -193,32 +240,10 @@ const App = () => {
           />
           <Stack.Screen
             name="ChatDetails"
-            options={({ route }) => ({
+            options={({route}) => ({
               title: route.params?.name || 'Chat',
               headerTitleAlign: 'left',
-              headerLeft: (props) => (
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                  {props.canGoBack && props.onPress && (
-                    <Icon 
-                      name="angle-left" 
-                      size={25} 
-                      style={{ marginLeft: 10 }}
-                      onPress={props.onPress}
-                      color={props.tintColor}
-                    />
-                  )}
-                  <CustomImage 
-                    source={ route.params?.profileImage || avatar }
-                    style={{
-                      width: 35,
-                      height: 35,
-                      borderRadius: 17.5,
-                      marginLeft: 15,
-                      marginRight: 8
-                    }}
-                  />
-                </View>
-              )
+              headerLeft: props => renderHeader(props, route),
             })}
             component={ChatDetails}
           />

@@ -7,11 +7,10 @@ const API_BASE_URL = getApiUrl();
 export const chatApi = {
   createChatRoom: async (participantId) => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return { error: 'User not found' };
       }
-      const { token } = JSON.parse(storedUser);
 
       const response = await axios.post(
         `${API_BASE_URL}/chat/rooms`,
@@ -31,11 +30,10 @@ export const chatApi = {
 
   getChatRooms: async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return { error: 'User not found' };
       }
-      const { token } = JSON.parse(storedUser);
 
       const response = await axios.get(`${API_BASE_URL}/chat/rooms`, {
         headers: {
@@ -51,11 +49,10 @@ export const chatApi = {
 
   getChatMessages: async (roomId) => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return { error: 'User not found' };
       }
-      const { token } = JSON.parse(storedUser);
 
       const response = await axios.get(`${API_BASE_URL}/chat/rooms/${roomId}/messages`, {
         headers: {
@@ -72,11 +69,10 @@ export const chatApi = {
   sendMessage: async (data) => {
     try {
       console.log(data);
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return { error: 'User not found' };
       }
-      const { token } = JSON.parse(storedUser);
 
       const response = await axios.post(`${API_BASE_URL}/chat/rooms/messages`, data, {
         headers: {
@@ -92,11 +88,10 @@ export const chatApi = {
 
   mediaUpload: async (data) => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
         return { error: 'User not found' };
       }
-      const { token } = JSON.parse(storedUser);
 
       const response = await axios.post(`${API_BASE_URL}/chat/media-upload`, data, {
         headers: {

@@ -1,29 +1,25 @@
 // screens/HomeScreen.js
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Image,
-} from 'react-native';
+import React, {useState, useLayoutEffect} from 'react';
+import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import HomeSection from '../src/components/HomeSection';
+import {HorizontalListSection as Section} from '../src/components/common/horizontal.list.section/HorizontalListSection';
 import ListItem from '../src/components/ListItem';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectCurrentUser} from '../store/authSlice';
 import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
+import CustomButton from '../src/components/common/CustomButton';
+import globalStyles from '../src/theme/global.styles';
+import { HorizontalListSectionShimmer } from '../src/components/common/horizontal.list.section/HorizontalListSectionShimmer';
 export const HomeScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const items = useSelector(selectItems);
 
   const categories = [
@@ -35,14 +31,17 @@ export const HomeScreen = () => {
 
   const fetchItems = async () => {
     try {
-      const items = await dispatch(getItems()).unwrap();
-      console.log('items', items);
+      setLoading(true);
+      await dispatch(getItems()).unwrap();
+      setLoading(false);
     } catch (error) {
       console.log('error', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchItems();
   }, []);
 
@@ -72,46 +71,43 @@ export const HomeScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Search')}
-        style={[
-          styles.searchContainer,
-          {backgroundColor: theme.colors.surface},
-        ]}>
-        <Icon name="search" size={20} color={theme.colors.text.secondary} />
-        <CustomText
-          style={[
-            styles.searchPlaceholder,
-            {color: theme.colors.text.secondary},
-          ]}>
-          Search for items...
-        </CustomText>
-      </TouchableOpacity>
+      <View style={[styles.searchContainer, {backgroundColor: theme.colors.surface}]}>
+        <CustomButton
+          onPress={() => navigation.navigate('Search')}
+          style={[styles.searchPlaceholder]}>
+          <Icon name="search" size={20} color={theme.colors.text.secondary} />
+          <CustomText variant="h4" style={{color: theme.colors.text.secondary}}>
+            Search for items...
+          </CustomText>
+        </CustomButton>
+      </View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
-        <HomeSection
+        <Section
           title="Categories"
           data={categories}
           renderItem={renderCategory}
         />
-        <HomeSection
+        <Section
           title="Latest Deals"
           data={items}
           renderItem={renderRecommendation}
         />
-        <HomeSection
+        <Section
           title="Books"
           data={items.filter(item => item.category === 'Books')}
           renderItem={renderRecommendation}
         />
-        <HomeSection
+        <Section
           title="Electronics"
           data={items.filter(item => item.category === 'Electronics')}
           renderItem={renderRecommendation}
         />
+        {/* {loading && <HorizontalListSectionShimmer />} */}
         <Footer />
       </ScrollView>
     </View>
@@ -121,57 +117,20 @@ export const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 5,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  itemCard: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  itemTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  itemPrice: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#666',
-    marginBottom: 20,
-  },
-  searchContainer: {
+  searchPlaceholder: {
+    flex: 1,
     flexDirection: 'row',
-    padding: 10,
-    borderRadius: 14,
-    margin: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     alignItems: 'center',
     gap: 10,
-    zIndex: 2,
+    ...globalStyles.borderRadius,
+  },
+  searchContainer: {
+    margin: 10,
+    padding: 10,
+    flexDirection: 'row',
+    ...globalStyles.borderRadius,
+    ...globalStyles.shadow,
   },
   categoryItem: {
     padding: 16,
@@ -179,43 +138,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 120,
     gap: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginVertical: 16,
-    marginHorizontal: 4,
-  },
-  recommendationItem: {
-    padding: 16,
-    borderRadius: 12,
-    marginRight: 12,
-    width: 160,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  recommendationList: {
-    padding: 4,
-    marginBottom: 16,
+    ...globalStyles.shadow,
   },
 });

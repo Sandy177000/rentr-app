@@ -6,12 +6,11 @@ const API_BASE_URL = getApiUrl();
 
 export const itemApi = {
   getItems: async () => {
-    const storedUser = await AsyncStorage.getItem('user');
-      if (!storedUser) {
-        return [];
-      }
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      return [];
+    }
 
-    const { token } = JSON.parse(storedUser);
     const response = await axios.get(`${API_BASE_URL}/items`,{
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -20,12 +19,11 @@ export const itemApi = {
     return response.data;
   },
   createItem: async (item) => {
-    const storedUser = await AsyncStorage.getItem('user');
-    if (!storedUser) {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
       return {error: 'User not found'};
     }
 
-    const { token } = JSON.parse(storedUser);
     const response = await axios.post(`${API_BASE_URL}/items`, item, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -48,14 +46,12 @@ export const itemApi = {
   },
   getUserItems: async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
-      
+      const token = await AsyncStorage.getItem('token');
 
-      if (!storedUser) {
+      if (!token) {
         return [];
       }
 
-      const { token } = JSON.parse(storedUser);
       const response = await axios.get(
         `${API_BASE_URL}/items/user`,
         {
@@ -67,7 +63,7 @@ export const itemApi = {
       return response.data;
     } catch (error) {
       console.error('Error fetching user items:', error);
-      throw error;
+      throw error.message;
     }
   },
 };

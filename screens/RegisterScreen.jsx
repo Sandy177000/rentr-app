@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/common/CustomText';
-import {useRegister} from '../src/utils/register/useRegister';
+import {useRegister} from '../src/utils/auth/useRegister';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import CustomButton from '../src/components/common/CustomButton';
-import {registerFormInputFields} from '../src/utils/register/register.utils';
+import {registerFormInputFields} from '../src/utils/auth/auth.utils';
 import {colors} from '../src/constants';
 export const RegisterScreen = ({navigation}) => {
   const {formData, error, loading, handleFormData, handleRegister} = useRegister();
@@ -45,7 +45,7 @@ export const RegisterScreen = ({navigation}) => {
           {error}
         </CustomText>
       )}
-      <CustomButton variant="primary" onPress={handleRegister}>
+      <CustomButton  variant="primary" type="action" onPress={handleRegister}>
         {loading ? (
           <CustomText variant="h3" style={{color: colors.white}} bold={800}>
             CREATING ACCOUNT...

@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
-const CustomButton = ({ onPress, style, children, variant = 'primary', disabled = false, type = 'button'}) => {
+import globalStyles from '../../theme/global.styles';
+const CustomButton = ({ onPress, style, children, variant = '', disabled = false, type = 'button'}) => {
   const theme = useTheme();
 
   const getButtonStyle = (buttonType) => {
@@ -11,7 +12,7 @@ const CustomButton = ({ onPress, style, children, variant = 'primary', disabled 
       case 'secondary':
         return {backgroundColor: theme.colors.secondary};
       default:
-        return {backgroundColor: theme.colors.primary};
+        return {backgroundColor: 'transparent'};
     }
   };
 
@@ -28,9 +29,22 @@ const CustomButton = ({ onPress, style, children, variant = 'primary', disabled 
     );
   }
 
+  if (type === 'action') {
+    return (
+      <TouchableOpacity
+        style={[getButtonStyle(variant), styles.button, styles.centerContent, style]}
+        onPress={onPress}
+        activeOpacity={0.8} 
+        disabled={disabled}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <TouchableOpacity
-      style={[getButtonStyle(variant), styles.button, style]}
+      style={[styles.button, style]}
       onPress={onPress}
       activeOpacity={0.8}
       disabled={disabled}
@@ -42,10 +56,19 @@ const CustomButton = ({ onPress, style, children, variant = 'primary', disabled 
 
 const styles = StyleSheet.create({
   button: {
+    ...globalStyles.borderRadius,
+  },
+  centerContent: {
+    padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
-    padding: 15,
+  },
+  shadow: {
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 });
 

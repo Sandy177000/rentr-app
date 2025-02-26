@@ -1,10 +1,10 @@
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {View, FlatList} from 'react-native';
 import React from 'react';
-import CustomText from './common/CustomText';
-import {useTheme} from '../theme/ThemeProvider';
-import Divider from './Divider';
+import CustomText from '../../../components/common/CustomText';
+import {useTheme} from '../../../theme/ThemeProvider';
 
-const HomeSection = ({title, data, renderItem}) => {
+export const HorizontalListSection = ({title, data, renderItem}) => {
   const theme = useTheme();
   return (
     <>
@@ -28,7 +28,6 @@ const HomeSection = ({title, data, renderItem}) => {
               {title}
             </CustomText>
           </View>
-
           <FlatList
             horizontal
             data={data}
@@ -43,5 +42,3 @@ const HomeSection = ({title, data, renderItem}) => {
     </>
   );
 };
-
-export default HomeSection;
