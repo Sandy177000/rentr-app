@@ -1,12 +1,12 @@
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import React from 'react';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../theme/ThemeProvider';
 import {avatar} from '../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/authSlice';
-import { CustomImage } from './CustomImage';
+import { CustomImage } from './common/CustomImage';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();

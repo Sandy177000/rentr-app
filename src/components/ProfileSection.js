@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import Icons from 'react-native-vector-icons/FontAwesome';
 
 const ProfileSection = ({title, icon, onPress, theme}) => (

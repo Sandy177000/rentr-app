@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { launchImageLibrary } from 'react-native-image-picker';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 export default function CameraScreen() {
     const device = useCameraDevice('front')
     const { hasPermission } = useCameraPermission()

@@ -32,7 +32,8 @@ import { Image } from 'react-native';
 import { avatar } from './src/constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from './store/authSlice';
-import { CustomImage } from './src/components/CustomImage';
+import { CustomImage } from './src/components/common/CustomImage';
+import CustomText from './src/components/common/CustomText';
 const Stack = createStackNavigator();
 
 const queryClient = new QueryClient();

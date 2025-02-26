@@ -1,6 +1,6 @@
 import {View, Text, StyleSheet, Image} from 'react-native';
 import React, {useLayoutEffect, useState} from 'react';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import {ScrollView} from 'react-native-gesture-handler';
 import {itemApi} from '../apis/item';
 import ListItem from './ListItem';

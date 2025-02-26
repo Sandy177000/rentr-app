@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import {useTheme} from '../theme/ThemeProvider';
 import Divider from './Divider';
 

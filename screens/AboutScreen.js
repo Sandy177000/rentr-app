@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 export const AboutScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>

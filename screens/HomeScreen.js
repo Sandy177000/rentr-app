@@ -11,7 +11,7 @@ import {
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeSection from '../src/components/HomeSection';
 import ListItem from '../src/components/ListItem';

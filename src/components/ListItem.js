@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch} from 'react-redux';
 import {
@@ -10,9 +10,9 @@ import {
   removeFavourite,
 } from '../../store/itemsSlice';
 import Animated, {FadeInDown} from 'react-native-reanimated';
-import {CustomImage} from './CustomImage';
+import {CustomImage} from './common/CustomImage';
 const {width} = Dimensions.get('window');
-const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
+const COLUMN_WIDTH = (width - 48) / 2;
 
 const ListItem = ({item, theme, index, navigation, animate = true}) => {
   const dispatch = useDispatch();

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
-import { useTheme } from '../theme/ThemeProvider';
-import { placeholderImage } from '../constants';
+import { useTheme } from '../../theme/ThemeProvider';
+import { placeholderImage } from '../../constants';
 
 export const CustomImage = ({source, style, overlay, placeholder, showLoading = true}) => {
   const [imageLoading, setImageLoading] = useState(true);

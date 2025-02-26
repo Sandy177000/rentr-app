@@ -1,8 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
+
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
-import { useTheme } from '../theme/ThemeProvider';
+import { useTheme } from '../../theme/ThemeProvider';
 
-const CustomText = ({ style, variant = 'body', children, ...props }) => {
+const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'text', ...props }) => {
   const theme = useTheme();
 
   const getVariantStyle = () => {
@@ -13,14 +15,16 @@ const CustomText = ({ style, variant = 'body', children, ...props }) => {
         return styles.h2;
       case 'h3':
         return styles.h3;
-      case 'subtitle':
-        return styles.subtitle;
-      case 'caption':
-        return styles.caption;
       case 'h4':
         return styles.h4;
+      case 'h5':
+        return styles.h5;
+      case 'h6':
+        return styles.h6;
+      case 'h7':
+        return styles.h7;
       default:
-        return styles.body;
+        return styles.default;
     }
   };
 
@@ -31,6 +35,8 @@ const CustomText = ({ style, variant = 'body', children, ...props }) => {
         {
           color: theme.colors.text.primary,
           fontFamily: theme.font,
+          fontWeight: bold ? bold : 'normal',
+          textDecorationLine: type === 'link' ? 'underline' : 'none',
         },
         getVariantStyle(),
         style,
@@ -44,27 +50,27 @@ const CustomText = ({ style, variant = 'body', children, ...props }) => {
 const styles = StyleSheet.create({
   h1: {
     fontSize: 18,
-    fontWeight: 'bold',
   },
   h2: {
     fontSize: 16,
-    fontWeight: 'bold',
   },
   h3: {
     fontSize: 14,
-    fontWeight: 'bold',
-  },
-  body: {
-    fontSize: 12,
   },
   h4: {
+    fontSize: 12,
+  },
+  h5: {
     fontSize: 10,
   },
-  subtitle: {
+  h6: {
     fontSize: 8,
   },
-  caption: {
+  h7: {
     fontSize: 6,
+  },
+  default: {
+    fontSize: 11,
   },
 });
 

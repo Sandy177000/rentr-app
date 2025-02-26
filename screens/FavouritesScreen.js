@@ -4,7 +4,7 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from '../src/components/ListItem';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
 import Animated, { FadeInDown } from 'react-native-reanimated';

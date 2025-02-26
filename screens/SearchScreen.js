@@ -9,7 +9,7 @@ import {
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import {itemApi} from '../src/apis/item';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');

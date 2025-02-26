@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../src/theme/ThemeProvider';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { chatApi } from '../src/apis/chat';
 import { useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ const ChatScreen = () => {
     }
   };
 
-  const filteredChats = user && chatRooms?.filter(room => room.participants.some(participant => participant.user.id !== user.id && participant.user.firstName.toLowerCase().includes(searchQuery.toLowerCase())));
+  const filteredChats = (user && chatRooms.length > 0) ?  chatRooms?.filter(room => room.participants.some(participant => participant.user.id !== user.id && participant.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()))) : [];
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>

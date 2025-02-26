@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import {useSelector} from 'react-redux';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import { chatApi } from '../src/apis/chat';

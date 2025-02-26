@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useNavigation } from '@react-navigation/native';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 
 const SettingsScreen = () => {
   const theme = useTheme();

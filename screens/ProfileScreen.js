@@ -14,7 +14,7 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userApi} from '../src/apis/user';
 import ProfileCard from '../src/components/ProfileCard';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import RecentItems from '../src/components/RecentItems';
 
 const ProfileScreen = () => {

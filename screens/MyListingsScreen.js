@@ -12,7 +12,7 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 import ListItem from '../src/components/ListItem';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {ListItemForm} from '../src/components/ListItemForm';
 import {BottomGradient} from '../src/components/BottomGradient';

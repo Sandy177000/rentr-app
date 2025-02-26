@@ -13,7 +13,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {themeColors, themeFonts} from '../src/constants';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {processColor} from 'react-native';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { updateUser } from '../store/authSlice';
 

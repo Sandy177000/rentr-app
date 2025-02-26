@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import ListItem from '../src/components/ListItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 
 
 const MyRentalsScreen = () => {

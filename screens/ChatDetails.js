@@ -15,7 +15,7 @@ import {
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomText from '../src/components/CustomText';
+import CustomText from '../src/components/common/CustomText';
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from '../store/authSlice';
 import {chatApi} from '../src/apis/chat';
@@ -23,7 +23,7 @@ import io from 'socket.io-client';
 import {getBaseUrl} from '../src/apis/constants';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
-import {CustomImage} from '../src/components/CustomImage';
+import {CustomImage} from '../src/components/common/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
 
 const ChatDetails = ({route, navigation}) => {

@@ -2,7 +2,7 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 import { FlatList as GestureFlatList } from 'react-native-gesture-handler';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 const CustomBottomSheet = ({
   theme,
   data,

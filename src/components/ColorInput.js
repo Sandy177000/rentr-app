@@ -6,7 +6,7 @@ import ColorPicker, {
   HueSlider
 } from 'reanimated-color-picker';
 import { useTheme } from '../theme/ThemeProvider';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 const ColorInput = ({ label, value, path, onChangeColor }) => {
   const theme = useTheme();
   const [pickerVisible, setPickerVisible] = useState(false);

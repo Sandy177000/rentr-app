@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
 import {itemApi} from '../apis/item';
 import {useNavigation} from '@react-navigation/native';
-import CustomText from './CustomText';
+import CustomText from './common/CustomText';
 import Divider from './Divider';
 export const ListItemForm = ({setVisible}) => {
   const theme = useTheme();
