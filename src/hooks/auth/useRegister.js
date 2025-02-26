@@ -54,6 +54,8 @@ export const useRegister = () => {
       const result = await dispatch(registerUser(userData)).unwrap();
       if (result) {
         navigation.replace('MainTabs');
+      } else {
+        throw new Error('Registration failed');
       }
     } catch (err) {
       console.error('Registration Error:', err);

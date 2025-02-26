@@ -12,11 +12,31 @@ import CustomText from '../src/components/common/CustomText';
 import {useRegister} from '../src/hooks/auth/useRegister';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import CustomButton from '../src/components/common/CustomButton';
-import {registerFormInputFields} from '../src/utils/auth/auth.utils';
 import {colors} from '../src/constants';
+import { registerFormInputFields } from '../src/utils/form/registeration';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const RegisterScreen = ({navigation}) => {
   const {formData, error, loading, handleFormData, handleRegister} = useRegister();
   const theme = useTheme();
+
+  const onRegister = async () => {
+    try {
+      await handleRegister();
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Account created successfully!',
+      });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error || 'Something went wrong',
+      });
+    }
+  };
 
   const renderRegisterFormInputFields = () => {
     return (
@@ -45,7 +65,7 @@ export const RegisterScreen = ({navigation}) => {
           {error}
         </CustomText>
       )}
-      <CustomButton  variant="primary" type="action" onPress={handleRegister}>
+      <CustomButton variant="primary" type="action" onPress={onRegister}>
         {loading ? (
           <CustomText variant="h3" style={{color: colors.white}} bold={800}>
             CREATING ACCOUNT...
@@ -110,51 +130,13 @@ const styles = StyleSheet.create({
     padding: 25,
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    fontSize: 16,
-  },
-  registerButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
   },
-  loginText: {
-    fontSize: 16,
-  },
-  loginLink: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
   errorText: {
     marginBottom: 16,
     textAlign: 'center',
-  },
-  disabledButton: {
-    opacity: 0.7,
   },
 });

@@ -53,6 +53,29 @@ export const getUserInfo = createAsyncThunk(
   }
 );
 
+export const updateUserData = createAsyncThunk(
+  'auth/updateUserData',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await userApi.updateUserInfo(userData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUserTheme = createAsyncThunk(
+  'auth/updateUserTheme',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await userApi.updateUserTheme(userData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const initialState = {
   user: null,
@@ -127,6 +150,14 @@ const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(getUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateUserTheme.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(updateUserTheme.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

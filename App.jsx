@@ -35,6 +35,7 @@ import {useSelector} from 'react-redux';
 import {selectCurrentUser} from './store/authSlice';
 import {CustomImage} from './src/components/common/CustomImage';
 import CustomText from './src/components/common/CustomText';
+import Toast from 'react-native-toast-message';
 const Stack = createStackNavigator();
 
 const queryClient = new QueryClient();
@@ -254,6 +255,7 @@ const App = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </GestureHandlerRootView>
     // </QueryClientProvider>
   );

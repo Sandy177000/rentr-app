@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Switch,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 import ColorInput from '../src/components/ColorInput';
@@ -15,21 +14,21 @@ import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {processColor} from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { updateUser } from '../store/authSlice';
-
+import { updateUser, updateUserTheme } from '../store/authSlice';
+import CustomButton from '../src/components/common/CustomButton';
+import Toast from 'react-native-toast-message';
 export default function ThemeScreen() {
   const theme = useTheme();
   const user = useSelector(state => state.auth.user);
-  const fontsBottomSheetRef = useRef(null);
-  const [fontsVisible, setFontsVisible] = useState(false);
-  const colorsBottomSheetRef = useRef(null);
-  const [colorsVisible, setColorsVisible] = useState(false);
   const dispatch = useDispatch();
+  
+  const fontsBottomSheetRef = useRef(null);
+  const colorsBottomSheetRef = useRef(null);
+  const [fontsVisible, setFontsVisible] = useState(false);
+  const [colorsVisible, setColorsVisible] = useState(false);
 
   const updateColor = (path, value) => {
     try {
-
-      // Validate color using React Native's built-in processor
       const processed = processColor(value);
       if (typeof processed !== 'number') {
         Alert.alert(
@@ -37,127 +36,150 @@ export default function ThemeScreen() {
           'Please enter a valid color name, hex code, or RGB value'
         );
         return;
-      } else {
-        
-        theme.setCustomTheme(prev => {
-          if (path.includes('.')) {
-            const [parent, child] = path.split('.');
-            return {
-              ...prev,
-              colors: {
-                ...prev.colors,
-                [parent]: {
-                  ...prev.colors[parent],
-                  [child]: value,
-                },
-              },
-            };
-          }
+      }
+
+      theme.setCustomTheme(prev => {
+        if (path.includes('.')) {
+          const [parent, child] = path.split('.');
           return {
             ...prev,
             colors: {
               ...prev.colors,
-              [path]: value,
+              [parent]: {
+                ...prev.colors[parent],
+                [child]: value,
+              },
             },
           };
-        });
-      }
+        }
+        return {
+          ...prev,
+          colors: {
+            ...prev.colors,
+            [path]: value,
+          },
+        };
+      });
     } catch (error) {
       Alert.alert('Error changing color:', error.message);
       console.log('Error changing color:', error);
     }
   };
 
-  const updateFont = (key, value) => {
+  const updateFont = (key) => {
     theme.setCustomTheme(prev => ({
       ...prev,
       font: key,
     }));
   };
 
-  const handleApplyTheme = () => {
-    console.log('Applying theme');
-    const themeToApply = {...theme.customTheme, ...theme.isDark ? theme.customTheme.darkTheme : theme.customTheme.lightTheme};
-    // Create theme object with both light and dark themes
-    dispatch(updateUser({...user, theme: themeToApply }));
-
-    // send theme to backend and update user
+  const handleApplyTheme = async () => {
+    try {
+      const {isDark} = theme;
+      let themeToApply;
+      if(isDark) {
+        themeToApply = {
+          lightTheme: user.theme.lightTheme,
+          darkTheme: theme.customTheme,
+        };
+      } else {
+        themeToApply = {
+          darkTheme: user.theme.darkTheme,
+          lightTheme: theme.customTheme,
+        };
+      }
+      dispatch(updateUser({...user, theme: themeToApply}));
+      await dispatch(updateUserTheme(themeToApply)).unwrap();
+      Toast.show({
+        type: 'success',
+        text1: 'Theme applied successfully',
+      });
+    } catch (error) { 
+      console.log('Error applying theme:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error applying theme',
+        text2: error.message,
+      });
+    }
   };
+
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <CustomButton
+        variant="primary"
+        type="action"
+        onPress={() => theme.setCustomTheme({colors: theme.colors, fonts: theme.fonts})}>
+        <Icon name="refresh" size={20} color="#ffffff" />
+        <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
+          Reset
+        </CustomText>
+      </CustomButton>
+
+      <CustomButton
+        variant="primary"
+        type="action"
+        onPress={handleApplyTheme}>
+        <Icon name="save" size={20} color="#ffffff" />
+        <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
+          Save
+        </CustomText>
+      </CustomButton>
+    </View>
+  );
+
+  const renderThemeToggle = () => (
+    <View style={[styles.themeToggleContainer, {backgroundColor: theme.colors.surface}]}>
+      <Icon
+        name={theme.isDark ? 'moon-o' : 'sun-o'}
+        size={24}
+        color={theme.colors.text.primary}
+      />
+      <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
+        {theme.isDark ? 'Dark Theme' : 'Light Theme'}
+      </CustomText>
+      <Switch
+        value={theme.isDark}
+        onValueChange={theme.toggleTheme}
+        thumbColor={theme.colors.primary}
+        trackColor={{true: theme.colors.primary + '50', false: '#f4f3f4'}}
+      />
+    </View>
+  );
 
   return (
     <>
       <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
         contentContainerStyle={styles.contentContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={() => theme.setCustomTheme({colors: theme.colors, fonts: theme.fonts})}>
-            <Icon name="refresh" size={20} color={'#ffffff'} />
-            <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
-              Reset
-            </CustomText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={handleApplyTheme}>
-            <Icon name="save" size={20} color={'#ffffff'} />
-            <CustomText style={[styles.buttonText, {color: '#ffffff'}]}>
-              Save
-            </CustomText>
-          </TouchableOpacity>
-        </View>
-
-        <View style={[styles.themeToggleContainer, {backgroundColor: theme.colors.surface}]}>
-          <Icon
-            name={theme.isDark ? 'moon-o' : 'sun-o'}
-            size={24}
-            color={theme.colors.text.primary}
-          />
-          <CustomText style={[styles.themeToggleText, {color: theme.colors.text.primary}]}>
-            {theme.isDark ? 'Dark Theme' : 'Light Theme'}
-          </CustomText>
-          <Switch
-            value={theme.isDark}
-            onValueChange={theme.toggleTheme}
-            thumbColor={theme.colors.primary}
-            trackColor={{true: theme.colors.primary + '50', false: '#f4f3f4'}}
-          />
-        </View>
-
+        {renderHeader()}
+        {renderThemeToggle()}
+        
         <View style={styles.sectionsContainer}>
-          <TouchableOpacity
-            style={[styles.sectionCard, {backgroundColor: theme.colors.surface}]}
+          <CustomButton
+            variant="primary"
+            type="action"
+            style={{backgroundColor: theme.colors.surface, gap: 10}}
             onPress={() => setColorsVisible(true)}>
-            <View style={styles.sectionHeader}>
-              <Icon name="paint-brush" size={15} color={theme.colors.primary} />
-              <CustomText style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
-                Color Scheme
-              </CustomText>
-            </View>
-            <CustomText style={[styles.sectionSubtitle, {color: theme.colors.text.secondary}]}>
-              Tap to customize colors
+            <Icon name="paint-brush" size={15} color={theme.colors.primary} />
+            <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
+              Color Scheme
             </CustomText>
-          </TouchableOpacity>
+          </CustomButton>
 
-          <TouchableOpacity
-            style={[styles.sectionCard, {backgroundColor: theme.colors.surface}]}
+          <CustomButton
+            variant="primary"
+            type="action"
+            style={{backgroundColor: theme.colors.surface, gap: 10}}
             onPress={() => setFontsVisible(true)}>
-            <View style={styles.sectionHeader}>
-              <Icon name="font" size={15} color={theme.colors.primary} />
-              <CustomText style={[styles.sectionTitle, {color: theme.colors.text.primary}]}>
-                Typography
-              </CustomText>
-            </View>
-            <View style={styles.fontPreview}>
-              <CustomText style={{color: theme.colors.text.secondary, fontFamily: theme.font}}>
-                Current Font:{theme.font}
-              </CustomText>
-            </View>
-          </TouchableOpacity>
+            <Icon name="font" size={15} color={theme.colors.primary} />
+            <CustomText variant="h4" bold={800} style={{color: theme.colors.text.primary}}>
+              Typography
+            </CustomText>
+          </CustomButton>
         </View>
       </ScrollView>
+
       {colorsVisible && (
         <CustomBottomSheet
           bottomSheetRef={colorsBottomSheetRef}
@@ -169,9 +191,7 @@ export default function ThemeScreen() {
             <ColorInput
               key={item.path}
               label={item.label}
-              value={item.path
-                .split('.')
-                .reduce((acc, part) => acc[part], theme.colors)}
+              value={item.path.split('.').reduce((acc, part) => acc[part], theme.colors)}
               path={item.path}
               onChangeColor={updateColor}
             />
@@ -180,6 +200,7 @@ export default function ThemeScreen() {
           setVisible={setColorsVisible}
         />
       )}
+
       {fontsVisible && (
         <CustomBottomSheet
           bottomSheetRef={fontsBottomSheetRef}
@@ -188,10 +209,12 @@ export default function ThemeScreen() {
           title="Fonts"
           showCloseButton={true}
           renderItem={({item}) => (
-            <TouchableOpacity
+            <CustomButton
+              variant="primary"
+              type="action"
               style={{padding: 10}}
               onPress={() => {
-                updateFont(item.path, item.label);
+                updateFont(item.path);
                 setFontsVisible(false);
               }}>
               <CustomText
@@ -201,7 +224,7 @@ export default function ThemeScreen() {
                 }}>
                 {item.label}
               </CustomText>
-            </TouchableOpacity>
+            </CustomButton>
           )}
           visible={fontsVisible}
           setVisible={setFontsVisible}
@@ -220,10 +243,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-  },
-  sectionTitle: {
-    fontSize: 15,
     fontWeight: 'bold',
   },
   button: {
@@ -255,10 +274,9 @@ const styles = StyleSheet.create({
   },
   sectionsContainer: {
     marginTop: 20,
+    gap: 10,
   },
   sectionCard: {
-    padding: 15,
-    borderRadius: 10,
     marginBottom: 10,
   },
   sectionHeader: {

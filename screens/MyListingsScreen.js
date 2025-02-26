@@ -96,8 +96,8 @@ export const MyListingsScreen = () => {
           visible={visible}
           setVisible={setVisible}
           bottomSheetRef={bottomSheetRef}
-          title="List New Item"
-          form={true}>
+          enablePanDownToClose={false}
+          title="List New Item">
           <ListItemForm setVisible={setVisible} />
         </CustomBottomSheet>
       )}

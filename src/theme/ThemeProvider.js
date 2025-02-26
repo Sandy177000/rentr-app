@@ -30,16 +30,16 @@ export const ThemeProvider = ({children}) => {
       },
     },
     fonts: userTheme.fonts,
-    font: 'ProximaNova-Regular',
+    font: userTheme.font,
   });
   console.log(user);
   const toggleTheme = () => {
-    console.log("Changing theme to", customTheme.isDark);
-    
+    const userLightTheme = user?.theme?.lightTheme || lightTheme;
+    const userDarkTheme = user?.theme?.darkTheme || darkTheme;
     setCustomTheme(
       customTheme.isDark
-        ? {isDark: false, ...userTheme.lightTheme || lightTheme}
-        : {isDark: true, ...userTheme.darkTheme || darkTheme},
+        ? {isDark: false, ...userLightTheme}
+        : {isDark: true, ...userDarkTheme},
     );
   };
 

@@ -14,10 +14,28 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import CustomButton from '../src/components/common/CustomButton';
 import {colors} from '../src/constants';
+import Toast from 'react-native-toast-message';
+
 export const LoginScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const {loading, error, handleLogin, formData, handleFormData} = useLogin();
+
+  const handleLoginWithToast = async () => {
+    try {
+      await handleLogin();
+      Toast.show({
+        type: 'success',
+        text1: 'Logged in successfully',
+      });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error || 'Failed to login',
+      });
+    }
+  };
 
   return (
     <SafeAreaView
@@ -40,7 +58,7 @@ export const LoginScreen = () => {
             value={formData.email}
             onChangeText={value => handleFormData('email', value)}
             placeholder="Enter your email"
-            placeholderColor={colors.gray}
+            placeholderColor={theme.colors.text.secondary}
           />
           <CustomTextInputField
             label="Password"
@@ -48,7 +66,7 @@ export const LoginScreen = () => {
             onChangeText={value => handleFormData('password', value)}
             placeholder="Enter your password"
             secureTextEntry
-            placeholderColor={colors.gray}
+            placeholderColor={theme.colors.text.secondary}
           />
         </View>
         {error && (
@@ -62,7 +80,7 @@ export const LoginScreen = () => {
             {error}
           </CustomText>
         )}
-        <CustomButton variant="primary" type="action" onPress={handleLogin}>
+        <CustomButton variant="primary" type="action" onPress={handleLoginWithToast}>
           {loading ? (
             <ActivityIndicator size="small" color={colors.white} />
           ) : (

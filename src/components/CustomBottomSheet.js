@@ -13,12 +13,13 @@ const CustomBottomSheet = ({
   setVisible,
   bottomSheetRef,
   children,
+  enablePanDownToClose = true,
 }) => {
   return (
     <BottomSheet
       ref={bottomSheetRef}
       index={visible ? 0 : -1}
-      enablePanDownToClose={true}
+      enablePanDownToClose={enablePanDownToClose}
       enableFooterGestureAnimated={true}
       handleStyle={{
         backgroundColor: theme.colors.primary,
@@ -53,6 +54,7 @@ const CustomBottomSheet = ({
               paddingBottom: 10,
             }}>
             <CustomText
+              variant="h3"
               style={[
                 styles.sectionTitle,
                 {color: theme.colors.text.primary, alignSelf: 'center'},

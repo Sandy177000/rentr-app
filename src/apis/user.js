@@ -109,4 +109,21 @@ export const userApi = {
       return {error: 'Failed to remove from favourites'};
     }
   },
+  updateUserTheme: async userThemeData => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return {error: 'User not found'};
+      } 
+      const response = await axios.post(`${API_BASE_URL}/users/update-theme`, userThemeData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log('error in updateUserTheme', error);
+      return {error: 'Failed to update user theme'};
+    }
+  },
 };

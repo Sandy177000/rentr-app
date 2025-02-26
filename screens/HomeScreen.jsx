@@ -10,7 +10,7 @@ import {HorizontalListSection as Section} from '../src/components/common/horizon
 import ListItem from '../src/components/ListItem';
 import {useDispatch, useSelector} from 'react-redux';
 import Footer from '../src/components/Footer';
-import {getItems, selectItems, setItems} from '../store/itemsSlice';
+import {getItems, selectItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import globalStyles from '../src/theme/global.styles';
 import { HorizontalListSectionShimmer } from '../src/components/common/horizontal.list.section/HorizontalListSectionShimmer';
