@@ -16,11 +16,15 @@ import Carousel from 'react-native-reanimated-carousel';
 import { colors } from '../src/theme/theme';
 import CustomButton from '../src/components/common/CustomButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { addFavourite, addToFavourites, removeFavourite, removeFromFavourites } from '../store/itemsSlice';
+import { addFavourite, addToFavourites, removeFavourite, removeFromFavourites, selectItems } from '../store/itemsSlice';
 export const ItemDetailsScreen = ({route, navigation}) => {
   const token = useSelector(selectCurrentToken);
+  const items = useSelector(selectItems);
   const theme = useTheme();
-  const {item} = route.params;
+  let {item, itemId} = route.params;
+  if(!item) {
+    item = items.find(i => i.id === itemId);
+  }
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);

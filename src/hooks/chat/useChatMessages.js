@@ -73,7 +73,7 @@ const useChatMessages = (roomId, token, user, item) => {
 
           const content = `I am interested in this item for rent. Can we connect to discuss the details?
           Item Details:
-          • Name: ${item.name}
+          • Name: ${item.name} [View Details](/ItemDetails/itemId=${item.id})
           • Price: ${item.price}
           • Description: ${item.description}`;
 
@@ -129,6 +129,7 @@ const useChatMessages = (roomId, token, user, item) => {
         }
 
         let newMessage = {
+          id: new Date().getTime(),
           content: tempMessage,
           senderId: user.id,
           chatRoomId: roomId,
@@ -163,15 +164,18 @@ const useChatMessages = (roomId, token, user, item) => {
     }
     setLoading(true);
     try {
-      const messagesData = await chatApi.getChatMessages(roomId, 5, pageNum);
-      if (messagesData.messages.length < 5) {
+      const messagesData = await chatApi.getChatMessages(roomId, 30, pageNum);
+      if (messagesData.messages.length < 30) {
         setHasMore(false);
       }
-      setMessages(prevMessages =>
-        shouldPrepend
-          ? [...messagesData.messages, ...prevMessages] // Prepend older messages
-          : messagesData.messages,
-      );
+      setMessages(prevMessages => {
+        const newMessages = messagesData.messages.filter(
+          newMsg => !prevMessages.some(existingMsg => existingMsg.id === newMsg.id)
+        );
+        return shouldPrepend
+          ? [...newMessages, ...prevMessages]
+          : newMessages;
+      });
       setPage(pageNum);
     } catch (error) {
       console.log('error in fetch messages', error);

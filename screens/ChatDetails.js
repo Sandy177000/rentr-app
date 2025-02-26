@@ -140,7 +140,6 @@ const ChatDetails = ({route, navigation}) => {
     return (
       <>
         <View
-          key={`${index} ${messageItem.createdAt}`}
           style={[
             styles.message,
             messageItem.sender.id === user.id ? styles.myMessage : styles.theirMessage,
@@ -212,6 +211,13 @@ const ChatDetails = ({route, navigation}) => {
               </View>
             )}
             <Markdown
+              onLinkPress={(url) => {
+                if (url.startsWith('itemId=')) {
+                  const itemId = url.split('=')[1];
+                  console.log('itemId', itemId);
+                  navigation.navigate('ItemDetails', { item, itemId });
+                }
+              }}
               style={{
                 body: {
                   color: messageItem.sender.id === user.id 
@@ -412,7 +418,7 @@ const ChatDetails = ({route, navigation}) => {
           }
           data={[...messages].reverse()}
           renderItem={renderMessage}
-          keyExtractor={i => i.id}
+          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.messageList}
           inverted={true}
         />
