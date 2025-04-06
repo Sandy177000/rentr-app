@@ -51,7 +51,7 @@ const HomeScreen = () => {
       onPress={() =>
         navigation.navigate('CategoryItems', {category: item.name})
       }>
-      <Icon name={item.icon} size={24} color={theme.colors.primary} />
+      <Icon name={item.icon} size={20} color={theme.colors.primary} />
       <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
         {item.name}
       </CustomText>
@@ -138,10 +138,12 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     padding: 16,
-    borderRadius: 12,
     alignItems: 'center',
-    width: 120,
+    flex: 1,
+    flexDirection: 'row',
+    minWidth: 120,
     gap: 8,
+    ...globalStyles.borderRadius,
     ...globalStyles.shadow,
   },
 });

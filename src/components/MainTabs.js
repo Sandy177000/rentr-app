@@ -18,6 +18,7 @@ import {useState} from 'react';
 import { useTheme } from '../theme/ThemeProvider';
 
 const MainTabs = () => {
+
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const theme = useTheme();

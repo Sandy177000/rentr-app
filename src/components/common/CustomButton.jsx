@@ -21,7 +21,6 @@ const CustomButton = ({ onPress, style, children, variant = '', disabled = false
       <TouchableOpacity
         style={style}
         onPress={onPress}
-        activeOpacity={0.8}
         disabled={disabled}
       >
         {children}
@@ -33,8 +32,7 @@ const CustomButton = ({ onPress, style, children, variant = '', disabled = false
     return (
       <TouchableOpacity
         style={[getButtonStyle(variant), styles.button, styles.centerContent, style]}
-        onPress={onPress}
-        activeOpacity={0.8} 
+        onPress={onPress} 
         disabled={disabled}
       >
         {children}
@@ -46,7 +44,6 @@ const CustomButton = ({ onPress, style, children, variant = '', disabled = false
     <TouchableOpacity
       style={[styles.button, style]}
       onPress={onPress}
-      activeOpacity={0.8}
       disabled={disabled}
     >
       {children}

@@ -9,6 +9,7 @@ export const createItemFormConfig = [
           type: 'text',
           label: 'Item Name',
           placeholder: 'Enter item name',
+          required: true,
           props: {},
         },
         {
@@ -17,6 +18,7 @@ export const createItemFormConfig = [
           type: 'text',
           label: 'Description',
           placeholder: 'Enter item description',
+          required: true,
           props: {
             multiline: true,
             numberOfLines: 4,
@@ -29,53 +31,61 @@ export const createItemFormConfig = [
         {
           name: 'price',
           key: 'price', 
-          type: 'number',
+          type: 'numeric',
           label: 'Price',
           placeholder: 'Enter price per day',
+          required: true,
           props: {
             keyboardType: 'numeric',
           },
+        },
+        {
+          name: 'category',
+          key: 'category',
+          type: 'select',
+          label: 'Category',
+          placeholder: 'Select category',
+          required: true,
+          options: [
+            'Electronics',
+            'Furniture',
+            'Sports',
+            'Books',
+            'Others',
+          ],
+          props: {},
         },
       ],
     },
     {
       id: 'period',
       title: 'Rental Period',
-      layout: 'row',
       fields: [
         {
           name: 'minimumPeriod',
           key: 'minimumPeriod',
-          type: 'number',
+          type: 'numeric',
+          min: 1,
           label: 'Minimum Period',
           placeholder: 'Enter minimum days',
-          props: {
-            keyboardType: 'numeric',
-            style: {
-                flex: 1,
-                width: '50%',
-            },
-          },
+          required: true,
         },
         {
           name: 'maximumPeriod',
           key: 'maximumPeriod',
-          type: 'number',
+          type: 'numeric',
+          min: 1,
+          max: 365,
           label: 'Maximum Period',
           placeholder: 'Enter maximum days',
-          props: {
-            keyboardType: 'numeric',
-            style: {
-                flex: 1,
-                width: '50%',
-            },
-          },
+          required: true,
         },
       ],
     },
     {
-      id: 'images',
-      title: 'Images',
+      id: 'media',
+      title: 'Media',
+      required: true,
       fields: [
         {
           type: 'media',

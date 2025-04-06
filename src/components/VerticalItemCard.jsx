@@ -40,7 +40,7 @@ const VerticalItemCard = ({
           variant="h4"
           style={{color: theme.colors.text.primary}}
           numberOfLines={1}>
-          {"item.name"}
+          {item.name}
         </CustomText>
         <CustomText
           bold={600}

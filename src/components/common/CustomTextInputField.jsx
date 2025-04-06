@@ -9,14 +9,16 @@ const CustomTextInputField = ({ key, label, value, onChangeText, placeholder, se
   const theme = useTheme();
   return (
     <View style={{gap: 5}} key={key}>
-      {label && <CustomText variant="h4" >{label}</CustomText>}
+      {label && <CustomText variant="h4" >{label}
+        {rest.required && <CustomText variant="h4" color={theme.colors.error}>*</CustomText>}
+        </CustomText>}
       <TextInput
         style={[styles.input, {backgroundColor: theme.colors.surface, color: theme.colors.text.primary}]}
         {...rest}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        secureTextEntry={secureTextEntry}
+        secureTextEntry={secureTextEntry} 
         placeholderTextColor={placeholderColor || theme.colors.text.secondary}
 
       />

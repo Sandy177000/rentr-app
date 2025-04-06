@@ -49,25 +49,25 @@ const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'tex
 
 const styles = StyleSheet.create({
   h1: {
-    fontSize: 18,
+    fontSize: 19,
   },
   h2: {
-    fontSize: 16,
+    fontSize: 17,
   },
   h3: {
-    fontSize: 14,
+    fontSize: 15,
   },
   h4: {
-    fontSize: 12,
+    fontSize: 13,
   },
   h5: {
-    fontSize: 10,
+    fontSize: 11,
   },
   h6: {
-    fontSize: 8,
+    fontSize: 9,
   },
   h7: {
-    fontSize: 6,
+    fontSize: 7,
   },
   default: {
     fontSize: 11,

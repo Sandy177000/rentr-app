@@ -128,7 +128,7 @@ export default function ThemeScreen() {
       await dispatch(updateUserTheme(themeToApply)).unwrap();
       Toast.show({
         type: 'success',
-        text1: 'Theme Reset successfully',
+        text1: 'Theme Reset successful',
       });
     } catch (error) {
       console.log('Error resetting theme:', error);
@@ -144,12 +144,12 @@ export default function ThemeScreen() {
     <View style={[styles.headerContainer, {backgroundColor: theme.colors.surface}]}>
     
         <CustomButton
-          variant="secondary"
+          variant="primary"
           type="action"
           style={styles.headerButton}
           onPress={handleResetTheme}>
-          <Icon name="refresh" size={16} color={theme.colors.text.primary} />
-          <CustomText variant="h4" style={{color: theme.colors.text.primary}}>Reset</CustomText>
+          <Icon name="refresh" size={16} color={colors.white} />
+          <CustomText variant="h4" style={{color: colors.white}}>Reset</CustomText>
         </CustomButton>
 
         <CustomButton
@@ -201,7 +201,7 @@ export default function ThemeScreen() {
           style={[styles.customizationButton, {backgroundColor: theme.colors.surface}]}
           onPress={() => setColorsVisible(true)}>
           <Icon name="paint-brush" size={20} color={theme.colors.primary} />
-          <CustomText style={{color: theme.colors.text.primary}}>
+          <CustomText variant="h4" style={{color: theme.colors.text.primary}}>
             Color Scheme
           </CustomText>
         </CustomButton>
@@ -212,7 +212,7 @@ export default function ThemeScreen() {
           style={[styles.customizationButton, {backgroundColor: theme.colors.surface}]}
           onPress={() => setFontsVisible(true)}>
           <Icon name="font" size={20} color={theme.colors.primary} />
-          <CustomText style={{color: theme.colors.text.primary}}>
+          <CustomText variant="h4" style={{color: theme.colors.text.primary}}>
             Typography
           </CustomText>
         </CustomButton>

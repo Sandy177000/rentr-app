@@ -14,6 +14,7 @@ import CustomText from '../src/components/common/CustomText';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {ListItemForm} from '../src/components/ListItemForm';
 import TwoColumnListView from '../src/components/TwoColumnListView';
+import CustomModal from '../src/components/common/CustomModal';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
@@ -51,7 +52,7 @@ export const MyListingsScreen = () => {
           onRefresh={fetchListings}
           emptyText="No listings found"
         />
-        {!visible && (
+        {(
           <TouchableOpacity
             style={[
               styles.addButton,
@@ -64,17 +65,12 @@ export const MyListingsScreen = () => {
         )}
       </View>
       {visible && (
-        <CustomBottomSheet
-          theme={theme}
-          data={myListings}
-          renderItem={renderItem}
-          visible={visible}
-          setVisible={setVisible}
-          bottomSheetRef={bottomSheetRef}
-          enablePanDownToClose={false}
-          title="List New Item">
-          <ListItemForm setVisible={setVisible} />
-        </CustomBottomSheet>
+          <CustomModal
+            showModal={visible}
+            setShowModal={setVisible}
+          >
+            <ListItemForm setVisible={setVisible} />
+          </CustomModal>
       )}
     </>
   );

@@ -92,7 +92,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
           type: 'success',
           text1: 'Item deleted successfully',
         });
-        navigation.navigate('MyListings');
+       
       } else {
         Toast.show({
           type: 'error',
@@ -100,6 +100,10 @@ export const ItemDetailsScreen = ({route, navigation}) => {
           text2: 'Please try again',
         });
       }
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainTabs', params: {initialIndex: 3}}],
+      });
     } catch (error) {
       console.error('Error deleting item:', error);
       Toast.show({
@@ -221,12 +225,12 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         </CustomText>
         <CustomText
           style={[styles.price, {color: theme.colors.text.secondary}]}>
-          ${itemData.price}/day
+          Rs. {itemData.price}/day
         </CustomText>
 
         {itemData.ownerId === currentUser?.id ? (
           <View style={{gap: 10}}>
-          <CustomButton
+          {/* <CustomButton
             style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
             onPress={handleEdit}>
             <CustomText
@@ -234,9 +238,9 @@ export const ItemDetailsScreen = ({route, navigation}) => {
               style={{color: colors.white, fontWeight: '600'}}>
               Edit Item
             </CustomText>
-          </CustomButton>
+          </CustomButton> */}
           <CustomButton
-            style={[styles.rentButton, {backgroundColor: theme.colors.secondary}]}
+            style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
             onPress={() => handleDelete(itemData.id)}>
             <CustomText
               variant="h4"

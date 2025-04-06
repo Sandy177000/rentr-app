@@ -13,13 +13,15 @@ export default function Footer({fullHeight = false}) {
           backgroundColor: theme.colors.primary,
           height: fullHeight ? '100%' : 'auto',
           flex: fullHeight ? '' : 1,
+          borderColor: theme.colors.secondary,
+          borderWidth: 1,
         },
       ]}>
       <CustomText
         variant="h1"
-        bold={600}
-        style={{color:  colors.white}}>
-        Rentr. {'\u2764'}
+        bold={900}
+        style={{color: theme.colors.primary}}>
+        Rentr. {'<3'}
       </CustomText>
     </View>
   );
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.6,
+    opacity: 0.1,
+    borderTopRightRadius: 100,
   },
 });

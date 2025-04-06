@@ -3,7 +3,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  TextInput,
   StyleSheet,
   TouchableOpacity,
   Image,
@@ -25,6 +24,8 @@ import globalStyles from '../theme/global.styles';
 import {createItemFormConfig} from '../utils/form/createItem';
 import {colors} from '../theme/theme';
 import Toast from 'react-native-toast-message';
+import SelectDropdown from 'react-native-select-dropdown';
+
 
 export const ListItemForm = ({setVisible}) => {
   const theme = useTheme();
@@ -34,7 +35,7 @@ export const ListItemForm = ({setVisible}) => {
     const formFields = {};
     createItemFormConfig.forEach(group => {
       group.fields.forEach(field => {
-        formFields[field.key] = field.props.defaultValue || '';
+        formFields[field.key] = field.defaultValue || '';
       });
     });
     return formFields;
@@ -122,6 +123,7 @@ export const ListItemForm = ({setVisible}) => {
       price: 'Price',
       minimumPeriod: 'Minimum Rental Period',
       maximumPeriod: 'Maximum Rental Period',
+      category: 'Category',
     };
 
     for (const [field, label] of Object.entries(requiredFields)) {
@@ -202,17 +204,64 @@ export const ListItemForm = ({setVisible}) => {
   };
 
   const renderInput = field => {
-      switch(field.type){
+    switch (field.type) {
       case 'text':
-      case 'number':
+      case 'numeric':
         return (
           <CustomTextInputField
             {...field}
             value={formData[field.key]}
             onChangeText={value => handleFormChange(field.key, value)}
             placeholderColor={colors.gray}
-            />
+          />
         );
+      case 'select':
+        return (<View style={{flex: 1, gap: 10}}>
+          <CustomText variant="h4">{field.label}
+            {field.required && <CustomText variant="h4" color={theme.colors.error}>*</CustomText>}
+          </CustomText>
+          <SelectDropdown
+            data={field.options}
+            onSelect={value => handleFormChange(field.key, value)}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View style={{
+                  width: 200,
+                  height: 50,
+                  backgroundColor: theme.colors.surface,
+                  borderRadius: 12,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingHorizontal: 12,
+                  ...(isOpened && {backgroundColor: theme.colors.surface})}}>
+                  <CustomText variant="h4">{selectedItem || `Select ${field.label}`}</CustomText>
+                  <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} size={16} color={theme.colors.secondary} />
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  paddingHorizontal: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  ...globalStyles.borderRadius,
+                  paddingVertical: 10,
+                  ...(isSelected && {backgroundColor: theme.colors.secondary})}}>
+                  <CustomText variant="h4">{item}</CustomText>
+                </View>
+              );
+            }}
+            dropdownStyle={{
+              backgroundColor: theme.colors.surface,
+              ...globalStyles.borderRadius,
+              marginTop: 10,
+            }}
+          />
+        </View>);
       default:
         return null;
     }
@@ -222,14 +271,20 @@ export const ListItemForm = ({setVisible}) => {
     <View key={group.id} style={styles.groupContainer}>
       <CustomText variant="h4">{group.title}</CustomText>
       <Divider />
-      <View style={[group.layout === 'row' && styles.rowLayout, {gap:21}]}>
+      <View style={[group.layout === 'row' && styles.rowLayout, {gap: 21}]}>
         {group.fields.map(field => renderInput(field))}
       </View>
     </View>
   );
 
   return (
-    <>
+    <View
+      style={{
+        width: '95%',
+        height: '95%',
+        borderRadius: 10,
+        overflow: 'hidden',
+      }}>
       <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         {createItemFormConfig.map(group => renderGroup(group))}
@@ -238,20 +293,18 @@ export const ListItemForm = ({setVisible}) => {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginTop: 10,
             alignItems: 'center',
           }}>
           <CustomText
-            variant="body"
+            variant="h4"
             style={[
-              styles.sectionTitle,
+              
               {
                 color: theme.colors.text.primary,
               },
             ]}>
             Add Photos
           </CustomText>
-
           <View style={styles.imageButtons}>
             <CustomButton
               type="action"
@@ -284,12 +337,13 @@ export const ListItemForm = ({setVisible}) => {
           </View>
         </View>
         <Divider />
-        <View style={styles.imageSection}>
-          <ScrollView
-            horizontal
-            style={styles.imagePreviewContainer}
-            showsHorizontalScrollIndicator={false}>
-            {formData.images.map((image, index) => (
+        {formData.images?.length > 0 && (
+          <View style={styles.imageSection}>
+            <ScrollView
+              horizontal
+              style={styles.imagePreviewContainer}
+              showsHorizontalScrollIndicator={false}>
+              {formData.images.map((image, index) => (
               <View key={index} style={styles.imagePreview}>
                 <Image source={{uri: image.uri}} style={styles.previewImage} />
                 <TouchableOpacity
@@ -304,39 +358,47 @@ export const ListItemForm = ({setVisible}) => {
               </View>
             ))}
           </ScrollView>
-        </View>
-      </ScrollView>
-      <View style={{position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', gap: 10}}>
-        <CustomButton
-          type="action"
-          variant="secondary"
-          style={[styles.submitButton, loading && styles.disabledButton]}
-          onPress={() => setVisible(false)}
-          disabled={loading}>
+          </View>)}
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingVertical: 30,
+            gap: 10,
+          }}>
+          <CustomButton
+            type="action"
+            variant="secondary"
+            style={[styles.submitButton, loading && styles.disabledButton]}
+            onPress={() => setVisible(false)}
+            disabled={loading}>
             <View>
-              <CustomText variant="h3" style={{color: colors.white}} bold={800}>
+              <CustomText variant="h4" style={{color: colors.white}} bold={800}>
                 CANCEL
               </CustomText>
             </View>
-        </CustomButton>
-        <CustomButton
-          type="action"
-          variant="primary"
-          style={[styles.submitButton, loading && styles.disabledButton]}
-          onPress={handleSubmit}
-          disabled={loading}>
-          {loading ? (
-            <ActivityIndicator size="small" color={colors.white} />
-          ) : (
-            <View>
-              <CustomText variant="h3" style={{color: colors.white}} bold={800}>
-                LIST ITEM
-              </CustomText>
-            </View>
-          )}
-        </CustomButton>
-      </View>
-    </>
+          </CustomButton>
+          <CustomButton
+            type="action"
+            variant="primary"
+            style={[styles.submitButton, loading && styles.disabledButton]}
+            onPress={handleSubmit}
+            disabled={loading}>
+            {loading ? (
+              <ActivityIndicator size="small" color={colors.white} />
+            ) : (
+              <View>
+                <CustomText
+                  variant="h4"
+                  style={{color: colors.white}}
+                  bold={800}>
+                  LIST ITEM
+                </CustomText>
+              </View>
+            )}
+          </CustomButton>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -344,14 +406,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    padding: 16,
+    paddingBottom: 100,
   },
   sectionTitle: {
-    fontWeight: '600',
-    padding: 10,
+    paddingLeft: 10,
   },
   imageButtons: {
     flexDirection: 'row',
     gap: 10,
+  },
+  imageSection: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'rgba(86, 86, 86, 0.1)',
+    borderRadius: 10,
   },
   imageButton: {
     width: 40,
@@ -365,7 +434,6 @@ const styles = StyleSheet.create({
   imagePreviewContainer: {
     flexDirection: 'row',
     padding: 12,
-    marginBottom: 80,
   },
   imagePreview: {
     marginRight: 16,
@@ -421,8 +489,8 @@ const styles = StyleSheet.create({
   rowLayout: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
     gap: 16,
+    flex: 1
   },
   inputContainer: {
     marginBottom: 16,
