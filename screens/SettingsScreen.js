@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Linking, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +16,7 @@ const SettingsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -30,7 +31,28 @@ const SettingsScreen = () => {
     }
   };
 
-  const SettingItem = ({ title, icon, onPress, showBorder = true }) => (
+  const handleContactUs = async () => {
+    const url = 'https://www.linkedin.com/in/sandesh-yele-9b6a121bb/';
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    } else {
+      const email = 'sandeshyele2000@gmail.com';
+      const subject = 'Contact Us';
+      const body = 'Hello, I would like to contact you regarding your app.';
+      const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const canMail = await Linking.openURL(mailtoUrl);
+      if (!canMail) {
+        Alert.alert(
+          'Cannot Open Link',
+          'Please try again later or contact support directly at sandeshyele2000@gmail.com',
+          [{ text: 'OK' }]
+        );
+      }
+    }
+  };
+
+  const SettingItem = ({ title, icon, onPress}) => (
     <TouchableOpacity
       style={[
         styles.settingItem,
@@ -49,20 +71,15 @@ const SettingsScreen = () => {
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Account</CustomText>
           <SettingItem title="Personal Information" icon="user" onPress={() => { }} />
-          <SettingItem title="Notifications" icon="bell" onPress={() => { }} showBorder={false} />
-          <SettingItem title="Module" icon="list" onPress={() => { }} />
+          <SettingItem title="Notifications" icon="bell" onPress={() => { }} />
         </View>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
-          <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Preferences</CustomText>
           <SettingItem title="Theme" icon="moon-o" onPress={() => {
             navigation.navigate('Theme');
            }} />
-          <SettingItem title="Language" icon="globe" onPress={() => { }} showBorder={false} />
         </View>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
-          <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Support</CustomText>
-          <SettingItem title="Help Center" icon="question-circle" onPress={() => { }} />
-          <SettingItem title="Contact Us" icon="envelope" onPress={() => { }} />
+          <SettingItem title="Contact Us" icon="envelope" onPress={handleContactUs} />
         </View>
         <CustomButton variant="primary" type="action" onPress={handleLogout}>
           {loading ? (
@@ -106,6 +123,13 @@ const styles = StyleSheet.create({
   settingContent: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  contactButton: {
+    padding: 15,
+  },
+  contactButtonText: {
+    color: colors.primary,
+    fontWeight: '600',
   },
 });
 

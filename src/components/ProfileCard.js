@@ -111,6 +111,8 @@ const ProfileCard = ({user, theme, navigation}) => {
           {
             backgroundColor: theme.colors.background,
             shadowColor: theme.colors.primary,
+            borderColor: theme.colors.primary,
+            borderWidth: 0.2,
           },
         ]}>
         <TouchableOpacity
@@ -224,15 +226,16 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingVertical: 30,
+    borderWidth: 1,
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 30,
-    elevation: 5,
+    elevation: 15,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 12,
     },
     shadowOpacity: 1,
-    shadowRadius: 5,
+    shadowRadius: 15,
   },
   profileImageContainer: {
     position: 'relative',

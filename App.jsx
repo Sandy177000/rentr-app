@@ -1,143 +1,37 @@
 /* eslint-disable react-native/no-inline-styles */
 // App.js
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Provider} from 'react-redux';
 import store from './store/store';
-import {ItemDetailsScreen} from './screens/ItemDetailScreen';
+import ItemDetailsScreen from './screens/ItemDetailScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import {HomeScreen} from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
 import {MyListingsScreen} from './screens/MyListingsScreen';
 import {RegisterScreen} from './screens/RegisterScreen';
 import MyRentalsScreen from './screens/MyRentalsScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import {StyleSheet, useWindowDimensions} from 'react-native';
-import {PanGestureHandler} from 'react-native-gesture-handler';
 import {View} from 'react-native';
 import {useTheme} from './src/theme/ThemeProvider';
 import {LoginScreen} from './screens/LoginScreen';
 import {ThemeProvider} from './src/theme/ThemeProvider';
 import ThemeScreen from './screens/ThemeScreen';
-import ChatScreen from './screens/ChatScreen';
 import SearchScreen from './screens/SearchScreen';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import ChatDetails from './screens/ChatDetails';
 import CategoryItems from './screens/CategoryItems';
-import FavouritesScreen from './screens/FavouritesScreen';
-import {Image} from 'react-native';
 import {avatar} from './src/constants';
-import {useSelector} from 'react-redux';
-import {selectCurrentUser} from './store/authSlice';
-import {CustomImage} from './src/components/common/CustomImage';
+import CustomImage from './src/components/common/CustomImage';
 import Toast from 'react-native-toast-message';
-const Stack = createStackNavigator();
+import MainTabs from './src/components/MainTabs';
 
+
+const Stack = createStackNavigator();
 const queryClient = new QueryClient();
 
-const MainTabs = () => {
-  const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
-  const theme = useTheme();
-  const user = useSelector(selectCurrentUser);
-
-  const routes = [
-    {key: 'home', title: 'Home', icon: 'home'},
-    {key: 'favorites', title: 'Favorites', icon: 'heart'},
-    {key: 'chat', title: 'Chat', icon: 'comment'},
-    {
-      key: 'profile',
-      title: 'Profile',
-      icon: user?.profileImage || avatar,
-      type: 'image',
-    },
-  ];
-
-  const renderScene = SceneMap({
-    home: HomeScreen,
-    favorites: FavouritesScreen,
-    profile: ProfileScreen,
-    chat: ChatScreen,
-  });
-
-  const handleSwipe = direction => {
-    if (direction === 'left' && index < routes.length - 1) {
-      setIndex(index + 1);
-    } else if (direction === 'right' && index > 0) {
-      setIndex(index - 1);
-    }
-  };
-
-  const renderTabBar = props => (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: 10,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-      }}>
-      <GestureHandlerRootView>
-        <PanGestureHandler
-          onGestureEvent={({nativeEvent}) => {
-            if (nativeEvent.translationX > 50) {
-              handleSwipe('right');
-            } else if (nativeEvent.translationX < -50) {
-              handleSwipe('left');
-            }
-          }}>
-          <View>
-            <TabBar
-              {...props}
-              style={[
-                styles.tabBar,
-                {
-                  backgroundColor: theme.colors.primary,
-                },
-              ]}
-              pressColor="transparent"
-              indicatorStyle={{display: 'none'}}
-            />
-          </View>
-        </PanGestureHandler>
-      </GestureHandlerRootView>
-    </View>
-  );
-
-  const renderIcon = (route, color) => {
-    return route.type === 'image' ? (
-      <Image
-        source={{uri: route.icon}}
-        style={{width: 25, height: 25, borderRadius: 100}}
-      />
-    ) : (
-      <Icon name={route.icon} color={color} size={20} />
-    );
-  };
-
-  return (
-    <View style={{flex: 1}}>
-      <TabView
-        navigationState={{index, routes}}
-        commonOptions={{
-          icon: ({route, focused, color}) => renderIcon(route, color),
-          label: () => null,
-        }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{width: layout.width}}
-        renderTabBar={renderTabBar}
-        swipeEnabled={false}
-      />
-    </View>
-  );
-};
-
-const renderHeader = (props, route) => {
+const renderChatHeader = (props, route) => {
   return (
     <View
       style={{
@@ -243,7 +137,7 @@ const App = () => {
             options={({route}) => ({
               title: route.params?.name || 'Chat',
               headerTitleAlign: 'left',
-              headerLeft: props => renderHeader(props, route),
+              headerLeft: props => renderChatHeader(props, route),
             })}
             component={ChatDetails}
           />
@@ -272,12 +166,3 @@ const Root = () => {
 
 export default Root;
 
-const styles = StyleSheet.create({
-  tabBar: {
-    borderRadius: 300,
-    width: '80%',
-    alignSelf: 'center',
-    height: 50,
-    alignItems: 'center',
-  },
-});

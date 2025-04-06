@@ -5,35 +5,35 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import ListItem from '../src/components/ListItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../src/components/common/CustomText';
+import TwoColumnListView from '../src/components/TwoColumnListView';
 
 
 const MyRentalsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const [rentalsData, setRentalsData] = useState([]);
 
-  const renderItem = ({item, index}) => (
-    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
-  );
+  const fetchRentals = async () => {
+    setLoading(true);
+    // const rentals = await getRentals();
+    setRentalsData([]);
+    setLoading(false);
+  };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={rentalsData}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Icon name="inbox" size={50} color={theme.colors.text.secondary} />
-            <CustomText
-              style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
-              No Rentals yet
-            </CustomText>
-          </View>
-        }
+      <TwoColumnListView
+        loading={loading}
+        items={rentalsData}
+        theme={theme}
+        navigation={navigation}
+        onRefresh={()=>{
+          setLoading(true);
+          fetchRentals();
+          setLoading(false);
+        }}
+        emptyText="No rentals found"
       />
     </View>
   );

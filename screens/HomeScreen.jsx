@@ -13,15 +13,14 @@ import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import globalStyles from '../src/theme/global.styles';
-import { HorizontalListSectionShimmer } from '../src/components/common/horizontal.list.section/HorizontalListSectionShimmer';
-export const HomeScreen = () => {
+
+
+const HomeScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const items = useSelector(selectItems);
-
   const categories = [
     {id: '1', name: 'Electronics', icon: 'laptop'},
     {id: '6', name: 'Books', icon: 'book'},
@@ -44,6 +43,7 @@ export const HomeScreen = () => {
   useEffect(() => {
     fetchItems();
   }, []);
+
 
   const renderCategory = ({item}) => (
     <TouchableOpacity
@@ -84,6 +84,7 @@ export const HomeScreen = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
@@ -100,19 +101,18 @@ export const HomeScreen = () => {
               renderItem={renderRecommendation}
             />
             <Section
-              title="Books"
+              title="Recommended Books"
               data={items.filter(item => item.category === 'Books')}
               renderItem={renderRecommendation}
             />
             <Section
-              title="Electronics"
+              title="Recommended Electronics"
               data={items.filter(item => item.category === 'Electronics')}
               renderItem={renderRecommendation}
             />
           </>
         )}
-        {/* {loading && <HorizontalListSectionShimmer />} */}
-        <Footer />
+        <Footer fullHeight={items?.length == 0} />
       </ScrollView>
     </View>
   );
@@ -145,3 +145,5 @@ const styles = StyleSheet.create({
     ...globalStyles.shadow,
   },
 });
+
+export default HomeScreen;

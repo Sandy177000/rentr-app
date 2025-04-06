@@ -7,7 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectCurrentUser, logout, getUserInfo} from '../store/authSlice';
+import {selectCurrentUser, getUserInfo} from '../store/authSlice';
 import {useTheme} from '../src/theme/ThemeProvider';
 import ProfileCard from '../src/components/ProfileCard';
 import RecentItems from '../src/components/RecentItems';

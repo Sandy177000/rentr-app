@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  TextInput,
   FlatList,
   StyleSheet,
   TouchableOpacity,
@@ -11,6 +10,10 @@ import {useNavigation} from '@react-navigation/native';
 import {itemApi} from '../src/apis/item';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ListItem from '../src/components/ListItem';
+import CustomTextInputField from '../src/components/common/CustomTextInputField';
+
+
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -18,19 +21,25 @@ const SearchScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
 
-  const handleSearch = async text => {
-    setSearchQuery(text);
-    if (text.length < 2) {
+  const debouncedSearch = (query) => {
+    setSearchQuery(query);
+    setTimeout(() => {
+      handleSearch(query);
+    }, 500);
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length < 2) {
       setResults([]);
       return;
     }
 
     try {
       setLoading(true);
-      const searchResults = await itemApi.searchItems(text);
+      const searchResults = await itemApi.searchItems(query);
       setResults(searchResults);
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('Search error:', JSON.stringify(error));
       setResults([]);
     } finally {
       setLoading(false);
@@ -47,14 +56,7 @@ const SearchScreen = () => {
         },
       ]}
       onPress={() => navigation.navigate('ItemDetails', {item})}>
-      <CustomText
-        style={[styles.itemTitle, {color: theme.colors.text.primary}]}>
-        {item.title}
-      </CustomText>
-      <CustomText
-        style={[styles.itemPrice, {color: theme.colors.text.secondary}]}>
-        ${item.price}/day
-      </CustomText>
+      <ListItem item={item} theme={theme} navigation={navigation} horizontal={true} />
     </TouchableOpacity>
   );
 
@@ -65,13 +67,15 @@ const SearchScreen = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
-          <Icon name="arrow-left" size={18} color={theme.colors.text.secondary} />
+          <Icon name="angle-left" size={25} color={theme.colors.text.secondary} />
         </TouchableOpacity>
-        <TextInput
+        <CustomTextInputField
           placeholder="Search for items..."
           placeholderTextColor={theme.colors.text.secondary}
           value={searchQuery}
-          onChangeText={handleSearch}
+          style={{color: theme.colors.text.primary}}
+          onChangeText={debouncedSearch}
+          autoFocus={true}
         />
       </View>
       {loading && (
@@ -88,12 +92,15 @@ const SearchScreen = () => {
         </CustomText>
       )}
 
-      <FlatList
-        data={results}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        style={styles.resultsList}
-      />
+      <View style={styles.searchResultsContainer}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={results}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          style={styles.resultsList}
+        />
+      </View>
     </View>
   );
 };
@@ -108,7 +115,6 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     padding: 15,
-    borderBottomWidth: 1,
     marginBottom: 8,
     borderRadius: 8,
   },
@@ -139,6 +145,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: 10,
+  },
+  searchResultsContainer: {
+    flex: 1,
+    padding: 10,
   },
 });
 

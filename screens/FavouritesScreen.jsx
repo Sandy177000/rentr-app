@@ -8,6 +8,7 @@ import CustomText from '../src/components/common/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import TwoColumnListView from '../src/components/TwoColumnListView';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();
@@ -27,57 +28,46 @@ const FavouritesScreen = () => {
     }
   };
 
+  const emptyComponent = ()=>{
+    return (
+    <>
+    <Icon
+        name="heart-o"
+        size={45}
+        color={theme.colors.text.secondary}
+        style={styles.emptyIcon}
+      />
+      <CustomText
+        variant="h2"
+        style={{color: theme.colors.text.secondary}}>
+        No favourites yet
+      </CustomText>
+      <CustomText
+        variant="h3"
+        style={{color: theme.colors.text.secondary}}>
+        Items you love will appear here
+      </CustomText>
+      </>
+  )
+  };
+
   useEffect(() => {
     getFavourites();
   }, []);
 
-  const renderItem = ({item, index}) => (
-    <Animated.View
-      entering={FadeInDown.delay(index * 100)}
-    >
-      <ListItem item={item} index={index} theme={theme} navigation={navigation} />
-    </Animated.View>
-  );
 
   return (
     <>
     
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <FlatList
-        data={favourites}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={[
-          styles.listContent,
-          !favourites.length && styles.emptyListContent
-        ]}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={getFavourites} />
-        }
-        ListEmptyComponent={
-          <Animated.View 
-            entering={FadeInDown}
-            style={styles.emptyContainer}
-          >
-            <Icon
-              name="heart-o"
-              size={64}
-              color={theme.colors.text.secondary}
-              style={styles.emptyIcon}
-            />
-            <CustomText
-              style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
-              No favourites yet
-            </CustomText>
-            <CustomText
-              style={[styles.emptySubText, {color: theme.colors.text.secondary}]}>
-              Items you love will appear here
-            </CustomText>
-          </Animated.View>
-        }
+      <TwoColumnListView
+        loading={loading}
+        items={favourites}
+        theme={theme}
+        navigation={navigation}
+        onRefresh={getFavourites}
+        emptyComponent={emptyComponent}
       />
     </View>
     </>
@@ -108,7 +98,6 @@ const styles = StyleSheet.create({
   },
   emptyIcon: {
     marginBottom: 16,
-    opacity: 0.8,
   },
   emptyText: {
     fontSize: 20,

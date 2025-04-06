@@ -22,9 +22,9 @@ import {useSelector} from 'react-redux';
 import {selectCurrentUser} from '../store/authSlice';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
-import {CustomImage} from '../src/components/common/CustomImage';
+import CustomImage from '../src/components/common/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
-import { formatDate, renderDateSeparator } from '../src/utils/utils';
+import { renderDateSeparator } from '../src/utils/utils';
 import useChatMessages from '../src/hooks/chat/useChatMessages';
 import Markdown from 'react-native-markdown-display';
 
@@ -321,6 +321,7 @@ const ChatDetails = ({route, navigation}) => {
               styles.button,
               {backgroundColor: theme.colors.primary, marginLeft: 5},
             ]}
+            activeOpacity={0.9}
             onPress={handleModal}>
             <Icon
               name={showModal ? 'close' : 'plus'}
@@ -343,7 +344,8 @@ const ChatDetails = ({route, navigation}) => {
                 styles.button,
                 {backgroundColor: theme.colors.primary, padding: 0},
               ]}
-              disabled={loadingMessage}>
+              disabled={loadingMessage}
+              activeOpacity={0.9}>
               {
                 loadingMessage ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
@@ -371,7 +373,8 @@ const ChatDetails = ({route, navigation}) => {
                 <CustomImage source={image.uri} style={styles.previewImage} />
                 <TouchableOpacity
                   style={styles.removeImageButton}
-                  onPress={() => removeMedia(index)}>
+                  onPress={() => removeMedia(index)}
+                  activeOpacity={0.9}>
                   <Icon
                     name="times-circle"
                     size={24}
@@ -391,12 +394,14 @@ const ChatDetails = ({route, navigation}) => {
       <Animated.View style={[styles.modalContainer, {height: modalHeight}]}>
           <TouchableOpacity
             style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={() => handleImagePicker('camera')}>
+            onPress={() => handleImagePicker('camera')}
+            activeOpacity={0.9}>
             <Icon name="camera" size={15} color={'#FFFFFF'} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={() => handleImagePicker('gallery')}>
+            onPress={() => handleImagePicker('gallery')}
+            activeOpacity={0.9}>
             <Icon name="image" size={15} color={'#FFFFFF'} />
           </TouchableOpacity>
         </Animated.View>
@@ -418,7 +423,6 @@ const ChatDetails = ({route, navigation}) => {
           }
           data={[...messages].reverse()}
           renderItem={renderMessage}
-          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.messageList}
           inverted={true}
         />

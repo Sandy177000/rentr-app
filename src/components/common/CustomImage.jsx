@@ -4,7 +4,7 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
 import { placeholderImage } from '../../constants';
 
-export const CustomImage = ({source, style, overlay, placeholder, showLoading = true}) => {
+const CustomImage = ({source, style, overlay, placeholder, showLoading = true}) => {
   const [imageLoading, setImageLoading] = useState(true);
   const theme = useTheme();
   return (
@@ -45,3 +45,5 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
+
+export default CustomImage;

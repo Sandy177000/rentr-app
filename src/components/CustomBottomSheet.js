@@ -83,6 +83,7 @@ export default CustomBottomSheet;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
   contentContainer: {
     padding: 20,

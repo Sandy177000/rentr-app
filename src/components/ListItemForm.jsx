@@ -313,15 +313,11 @@ export const ListItemForm = ({setVisible}) => {
           style={[styles.submitButton, loading && styles.disabledButton]}
           onPress={() => setVisible(false)}
           disabled={loading}>
-          {loading ? (
-            <ActivityIndicator size="small" color={colors.white} />
-          ) : (
             <View>
               <CustomText variant="h3" style={{color: colors.white}} bold={800}>
                 CANCEL
               </CustomText>
             </View>
-          )}
         </CustomButton>
         <CustomButton
           type="action"

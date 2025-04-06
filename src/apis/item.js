@@ -37,12 +37,35 @@ export const itemApi = {
     return response.data;
   },
   deleteItem: async (id) => {
-    const response = await axios.delete(`${API_BASE_URL}/items/${id}`);
-    return response.data;
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return {error: 'User not found'};
+    }
+    const response = await axios.delete(`${API_BASE_URL}/items/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      throw error.message;
+    }
   },
   searchItems: async (query) => {
-    const response = await axios.get(`${API_BASE_URL}/items/search?query=${query}`);
-    return response.data;
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/items/search?query=${query}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Search error:', JSON.stringify(error));
+      throw error.message;
+    }
   },
   getUserItems: async () => {
     try {
@@ -63,6 +86,23 @@ export const itemApi = {
       return response.data;
     } catch (error) {
       console.error('Error fetching user items:', error);
+      throw error.message;
+    }
+  },
+  getCategoryItems: async (category) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return [];
+    }
+    const response = await axios.get(`${API_BASE_URL}/items/category?category=${category}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+    } catch (error) {
+      console.error('Error fetching category items:', error);
       throw error.message;
     }
   },

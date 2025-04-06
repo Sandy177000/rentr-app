@@ -6,7 +6,7 @@ import {useTheme} from '../theme/ThemeProvider';
 import {avatar} from '../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/authSlice';
-import { CustomImage } from './common/CustomImage';
+import CustomImage from './common/CustomImage';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();

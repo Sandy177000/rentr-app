@@ -14,8 +14,8 @@ export default EmptyListComponent;
 
 const styles = StyleSheet.create({
     emptyContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        flex: 1,
     },
 });

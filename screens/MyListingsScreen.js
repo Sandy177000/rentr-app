@@ -1,11 +1,9 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  RefreshControl,
 } from 'react-native';
 import {itemApi} from '../src/apis/item';
 import {useTheme} from '../src/theme/ThemeProvider';
@@ -15,8 +13,7 @@ import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/common/CustomText';
 import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {ListItemForm} from '../src/components/ListItemForm';
-import {BottomGradient} from '../src/components/BottomGradient';
-import EmptyListComponent from '../src/components/EmptyListComponent';
+import TwoColumnListView from '../src/components/TwoColumnListView';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
 
@@ -46,35 +43,13 @@ export const MyListingsScreen = () => {
     <>
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <FlatList
-          data={myListings}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.listContent}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={fetchListings} />
-          }
-          ListEmptyComponent={
-            !loading &&
-            myListings.length === 0 && (
-              <EmptyListComponent>
-                <Icon
-                  name="inbox"
-                  size={50}
-                  color={theme.colors.text.secondary}
-                />
-                <CustomText
-                  style={[
-                    styles.emptyText,
-                    {color: theme.colors.text.secondary},
-                  ]}>
-                  No listings yet
-                </CustomText>
-              </EmptyListComponent>
-            )
-          }
+        <TwoColumnListView
+          loading={loading}
+          items={myListings}
+          theme={theme}
+          navigation={navigation}
+          onRefresh={fetchListings}
+          emptyText="No listings found"
         />
         {!visible && (
           <TouchableOpacity
@@ -101,7 +76,6 @@ export const MyListingsScreen = () => {
           <ListItemForm setVisible={setVisible} />
         </CustomBottomSheet>
       )}
-      {/* {!visible && <BottomGradient theme={theme} zIndex={1} />} */}
     </>
   );
 };
