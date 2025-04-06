@@ -11,33 +11,42 @@ export const HorizontalListSection = ({title, data, renderItem}) => {
       {data.length > 0 && (
         <View
           style={{
-            padding: 8,
-            borderRadius: 12,
+            padding: 10,
+            borderRadius: 30,
             marginBottom: 8,
           }}>
+          {title && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingBottom: 8,
+              }}>
+              <CustomText
+                style={{color: theme.colors.text.primary, marginLeft: 10}}
+                variant="h4"
+                bold={700}>
+                {title?.toUpperCase()}
+              </CustomText>
+            </View>
+          )}
           <View
             style={{
+              borderRadius: 30,
+              overflow: 'hidden',
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingBottom: 8,
             }}>
-            <CustomText
-              style={{color: theme.colors.text.primary, marginLeft: 10}}
-              variant="h4"
-              bold={700}>
-              {title?.toUpperCase()}
-            </CustomText>
+            <FlatList
+              horizontal
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+              showsHorizontalScrollIndicator={false}
+              ItemSeparatorComponent={() => <View style={{width: 10}} />}
+              contentContainerStyle={{paddingHorizontal: 10, marginBottom: 2}}
+            />
           </View>
-          <FlatList
-            horizontal
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{width: 10}} />}
-            contentContainerStyle={{paddingHorizontal: 4, marginBottom: 2}}
-          />
         </View>
       )}
     </>

@@ -4,6 +4,7 @@ import CustomButton from './common/CustomButton';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import globalStyles from '../theme/global.styles';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
@@ -13,28 +14,30 @@ const VerticalItemCard = ({
   navigation,
   isFavourite,
   handleFavourite,
+  showFavorite,
 }) => {
   return (
     <>
       <View style={styles.itemCard}>
-        <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-          {isFavourite ? (
-            <Icon name="heart" size={22} color={theme.colors.primary} />
-          ) : (
-            <Icon name="heart-o" size={22} color={'#FFFFFF'} />
-          )}
-        </CustomButton>
+        {showFavorite && (
+          <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
+            {isFavourite ? (
+              <Icon name="heart" size={22} color={theme.colors.primary} />
+            ) : (
+              <Icon name="heart-o" size={22} color={'#FFFFFF'} />
+            )}
+          </CustomButton>
+        )}
         <CustomButton
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite})}>
+          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite, showFavorite})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}
             overlay
           />
         </CustomButton>
-      </View>
-      <View style={styles.itemContent}>
+        <View style={styles.itemContent}>
         <CustomText
           bold={600}
           variant="h4"
@@ -49,6 +52,8 @@ const VerticalItemCard = ({
           Rs. {item.price}/day
         </CustomText>
       </View>
+      </View>
+      
     </>
   );
 };
@@ -74,6 +79,7 @@ const styles = StyleSheet.create({
     width: COLUMN_WIDTH,
     borderRadius: 12,
     overflow: 'hidden',
+    ...globalStyles.shadow,
   },
   imageContainer: {
     width: '100%',
@@ -95,6 +101,16 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     paddingTop: 10,
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    paddingBottom: 30,
+    paddingHorizontal: 10,
+
   },
   itemPrice: {
     marginBottom: 12,

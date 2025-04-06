@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CustomTextInputField = ({label, value, onChangeText, placeholder, placeholderColor, required = false, type = 'text' }) => {
   const theme = useTheme();
-  const [secureTextEntry, setSecureTextEntry] = useState(type === 'password');
+  const [secureTextEntry, setSecureTextEntry] = useState();
 
   const toggleSecureTextEntry = () => {
     setSecureTextEntry(!secureTextEntry);

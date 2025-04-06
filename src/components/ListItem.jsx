@@ -10,7 +10,7 @@ import Animated, {FadeInDown} from 'react-native-reanimated';
 import VerticalItemCard from './VerticalItemCard';
 import HorizontalItemCard from './HorizontalItemCard';
 
-const ListItem = ({item, theme, index, navigation, animate = true, horizontal = false}) => {
+const ListItem = ({item, theme, index, navigation, animate = true, horizontal = false, showFavorite = false}) => {
   const dispatch = useDispatch();
   const [isFavourite, setIsFavourite] = useState(item.isFavorite);
 
@@ -40,6 +40,7 @@ const ListItem = ({item, theme, index, navigation, animate = true, horizontal = 
           navigation={navigation}
           isFavourite={isFavourite}
           handleFavourite={handleFavourite}
+          showFavorite={showFavorite}
         />
       ) : (
         <VerticalItemCard
@@ -48,6 +49,7 @@ const ListItem = ({item, theme, index, navigation, animate = true, horizontal = 
           navigation={navigation}
           isFavourite={isFavourite}
           handleFavourite={handleFavourite}
+          showFavorite={showFavorite}
         />
       )}
     </Animated.View>

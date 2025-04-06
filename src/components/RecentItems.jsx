@@ -35,7 +35,7 @@ const RecentItems = ({theme, type, title, limit}) => {
         <View style={styles.recentSection}>
           <CustomText
             bold={600}
-            variant="h4"
+            variant="h3"
             style={[{color: theme.colors.text.primary}]}>
             {title}
           </CustomText>

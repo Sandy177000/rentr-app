@@ -36,9 +36,6 @@ export const MyListingsScreen = () => {
     fetchListings();
   }, []);
 
-  const renderItem = ({item, index}) => (
-    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
-  );
 
   return (
     <>
@@ -51,6 +48,7 @@ export const MyListingsScreen = () => {
           navigation={navigation}
           onRefresh={fetchListings}
           emptyText="No listings found"
+          showFavorite={true}
         />
         {(
           <TouchableOpacity

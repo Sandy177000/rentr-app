@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {StyleSheet} from 'react-native';
 import {useState} from 'react';
 import { useTheme } from '../theme/ThemeProvider';
+import { MyListingsScreen } from '../../screens/MyListingsScreen';
 
 const MainTabs = () => {
 
@@ -27,6 +28,7 @@ const MainTabs = () => {
   const routes = [
     {key: 'home', title: 'Home', icon: 'home'},
     {key: 'favorites', title: 'Favorites', icon: 'heart'},
+    {key: 'new', title: 'New', icon: 'plus'},
     {key: 'chat', title: 'Chat', icon: 'comment'},
     {
       key: 'profile',
@@ -39,6 +41,7 @@ const MainTabs = () => {
   const renderScene = SceneMap({
     home: HomeScreen,
     favorites: FavouritesScreen,
+    new: MyListingsScreen,
     profile: ProfileScreen,
     chat: ChatScreen,
   });
@@ -77,18 +80,20 @@ const MainTabs = () => {
                     onPress={() => setIndex(i)}
                     activeOpacity={0.9}
                   >
+                    <View style={{backgroundColor: isActive ? 'white' : theme.colors.primary, width: 40, height: 40, borderRadius: 100, alignItems: 'center', justifyContent: 'center'}}>
                     {route.type === 'image' ? (
                       <Image
                         source={{uri: route.icon}}
                         style={{width: 25, height: 25, borderRadius: 100}}
                       />
                     ) : (
-                      <Icon
-                        name={route.icon}
-                        color={isActive ? 'white' : 'rgba(255, 255, 255, 0.6)'}
-                        size={20}
-                      />
+                        <Icon
+                          name={route.icon}
+                          color={isActive ? theme.colors.primary : 'white'}
+                          size={20}
+                        />
                     )}
+                      </View>
                   </TouchableOpacity>
                 );
               })}
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 300,
     width: '80%',
     alignSelf: 'center',
-    height: 50,
+    height: 60,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

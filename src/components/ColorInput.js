@@ -40,21 +40,10 @@ const ColorInput = ({ label, value, path, onChangeColor }) => {
       <CustomText style={[styles.label, { color: theme.colors.text.primary }]}>
         {label}
       </CustomText>
-      
       <View style={styles.inputContainer}>
-        <CustomTextInputField
-          style={[
-            styles.input,
-            {
-                backgroundColor: theme.colors.surface,
-                color: theme.colors.text.primary,
-            }
-          ]}
-          value={value}
-          onChangeText={handleTextInputChange}
-          placeholderTextColor={theme.colors.text.secondary}
-        />
-        
+        <CustomText style={{color: theme.colors.text.primary, flex: 1}}>
+          {value}
+        </CustomText>
         <TouchableOpacity 
           onPress={togglePicker}
           accessibilityLabel={`Open color picker for ${label.toLowerCase()}`}
@@ -100,7 +89,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
+    padding: 20,
   },
   colorPreview: {
     width: 40,

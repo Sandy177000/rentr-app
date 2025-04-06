@@ -35,7 +35,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const theme = useTheme();
-  let {item, itemId, isFavourite} = route.params;
+  let {item, itemId, isFavourite, showFavorite} = route.params;
   const [itemData, setItemData] = useState(item);
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -192,13 +192,15 @@ export const ItemDetailsScreen = ({route, navigation}) => {
       {itemData && <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.carouselContainer}>
-          <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-            {favourite ? (
-              <Icon name="heart" size={22} color={theme.colors.primary} />
-            ) : (
-              <Icon name="heart-o" size={22} color={colors.white} />
-            )}
-          </CustomButton>
+          {showFavorite && (
+            <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
+              {favourite ? (
+                <Icon name="heart" size={22} color={theme.colors.primary} />
+              ) : (
+                <Icon name="heart-o" size={22} color={colors.white} />
+              )}
+            </CustomButton>
+          )}
           <Carousel
             loop
             width={width - 40}
@@ -319,7 +321,7 @@ const styles = StyleSheet.create({
   },
   rentButton: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },

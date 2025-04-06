@@ -11,7 +11,7 @@ export default function Footer({fullHeight = false}) {
         styles.container,
         {
           backgroundColor: theme.colors.primary,
-          height: fullHeight ? '100%' : '50%',
+          height: fullHeight ? '100%' : 300,
           flex: fullHeight ? 1 : 1,
           borderColor: theme.colors.secondary,
           borderWidth: 1,

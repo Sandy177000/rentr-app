@@ -13,8 +13,7 @@ import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import globalStyles from '../src/theme/global.styles';
-import { itemApi } from '../src/apis/item';
-
+import Icons from 'react-native-vector-icons/FontAwesome';
 
 const HomeScreen = () => {
   const theme = useTheme();
@@ -45,7 +44,6 @@ const HomeScreen = () => {
     fetchItems();
   }, [dispatch, fetchItems]);
 
-
   const renderCategory = ({item}) => (
     <TouchableOpacity
       style={[styles.categoryItem, {backgroundColor: theme.colors.surface}]}
@@ -60,7 +58,9 @@ const HomeScreen = () => {
   );
 
   const renderRecommendation = ({item, index}) => (
-    <ListItem item={item} index={index} theme={theme} navigation={navigation} />
+    <View style={{padding: 3}}>
+      <ListItem item={item} index={index} theme={theme} navigation={navigation} showFavorite={true} />
+    </View>
   );
 
   const handleRefresh = async () => {
@@ -72,28 +72,38 @@ const HomeScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[styles.searchContainer, {backgroundColor: theme.colors.surface}]}>
-        <CustomButton
-          onPress={() => navigation.navigate('Search')}
-          style={[styles.searchPlaceholder]}>
-          <Icon name="search" size={20} color={theme.colors.text.secondary} />
-          <CustomText variant="h4" style={{color: theme.colors.text.secondary}}>
-            Search for items...
-          </CustomText>
-        </CustomButton>
-      </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }>
+      <View style={{flexDirection: 'column', backgroundColor: theme.colors.background, borderBottomLeftRadius: 40, borderBottomRightRadius: 40}}>
+        
+        <View
+          style={[
+            styles.searchContainer,
+            {backgroundColor: theme.colors.surface},
+          ]}>
+          <CustomButton
+            onPress={() => navigation.navigate('Search')}
+            style={[styles.searchPlaceholder]}>
+            <Icon name="search" size={20} color={theme.colors.text.secondary} />
+            <CustomText
+              variant="h4"
+              style={{color: theme.colors.text.secondary}}>
+              Search for items...
+            </CustomText>
+          </CustomButton>
+          
+        </View>
+        
         <Section
-          title="Categories"
           data={categories}
           renderItem={renderCategory}
         />
+      </View>
+
+      <View style={{flex: 1, borderTopLeftRadius: 40, borderTopRightRadius: 40, overflow: 'hidden', backgroundColor: theme.colors.background}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
         {items && (
           <>
             <Section
@@ -102,7 +112,7 @@ const HomeScreen = () => {
               renderItem={renderRecommendation}
             />
             <Section
-              title="Recommended Books"
+              title="Goods near you"
               data={items.filter(item => item.category === 'Books')}
               renderItem={renderRecommendation}
             />
@@ -115,6 +125,7 @@ const HomeScreen = () => {
         )}
         <Footer fullHeight={items?.length == 0} />
       </ScrollView>
+      </View>
     </View>
   );
 };
@@ -122,29 +133,29 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 3,
   },
   searchPlaceholder: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    ...globalStyles.borderRadius,
   },
   searchContainer: {
-    margin: 10,
-    padding: 10,
+    padding: 15,
     flexDirection: 'row',
-    ...globalStyles.borderRadius,
-    ...globalStyles.shadow,
+    borderRadius: 30,
+    margin: 10,
   },
   categoryItem: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
     minWidth: 120,
     gap: 8,
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
     ...globalStyles.shadow,
   },
 });

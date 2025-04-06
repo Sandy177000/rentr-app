@@ -2,9 +2,9 @@ import {StyleSheet} from 'react-native';
 
 const globalStyles = StyleSheet.create({
   shadow: {
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: {width: 10, height: 12},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },

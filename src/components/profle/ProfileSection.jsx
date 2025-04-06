@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    padding: 15,
+    padding: 25,
     marginBottom: 10,
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
     ...globalStyles.shadow,
   },
   sectionContent: {

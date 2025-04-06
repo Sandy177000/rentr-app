@@ -12,13 +12,14 @@ const HorizontalItemCard = ({
   navigation,
   isFavourite,
   handleFavourite,
+  showFavorite,
 }) => {
   return (
     <View style={styles.itemCard}>
       <View style={styles.itemInfoContainer}>
         <CustomButton
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite})}>
+          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite, showFavorite})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}
@@ -41,13 +42,15 @@ const HorizontalItemCard = ({
           </CustomText>
         </View>
       </View>
-      <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-        {isFavourite ? (
-          <Icon name="heart" size={22} color={theme.colors.primary} />
-        ) : (
+      {showFavorite && (
+        <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
+          {isFavourite ? (
+            <Icon name="heart" size={22} color={theme.colors.primary} />
+          ) : (
           <Icon name="heart-o" size={22} color={'#FFFFFF'} />
-        )}
-      </CustomButton>
+          )}
+        </CustomButton>
+      )}
     </View>
   );
 };
@@ -57,14 +60,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     overflow: 'hidden',
+    borderRadius: 12,
   },
   itemInfoContainer: {
     flexDirection: 'row',
     gap: 10,
+
   },
   imageContainer: {
     width: 70,
     height: 70,
+    overflow: 'hidden',
+
   },
   itemImage: {
     width: '100%',

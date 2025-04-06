@@ -19,6 +19,7 @@ const TwoColumnListView = ({
   onRefresh,
   emptyText,
   emptyComponent,
+  showFavorite,
 }) => {
   const getEmptyComponent = () => {
     if (!loading && items.length === 0) {
@@ -26,8 +27,8 @@ const TwoColumnListView = ({
         <EmptyListComponent>
           {emptyText ? (
             <View style={{backgroundColor: 'rgba(128, 128, 128, 0.1)', 
-              padding: 16, 
-              borderRadius: 16, 
+              padding: 30, 
+              borderRadius: 30, 
               alignItems: 'center',
               justifyContent: 'center',
               gap: 10,
@@ -68,6 +69,7 @@ const TwoColumnListView = ({
                 index={index}
                 theme={theme}
                 navigation={navigation}
+                showFavorite={showFavorite}
               />
             );
           }}

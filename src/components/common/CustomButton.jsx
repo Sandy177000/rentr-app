@@ -53,7 +53,7 @@ const CustomButton = ({ onPress, style, children, variant = '', disabled = false
 
 const styles = StyleSheet.create({
   button: {
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
     flexDirection: 'row',
   },
   centerContent: {

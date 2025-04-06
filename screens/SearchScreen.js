@@ -12,6 +12,7 @@ import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from '../src/components/ListItem';
 import CustomTextInputField from '../src/components/common/CustomTextInputField';
+import { TextInput } from 'react-native-gesture-handler';
 
 
 const SearchScreen = () => {
@@ -56,7 +57,7 @@ const SearchScreen = () => {
         },
       ]}
       onPress={() => navigation.navigate('ItemDetails', {item})}>
-      <ListItem item={item} theme={theme} navigation={navigation} horizontal={true} />
+      <ListItem item={item} theme={theme} navigation={navigation} horizontal={true} showFavorite={true} />
     </TouchableOpacity>
   );
 
@@ -69,13 +70,12 @@ const SearchScreen = () => {
           style={styles.backButton}>
           <Icon name="angle-left" size={25} color={theme.colors.text.secondary} />
         </TouchableOpacity>
-        <CustomTextInputField
+        <TextInput
           placeholder="Search for items..."
           placeholderTextColor={theme.colors.text.secondary}
           value={searchQuery}
-          style={{color: theme.colors.text.primary}}
+          style={{color: theme.colors.text.primary,  width: '100%'}}
           onChangeText={debouncedSearch}
-          autoFocus={true}
         />
       </View>
       {loading && (
@@ -108,7 +108,7 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 5,
+    padding: 10,
   },
   resultsList: {
     flex: 1,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   itemCard: {
     padding: 15,
     marginBottom: 8,
-    borderRadius: 8,
+    borderRadius: 25,
   },
   itemTitle: {
     fontSize: 18,
@@ -133,18 +133,17 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    borderRadius: 15,
+    borderRadius: 30,
     margin: 8,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    height: 50,
     alignItems: 'center',
-    gap: 10,
+    gap: 15,
   },
   backButton: {
-    marginLeft: 10,
+    marginLeft: 25,
   },
   searchResultsContainer: {
     flex: 1,

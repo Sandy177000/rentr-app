@@ -103,13 +103,13 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 5,
+    padding: 10,
   },
   section: {
     marginBottom: 20,
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
     overflow: 'hidden',
-    padding: 8,
+    padding: 15,
   },
   sectionTitle: {
     fontWeight: '600',

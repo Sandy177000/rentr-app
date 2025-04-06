@@ -67,6 +67,7 @@ const FavouritesScreen = () => {
         navigation={navigation}
         onRefresh={getFavourites}
         emptyComponent={emptyComponent}
+        showFavorite={true}
       />
     </View>
   );
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
-    ...globalStyles.borderRadius,
+    borderRadius: 30,
   },
   emptyIcon: {
     marginBottom: 16,

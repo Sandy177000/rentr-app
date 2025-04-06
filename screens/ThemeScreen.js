@@ -287,13 +287,14 @@ export default function ThemeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 10,
   },
   contentContainer: {
     padding: 16,
   },
   headerContainer: {
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 30,
     marginTop: 16,
     gap: 16,
     flexDirection: 'row',
@@ -312,14 +313,14 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 30,
   },
   themeToggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 30,
     marginBottom: 24,
   },
   themeToggleLeft: {
@@ -341,6 +342,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 30,
   },
 });

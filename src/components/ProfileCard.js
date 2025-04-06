@@ -18,6 +18,7 @@ import {userApi} from '../apis/user';
 import CustomText from './common/CustomText';
 import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { colors } from '../theme/theme';
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -178,6 +179,24 @@ const ProfilePickerModal = ({
               borderWidth: 0.2,
             },
           ]}>
+          <TouchableOpacity
+            style={[
+              {
+                backgroundColor: theme.colors.primary,
+                position: 'absolute',
+                top: -10,
+                right: -10,
+                borderRadius: 100,
+                height: 40,
+                width: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+            ]}
+            onPress={() => setModalVisible(false)} // Close the modal
+          >
+            <Icon name="close" size={20} color={colors.white} />
+          </TouchableOpacity>
           <CustomText
             style={[styles.modalTitle, {color: theme.colors.text.primary}]}>
             Update Profile Picture
@@ -203,20 +222,6 @@ const ProfilePickerModal = ({
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.modalButton,
-              {
-                backgroundColor: theme.colors.primary,
-                padding: 10,
-              },
-            ]}
-            onPress={() => setModalVisible(false)} // Close the modal
-          >
-            <CustomText style={[styles.modalButtonText, {color: '#FFFFFF'}]}>
-              Cancel
-            </CustomText>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -277,8 +282,9 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 30,
     width: '70%',
+    position: 'relative',
   },
   modalButtonContainer: {
     flexDirection: 'row',
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalButton: {
-    borderRadius: 12,
+    borderRadius: 100,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',

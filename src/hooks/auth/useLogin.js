@@ -19,7 +19,7 @@ export const useLogin = () => {
   // const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
   // const [email, setEmail] = useState('t@t.c'); // hello@world.com
   // const [password, setPassword] = useState('Test@123'); // Sandesh@2000
-  const [formData, setFormData] = useState({email: '', password: ''}); // hello@world.com
+  const [formData, setFormData] = useState({email: 'sandeshyele2000@gmail.com', password: 'Qwerty@12345'}); // hello@world.com
   const error = useSelector(selectAuthError);
 
   const handleLogin = async () => {
