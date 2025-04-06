@@ -106,4 +106,21 @@ export const itemApi = {
       throw error.message;
     }
   },
+  getItemById: async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return [];
+      }
+    const response = await axios.get(`${API_BASE_URL}/items/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+    } catch (error) {
+      console.error('Error fetching item by id:', error);
+      throw error.message;
+    }
+  },
 };

@@ -15,7 +15,7 @@ import CustomBottomSheet from '../src/components/CustomBottomSheet';
 import {ListItemForm} from '../src/components/ListItemForm';
 import TwoColumnListView from '../src/components/TwoColumnListView';
 const {width} = Dimensions.get('window');
-const COLUMN_WIDTH = (width - 48) / 2; // 48 = padding left + right + gap
+const COLUMN_WIDTH = (width - 48) / 2;
 
 export const MyListingsScreen = () => {
   const [myListings, setMyListings] = useState([]);

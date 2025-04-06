@@ -11,7 +11,8 @@ export default function Footer({fullHeight = false}) {
         styles.container,
         {
           backgroundColor: theme.colors.primary,
-          height: fullHeight ? '90%' : 200,
+          height: fullHeight ? '100%' : 'auto',
+          flex: fullHeight ? '' : 1,
         },
       ]}>
       <CustomText

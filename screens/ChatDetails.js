@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
+import _ from 'lodash';
 import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../src/components/common/CustomText';
@@ -24,9 +25,12 @@ import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
 import CustomImage from '../src/components/common/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
-import { renderDateSeparator } from '../src/utils/utils';
+import {formatDate, renderDateSeparator} from '../src/utils/utils';
 import useChatMessages from '../src/hooks/chat/useChatMessages';
 import Markdown from 'react-native-markdown-display';
+import CustomButton from '../src/components/common/CustomButton';
+import Toast from 'react-native-toast-message';
+import {colors} from '../src/theme/theme';
 
 const ChatDetails = ({route, navigation}) => {
   const theme = useTheme();
@@ -35,11 +39,11 @@ const ChatDetails = ({route, navigation}) => {
   const flatListRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const modalHeight = useRef(new Animated.Value(0)).current;
-  const participant = chat?.participants?.filter(p => p.user.id !== user.id);
+  const participant = chat?.participants?.filter(p => p.user?.id !== user?.id);
   const [selectedImages, setSelectedImages] = useState(null);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const width = Dimensions.get('window').width;
-  
+
   const {
     loading,
     loadingMessage,
@@ -55,11 +59,11 @@ const ChatDetails = ({route, navigation}) => {
   } = useChatMessages(roomId, token, user, item);
 
   useEffect(() => {
-    let title = participant.map(p => p.user.firstName).join(', ');
+    let title = participant.map(p => p.user?.firstName).join(', ');
     navigation.setOptions({
       title: title,
     });
-  }, [navigation, chat, roomId, user.id]);
+  }, [navigation, chat, roomId, user?.id]);
 
   // // Add this function to scroll to the bottom
   // const scrollToBottom = useCallback(() => {
@@ -134,22 +138,39 @@ const ChatDetails = ({route, navigation}) => {
     }
   };
 
+  const handleMessageLink = link => {
+    try {
+      navigation.navigate(link.screen, link.params);
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        text1: 'Error',
+        text2: 'Failed to navigate to the link',
+        type: 'error',
+      });
+    }
+  };
+
   const renderMessage = ({item: messageItem, index}) => {
     const prevMessage = messages[index + 1];
     const showDateSeparator = renderDateSeparator(messageItem, prevMessage);
+    const link = _.get(messageItem, 'metadata.link', {});
+    console.log('messageItem', messageItem.metadata);
     return (
-      <>
+      <View>
         <View
           style={[
             styles.message,
-            messageItem.sender.id === user.id ? styles.myMessage : styles.theirMessage,
+            messageItem.sender.id === user?.id
+              ? styles.myMessage
+              : styles.theirMessage,
           ]}>
           <View
             style={[
               styles.messageBubble,
               {
                 backgroundColor:
-                  messageItem.sender.id === user.id
+                  messageItem.sender.id === user?.id
                     ? theme.colors.primary
                     : theme.colors.background,
               },
@@ -174,55 +195,54 @@ const ChatDetails = ({route, navigation}) => {
                           source={{uri: image}}
                           style={[styles.messageImage, {marginBottom: 5}]}
                           resizeMode={FastImage.resizeMode.cover}
-                          onLoadStart={() => <View style={styles.messageImage} />}
+                          onLoadStart={() => (
+                            <View style={styles.messageImage} />
+                          )}
                         />
-                      </TouchableOpacity>))
+                      </TouchableOpacity>
+                    ))
                   ) : (
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                      {messageItem.media.slice(0, 4).map((image, messageItemIndex) => (
-                        <TouchableOpacity
-                          key={messageItemIndex}
-                          onPress={() => {
-                            setSelectedImages(messageItem.media);
-                            setShowImageCarousel(true);
-                          }}>
-                          <FastImage
-                            source={{uri: image}}
-                            style={{
-                              width: 120,
-                              height: 120,
-                              borderRadius: 10,
-                              margin: 2,
-                            }}
-                            resizeMode={FastImage.resizeMode.cover}
-                          />
-                          {index === 3 && messageItem.media.length > 4 && (
-                            <View style={styles.imageCountOverlay}>
-                              <CustomText style={styles.imageCountText}>
-                                +{messageItem.media.length - 4}
-                              </CustomText>
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      ))}
+                      {messageItem.media
+                        .slice(0, 4)
+                        .map((image, messageItemIndex) => (
+                          <TouchableOpacity
+                            key={messageItemIndex}
+                            onPress={() => {
+                              setSelectedImages(messageItem.media);
+                              setShowImageCarousel(true);
+                            }}>
+                            <FastImage
+                              source={{uri: image}}
+                              style={{
+                                width: 120,
+                                height: 120,
+                                borderRadius: 10,
+                                margin: 2,
+                              }}
+                              resizeMode={FastImage.resizeMode.cover}
+                            />
+                            {index === 3 && messageItem.media.length > 4 && (
+                              <View style={styles.imageCountOverlay}>
+                                <CustomText style={styles.imageCountText}>
+                                  +{messageItem.media.length - 4}
+                                </CustomText>
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                        ))}
                     </View>
                   )}
                 </View>
               </View>
             )}
             <Markdown
-              onLinkPress={(url) => {
-                if (url.startsWith('itemId=')) {
-                  const itemId = url.split('=')[1];
-                  console.log('itemId', itemId);
-                  navigation.navigate('ItemDetails', { item, itemId });
-                }
-              }}
               style={{
                 body: {
-                  color: messageItem.sender.id === user.id 
-                    ? '#FFFFFF' 
-                    : theme.colors.text.primary,
+                  color:
+                    messageItem.sender.id === user?.id
+                      ? '#FFFFFF'
+                      : theme.colors.text.primary,
                   fontSize: 14,
                   marginLeft: 5,
                 },
@@ -242,17 +262,51 @@ const ChatDetails = ({route, navigation}) => {
                   backgroundColor: theme.colors.surface,
                   padding: 4,
                   borderRadius: 2,
-                }
+                },
               }}>
               {messageItem.content}
             </Markdown>
+            {link.screen && link.params && (
+              <CustomButton
+                type="action"
+                style={{
+                  gap: 5,
+                  backgroundColor:
+                    messageItem.sender.id !== user?.id
+                      ? theme.colors.primary
+                      : theme.colors.background,
+                }}
+                onPress={() => {
+                  handleMessageLink(link);
+                }}>
+                <CustomText
+                  variant="h4"
+                  style={{
+                    color:
+                      messageItem.sender.id !== user?.id
+                        ? colors.white
+                        : theme.colors.primary,
+                  }}>
+                  Open Link
+                </CustomText>
+                <Icon
+                  name="external-link"
+                  size={15}
+                  color={
+                    messageItem.sender.id !== user?.id
+                      ? colors.white
+                      : theme.colors.primary
+                  }
+                />
+              </CustomButton>
+            )}
             <CustomText
               variant="h4"
               style={[
                 styles.timestamp,
                 {
                   color:
-                    messageItem.sender.id === user.id
+                    messageItem.sender.id === user?.id
                       ? 'rgba(255, 255, 255, 0.7)'
                       : theme.colors.text.secondary,
                 },
@@ -276,13 +330,14 @@ const ChatDetails = ({route, navigation}) => {
             </CustomText>
           </View>
         )} */}
-      </>
+      </View>
     );
   };
 
   const renderCarouselPreview = () => {
     return (
-      showImageCarousel && selectedImages && (
+      showImageCarousel &&
+      selectedImages && (
         <View style={styles.carouselModal}>
           <TouchableOpacity
             style={styles.closeButton}
@@ -304,7 +359,7 @@ const ChatDetails = ({route, navigation}) => {
           />
         </View>
       )
-    )
+    );
   };
 
   const renderInputSection = () => {
@@ -346,13 +401,11 @@ const ChatDetails = ({route, navigation}) => {
               ]}
               disabled={loadingMessage}
               activeOpacity={0.9}>
-              {
-                loadingMessage ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <Icon name="send" size={15} color="#FFFFFF" />
-                )
-              }
+              {loadingMessage ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Icon name="send" size={15} color="#FFFFFF" />
+              )}
             </TouchableOpacity>
           )}
         </View>
@@ -360,7 +413,7 @@ const ChatDetails = ({route, navigation}) => {
     );
   };
 
-  const renderInputMediaPreview = (mediaData) => {
+  const renderInputMediaPreview = mediaData => {
     return (
       mediaData.length > 0 && (
         <View style={styles.imageSection}>
@@ -386,50 +439,50 @@ const ChatDetails = ({route, navigation}) => {
           </ScrollView>
         </View>
       )
-    )
+    );
   };
 
   const renderImagePickerModal = () => {
     return (
       <Animated.View style={[styles.modalContainer, {height: modalHeight}]}>
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={() => handleImagePicker('camera')}
-            activeOpacity={0.9}>
-            <Icon name="camera" size={15} color={'#FFFFFF'} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={() => handleImagePicker('gallery')}
-            activeOpacity={0.9}>
-            <Icon name="image" size={15} color={'#FFFFFF'} />
-          </TouchableOpacity>
-        </Animated.View>
+        <TouchableOpacity
+          style={[styles.button, {backgroundColor: theme.colors.primary}]}
+          onPress={() => handleImagePicker('camera')}
+          activeOpacity={0.9}>
+          <Icon name="camera" size={15} color={'#FFFFFF'} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, {backgroundColor: theme.colors.primary}]}
+          onPress={() => handleImagePicker('gallery')}
+          activeOpacity={0.9}>
+          <Icon name="image" size={15} color={'#FFFFFF'} />
+        </TouchableOpacity>
+      </Animated.View>
     );
   };
 
   return (
-      <View style={styles.container}>
-        <FlatList
-          ref={flatListRef}
-          style={{backgroundColor: theme.colors.surface}}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.3}
-          refreshControl={
-            <RefreshControl
-              refreshing={loading}
-              onRefresh={() => fetchMessages(1, false)}
-            />
-          }
-          data={[...messages].reverse()}
-          renderItem={renderMessage}
-          contentContainerStyle={styles.messageList}
-          inverted={true}
-        />
-        {renderImagePickerModal()}
-        {renderInputSection()}
-        {renderCarouselPreview()}
-      </View>
+    <View style={styles.container}>
+      <FlatList
+        ref={flatListRef}
+        style={{backgroundColor: theme.colors.surface}}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => fetchMessages(1, false)}
+          />
+        }
+        data={[...messages].reverse()}
+        renderItem={renderMessage}
+        contentContainerStyle={styles.messageList}
+        inverted={true}
+      />
+      {renderImagePickerModal()}
+      {renderInputSection()}
+      {renderCarouselPreview()}
+    </View>
   );
 };
 

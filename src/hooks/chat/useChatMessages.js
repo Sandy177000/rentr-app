@@ -73,9 +73,17 @@ const useChatMessages = (roomId, token, user, item) => {
 
           const content = `I am interested in this item for rent. Can we connect to discuss the details?
           Item Details:
-          • Name: ${item.name} [View Details](/ItemDetails/itemId=${item.id})
+          • Name: ${item.name}
           • Price: ${item.price}
           • Description: ${item.description}`;
+          const metadata = {
+            link: {
+              screen: 'ItemDetails',
+              params: {
+                itemId: item.id,
+              },
+            },
+          };
 
           let newMessage = {
             content: content,
@@ -87,6 +95,7 @@ const useChatMessages = (roomId, token, user, item) => {
             sender: {
               id: user.id,
             },
+            metadata,
           };
 
           socket.emit('send_message', newMessage);
@@ -95,6 +104,7 @@ const useChatMessages = (roomId, token, user, item) => {
             content: content,
             chatRoomId: roomId,
             media: imageUrls,
+            metadata,
           });
         } catch (error) {
           console.log('error sending initial message', error);
@@ -164,8 +174,8 @@ const useChatMessages = (roomId, token, user, item) => {
     }
     setLoading(true);
     try {
-      const messagesData = await chatApi.getChatMessages(roomId, 30, pageNum);
-      if (messagesData.messages.length < 30) {
+      const messagesData = await chatApi.getChatMessages(roomId, 50, pageNum);
+      if (messagesData.messages.length < 50) {
         setHasMore(false);
       }
       setMessages(prevMessages => {

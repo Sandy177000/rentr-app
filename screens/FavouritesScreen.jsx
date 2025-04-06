@@ -57,8 +57,6 @@ const FavouritesScreen = () => {
 
 
   return (
-    <>
-    
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <TwoColumnListView
@@ -70,7 +68,6 @@ const FavouritesScreen = () => {
         emptyComponent={emptyComponent}
       />
     </View>
-    </>
   );
 };
 

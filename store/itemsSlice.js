@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 const initialState = {
   items: [],
+  userItems: [],
   favourites: [],
   loading: false,
   error: null,
@@ -46,6 +47,16 @@ export const removeFromFavourites = createAsyncThunk('items/removeFromFavourites
   try {
     const response = await userApi.removeFromFavourites(itemId);
     console.log('Response in removeFromFavourites:', response);
+    return response;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+// user's items
+export const getUserItems = createAsyncThunk('items/getUserItems', async (_, { rejectWithValue }) => {
+  try {
+    const response = await itemApi.getUserItems();
     return response;
   } catch (error) {
     return rejectWithValue(error.message);
@@ -143,12 +154,21 @@ const itemsSlice = createSlice({
       state.loading = false;
       state.error = action.error;
     });
+
+    // user's items
+    builder.addCase(getUserItems.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getUserItems.fulfilled, (state, action) => {
+      state.userItems = action.payload;
+    });
   },
 });
 
 export const { setItems, setFavourites, addFavourite, removeFavourite } = itemsSlice.actions;
 
 export const selectItems = (state) => state.items.items;
+export const selectUserItems = (state) => state.items.userItems;
 export const selectFavourites = (state) => state.items.favourites;
 export const selectLoading = (state) => state.items.loading;
 export const selectError = (state) => state.items.error;

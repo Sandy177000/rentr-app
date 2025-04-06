@@ -44,14 +44,15 @@ const TwoColumnListView = ({
           )}
         </EmptyListComponent>
       );
+    } else {
+      return (
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      );
     }
   };
 
   return (
     <View style={{flex: 1}}>
-      {loading ? (
-        <ActivityIndicator size="small" color={theme.colors.primary} />
-      ) : (
         <FlatList
           data={items}
           renderItem={({item, index}) => {
@@ -76,7 +77,6 @@ const TwoColumnListView = ({
           }
           ListEmptyComponent={getEmptyComponent()}
         />
-      )}
     </View>
   );
 };

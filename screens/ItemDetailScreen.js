@@ -1,11 +1,12 @@
 // screens/ItemDetailsScreen.js
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Image,
   useWindowDimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/common/CustomText';
@@ -26,19 +27,52 @@ import { chatApi } from '../src/apis/chat';
 import CustomModal from '../src/components/common/CustomModal';
 import { itemApi } from '../src/apis/item';
 import Toast from 'react-native-toast-message';
-
+import { useFocusEffect } from '@react-navigation/native';
+import _ from 'lodash';
 
 
 export const ItemDetailsScreen = ({route, navigation}) => {
   const token = useSelector(selectCurrentToken);
-  const items = useSelector(selectItems);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
   const theme = useTheme();
   let {item, itemId} = route.params;
-  if (!item) {
-    item = items.find(i => i.id === itemId);
-  }
+  const [itemData, setItemData] = useState(item);
+
+
+  const fetchItem = async () => {
+    try {
+      setLoading(true);
+      const data = await itemApi.getItemById(itemId);
+      if(data) {
+        setItemData(data);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Item not found :(',
+        });
+        navigation.goBack();
+      }
+    } catch (error) {
+      setLoading(false);
+      Toast.show({
+        type: 'error',
+        text1: 'Error fetching item',
+        text2: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if(!item) {
+        fetchItem();
+      }
+    }, [item, itemId]),
+  );
+
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
@@ -51,7 +85,8 @@ export const ItemDetailsScreen = ({route, navigation}) => {
 
   const handleDelete = async (itemId) => {
     try {
-      const { success } = await itemApi.deleteItem(itemId);
+      setLoading(true);
+      const {success} = await itemApi.deleteItem(itemId);
       if(success) {
         Toast.show({
           type: 'success',
@@ -72,11 +107,19 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         text1: 'Error deleting item',
         text2: error.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEdit = () => {
     // Implement edit logic
+    Toast.show({
+      text1: 'Edit item is not available yet',
+      type: 'info',
+      position: 'top',
+      visibilityTime: 3000,
+    });
 
   };
 
@@ -92,7 +135,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   const renderPaginationDots = () => {
     return (
       <View style={styles.paginationDots}>
-        {item.images?.map((_, index) => (
+        {itemData.images?.map((_, index) => (
           <View
             key={index}
             style={[
@@ -129,6 +172,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
 
   return (
     <>
+       {loading && <ActivityIndicator size="large" color={theme.colors.primary} />}
       <CustomModal showModal={showModal}>
         <View style={[styles.contactModal, {backgroundColor: getColor(theme.isDark), borderColor: getColor(!theme.isDark), borderWidth: 0.2}]}>
             <CustomText variant="h4" style={{textAlign: 'center'}}> A Message will be sent to the owner </CustomText>
@@ -142,7 +186,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
           </View>
         </View>
       </CustomModal>
-      <View
+      {itemData && <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.carouselContainer}>
           <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
@@ -156,7 +200,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
             loop
             width={width - 40}
             height={300}
-            data={item.images || []}
+            data={itemData.images || []}
             onSnapToItem={setActiveIndex}
             renderItem={({item: image}) => (
               <Image
@@ -166,21 +210,21 @@ export const ItemDetailsScreen = ({route, navigation}) => {
               />
             )}
           />
-          {item.images?.length > 1 && renderPaginationDots()}
+          {itemData.images?.length > 1 && renderPaginationDots()}
         </View>
         <CustomText style={[styles.title, {color: theme.colors.text.primary}]}>
-          {item.title}
+          {itemData.title}
         </CustomText>
         <CustomText
           style={[styles.description, {color: theme.colors.text.secondary}]}>
-          {item.description}
+          {itemData.description}
         </CustomText>
         <CustomText
           style={[styles.price, {color: theme.colors.text.secondary}]}>
-          ${item.price}/day
+          ${itemData.price}/day
         </CustomText>
 
-        {item.ownerId === currentUser.id ? (
+        {itemData.ownerId === currentUser?.id ? (
           <View style={{gap: 10}}>
           <CustomButton
             style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
@@ -193,7 +237,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
           </CustomButton>
           <CustomButton
             style={[styles.rentButton, {backgroundColor: theme.colors.secondary}]}
-            onPress={() => handleDelete(item.id)}>
+            onPress={() => handleDelete(itemData.id)}>
             <CustomText
               variant="h4"
               style={{color: colors.white, fontWeight: '600'}}>
@@ -212,7 +256,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
             </CustomText>
           </TouchableOpacity>
         )}
-      </View> 
+      </View> }
     </>
   );
 };
