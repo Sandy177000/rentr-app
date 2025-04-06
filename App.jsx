@@ -43,7 +43,7 @@ const renderChatHeader = (props, route) => {
         <Icon
           name="angle-left"
           size={25}
-          style={{marginLeft: 10}}
+          style={{marginLeft: 20}}
           onPress={props.onPress}
           color={props.tintColor}
         />

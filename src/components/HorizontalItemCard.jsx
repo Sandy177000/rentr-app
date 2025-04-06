@@ -18,7 +18,7 @@ const HorizontalItemCard = ({
       <View style={styles.itemInfoContainer}>
         <CustomButton
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {item})}>
+          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}

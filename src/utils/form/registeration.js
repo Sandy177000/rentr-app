@@ -17,13 +17,12 @@ export const registerFormInputFields = [
     {
       label: 'Password',
       key: 'password',
+      type: 'password',
       placeholder: 'Enter your password',
-      secureTextEntry: true,
     },
     {
       label: 'Confirm Password',
       key: 'confirmPassword',
       placeholder: 'Confirm your password',
-      secureTextEntry: true,
     },
   ];

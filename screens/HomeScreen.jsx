@@ -1,5 +1,5 @@
 // screens/HomeScreen.js
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
@@ -13,6 +13,7 @@ import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import globalStyles from '../src/theme/global.styles';
+import { itemApi } from '../src/apis/item';
 
 
 const HomeScreen = () => {
@@ -28,7 +29,7 @@ const HomeScreen = () => {
     {id: '5', name: 'Vehicles', icon: 'car'},
   ];
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       setRefreshing(true);
       await dispatch(getItems()).unwrap();
@@ -38,11 +39,11 @@ const HomeScreen = () => {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [dispatch, fetchItems]);
 
 
   const renderCategory = ({item}) => (

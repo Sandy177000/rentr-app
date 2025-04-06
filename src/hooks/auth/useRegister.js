@@ -4,9 +4,7 @@ import {
   registerUser,
   selectAuthError,
   clearError,
-  setError,
 } from '../../../store/authSlice';
-import {validateEmail, validatePassword} from '../../utils/auth/auth.utils';
 import {useNavigation} from '@react-navigation/native';
 export const useRegister = () => {
   const navigation = useNavigation();
@@ -29,27 +27,12 @@ export const useRegister = () => {
 
   const handleRegister = async () => {
     setLoading(true);
-    const {email, password, confirmPassword, firstName, lastName} = formData;
-    const passwordValidationError = validatePassword(password);
-    const emailValidationError = validateEmail(email);
-    if (passwordValidationError) {
-      setError(passwordValidationError);
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match!');
-      return;
-    }
-    if (emailValidationError) {
-      setError(emailValidationError);
-      return;
-    }
     try {
       const userData = {
-        email,
-        password,
-        firstName,
-        lastName,
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       };
       const result = await dispatch(registerUser(userData)).unwrap();
       if (result) {

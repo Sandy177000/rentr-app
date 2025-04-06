@@ -25,18 +25,21 @@ export const useLogin = () => {
   const handleLogin = async () => {
     try {
       setLoading(true);
+      if (!formData.email || !formData.password) {
+        throw new Error('Email and password are required');
+      }
+
       const result = await dispatch(loginUser(formData)).unwrap();
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         await AsyncStorage.setItem('token', result.token);
-        navigation.navigate('MainTabs');
+        navigation.replace('MainTabs');
       } else {
-        dispatch(setError('Login failed'));
         throw new Error('Login failed');
       }
     } catch (err) {
-      dispatch(setError('Login error'));
-      throw new Error('Login error');
+      dispatch(setError(err.message || 'Login error'));
+      throw new Error(err.message || 'Login error');
     } finally {
       setLoading(false);
     }
@@ -57,7 +60,7 @@ export const useLogin = () => {
         if (storedUser) {
           const {user, token} = JSON.parse(storedUser);
           dispatch(restoreUser({user, token}));
-          navigation.navigate('MainTabs');
+          navigation.replace('MainTabs');
         }
       } catch (err) {
         await AsyncStorage.removeItem('user');

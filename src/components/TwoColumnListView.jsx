@@ -25,20 +25,26 @@ const TwoColumnListView = ({
       return (
         <EmptyListComponent>
           {emptyText ? (
-            <>
+            <View style={{backgroundColor: 'rgba(128, 128, 128, 0.1)', 
+              padding: 16, 
+              borderRadius: 16, 
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 10,
+            }}>
               <Icon
                 name="inbox"
                 size={50}
                 color={theme.colors.text.secondary}
               />
               <CustomText
-                variant="h2"
+                variant="h4"
                 style={[
                   {color: theme.colors.text.secondary},
                 ]}>
                 {emptyText}
               </CustomText>
-            </>
+            </View>
           ) : (
             emptyComponent()
           )}

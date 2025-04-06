@@ -8,6 +8,7 @@ import ColorPicker, {
 import { useTheme } from '../theme/ThemeProvider';
 import CustomText from './common/CustomText';
 import globalStyles from '../theme/global.styles';
+import CustomTextInputField from './common/CustomTextInputField';
 const ColorInput = ({ label, value, path, onChangeColor }) => {
   const theme = useTheme();
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -41,7 +42,7 @@ const ColorInput = ({ label, value, path, onChangeColor }) => {
       </CustomText>
       
       <View style={styles.inputContainer}>
-        <TextInput
+        <CustomTextInputField
           style={[
             styles.input,
             {

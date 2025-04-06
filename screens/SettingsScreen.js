@@ -23,7 +23,10 @@ const SettingsScreen = () => {
       await AsyncStorage.removeItem('user');
       await AsyncStorage.removeItem('token');
       dispatch(logout());
-      navigation.replace('Login');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
     } catch (err) {
       console.error('Error during logout:', err);
     } finally {

@@ -210,6 +210,7 @@ export const ListItemForm = ({setVisible}) => {
         return (
           <CustomTextInputField
             {...field}
+            required={field.required}
             value={formData[field.key]}
             onChangeText={value => handleFormChange(field.key, value)}
             placeholderColor={colors.gray}

@@ -15,11 +15,35 @@ import CustomButton from '../src/components/common/CustomButton';
 import {colors} from '../src/theme/theme';
 import { registerFormInputFields } from '../src/utils/form/registeration';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { validateEmail, validatePassword } from '../src/utils/auth/auth.utils';
+import { setError } from '../store/authSlice';
+import Divider from '../src/components/Divider';
 
 export const RegisterScreen = ({navigation}) => {
   const {formData, error, loading, handleFormData, handleRegister} = useRegister();
   const theme = useTheme();
+
+  const validateForm = () => {
+    const {email, password, confirmPassword, firstName, lastName} = formData;
+    if(firstName === '' || lastName === '') {
+      setError('First name and last name are required');
+      return;
+    }
+    const emailValidationError = validateEmail(email);
+    if (emailValidationError) {
+      setError(emailValidationError);
+      return;
+    }
+    const passwordValidationError = validatePassword(password);
+    if (passwordValidationError) {
+      setError(passwordValidationError);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+  };
 
   const onRegister = async () => {
     try {
@@ -47,6 +71,7 @@ export const RegisterScreen = ({navigation}) => {
             value={formData[field.key]}
             onChangeText={value => handleFormData(field.key, value)}
             placeholderColor={colors.gray}
+            onBlur={() => validateForm()}
           />
         ))}
       </View>
@@ -94,6 +119,7 @@ export const RegisterScreen = ({navigation}) => {
             }}>
             Create Account
           </Text>
+          <Divider />
           <CustomText variant="h3" style={{color: theme.colors.text.secondary}}>
             Complete your profile
           </CustomText>

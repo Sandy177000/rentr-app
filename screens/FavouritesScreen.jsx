@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import TwoColumnListView from '../src/components/TwoColumnListView';
+import globalStyles from '../src/theme/global.styles';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const FavouritesScreen = () => {
 
   const emptyComponent = ()=>{
     return (
-    <>
+    <View style={[styles.emptyContainer, {backgroundColor: 'rgba(128, 128, 128, 0.1)'}]}>
     <Icon
         name="heart-o"
         size={45}
@@ -38,16 +39,16 @@ const FavouritesScreen = () => {
         style={styles.emptyIcon}
       />
       <CustomText
-        variant="h2"
+        variant="h4"
         style={{color: theme.colors.text.secondary}}>
         No favourites yet
       </CustomText>
       <CustomText
-        variant="h3"
+        variant="h4"
         style={{color: theme.colors.text.secondary}}>
         Items you love will appear here
       </CustomText>
-      </>
+      </View>
   )
   };
 
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
+    ...globalStyles.borderRadius,
   },
   emptyIcon: {
     marginBottom: 16,

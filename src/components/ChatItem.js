@@ -7,6 +7,7 @@ import {avatar} from '../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/authSlice';
 import CustomImage from './common/CustomImage';
+import globalStyles from '../theme/global.styles';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();
@@ -39,7 +40,6 @@ const ChatItem = ({item, token, index}) => {
               />
             </View>
           ))}
-         
         </View>
         <View style={styles.chatFooter}>
         {participants.map(participant => (
@@ -64,12 +64,12 @@ const ChatItem = ({item, token, index}) => {
 
 const styles = StyleSheet.create({
   chatItem: {
-    padding: 13,
-    borderRadius: 16,
+    padding: 15,
+    ...globalStyles.borderRadius,
   },
   avatar: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: 25,
   },
   chatContent: {
@@ -82,6 +82,9 @@ const styles = StyleSheet.create({
   },
   chatFooter: {
     marginLeft: 13,
+    flex: 1,
+    alignItems: 'flex-start',
+    top:-5,
   },
   unreadBadge: {
     paddingHorizontal: 8,

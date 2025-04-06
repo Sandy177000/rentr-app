@@ -21,7 +21,6 @@ import {
   addToFavourites,
   removeFavourite,
   removeFromFavourites,
-  selectItems,
 } from '../store/itemsSlice';
 import { chatApi } from '../src/apis/chat';
 import CustomModal from '../src/components/common/CustomModal';
@@ -36,8 +35,12 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const theme = useTheme();
-  let {item, itemId} = route.params;
+  let {item, itemId, isFavourite} = route.params;
   const [itemData, setItemData] = useState(item);
+  const {width} = useWindowDimensions();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const currentUser = useSelector(selectCurrentUser);
+  const [favourite, setFavourite] = useState(isFavourite);
 
 
   const fetchItem = async () => {
@@ -73,10 +76,6 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     }, [item, itemId]),
   );
 
-  const {width} = useWindowDimensions();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const currentUser = useSelector(selectCurrentUser);
-  const [isFavourite, setIsFavourite] = useState(false);
   const dispatch = useDispatch();
 
   const handleRent = () => {
@@ -154,9 +153,9 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   };
 
   const handleFavourite = async () => {
-    const initialFavouriteState = isFavourite;
+    const initialFavouriteState = favourite;
     try {
-      setIsFavourite(!isFavourite);
+        setFavourite(!favourite);
       if (initialFavouriteState) {
         dispatch(removeFavourite(item));
         await dispatch(removeFromFavourites(item.id)).unwrap();
@@ -165,7 +164,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         await dispatch(addToFavourites(item.id)).unwrap();
       }
     } catch (error) {
-      setIsFavourite(initialFavouriteState);
+        setFavourite(initialFavouriteState);
       console.log('error in handleFavourite', error);
     }
   };
@@ -194,7 +193,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.carouselContainer}>
           <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-            {isFavourite ? (
+            {favourite ? (
               <Icon name="heart" size={22} color={theme.colors.primary} />
             ) : (
               <Icon name="heart-o" size={22} color={colors.white} />

@@ -80,7 +80,10 @@ const useChatMessages = (roomId, token, user, item) => {
             link: {
               screen: 'ItemDetails',
               params: {
-                itemId: item.id,
+                item: {
+                  ...item,
+                  isFavourite: item.isFavourite,
+                },
               },
             },
           };

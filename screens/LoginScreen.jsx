@@ -19,6 +19,7 @@ import Toast from 'react-native-toast-message';
 export const LoginScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+
   const {loading, error, handleLogin, formData, handleFormData} = useLogin();
 
   const handleLoginWithToast = async () => {
@@ -32,7 +33,7 @@ export const LoginScreen = () => {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: error || 'Failed to login',
+        text2: err.message,
       });
     }
   };
@@ -65,8 +66,8 @@ export const LoginScreen = () => {
             value={formData.password}
             onChangeText={value => handleFormData('password', value)}
             placeholder="Enter your password"
-            secureTextEntry
             placeholderColor={theme.colors.text.secondary}
+            type="password"
           />
         </View>
         {error && (

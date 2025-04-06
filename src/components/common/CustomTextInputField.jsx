@@ -1,20 +1,27 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import CustomText from './CustomText';
 import { useTheme } from '../../theme/ThemeProvider';
 import globalStyles from '../../theme/global.styles';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const CustomTextInputField = ({ key, label, value, onChangeText, placeholder, secureTextEntry = false, placeholderColor, ...rest }) => {
+const CustomTextInputField = ({label, value, onChangeText, placeholder, placeholderColor, required = false, type = 'text' }) => {
   const theme = useTheme();
+  const [secureTextEntry, setSecureTextEntry] = useState(type === 'password');
+
+  const toggleSecureTextEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
   return (
-    <View style={{gap: 5}} key={key}>
+    <View style={{gap: 5}}>
       {label && <CustomText variant="h4" >{label}
-        {rest.required && <CustomText variant="h4" color={theme.colors.error}>*</CustomText>}
+        {required && <CustomText variant="h4" color={theme.colors.error}>*</CustomText>}
         </CustomText>}
+      <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: theme.colors.surface, ...globalStyles.borderRadius, padding: 10}}>
       <TextInput
-        style={[styles.input, {backgroundColor: theme.colors.surface, color: theme.colors.text.primary}]}
-        {...rest}
+        style={[styles.input, { color: theme.colors.text.primary}]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -22,15 +29,16 @@ const CustomTextInputField = ({ key, label, value, onChangeText, placeholder, se
         placeholderTextColor={placeholderColor || theme.colors.text.secondary}
 
       />
+      {type === 'password' && <Icon name={secureTextEntry ? 'eye' : 'eye-slash'} size={20} color={theme.colors.text.primary} onPress={toggleSecureTextEntry} />}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   input: {
+    flex: 1,
     fontSize: 13,
-    ...globalStyles.borderRadius,
-    padding: 15,
   },
 });
 export default CustomTextInputField;
