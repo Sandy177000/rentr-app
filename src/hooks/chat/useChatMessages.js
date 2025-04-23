@@ -101,7 +101,7 @@ const useChatMessages = (roomId, token, user, item) => {
             metadata,
           };
 
-          // socket.emit('send_message', newMessage);
+          socket.emit('send_message', newMessage);
 
           await chatApi.sendMessage({
             content: content,
@@ -154,7 +154,7 @@ const useChatMessages = (roomId, token, user, item) => {
           },
         };
 
-        // socket.emit('send_message', newMessage);
+        socket.emit('send_message', newMessage);
 
         setMedia([]);
         setMessage('');

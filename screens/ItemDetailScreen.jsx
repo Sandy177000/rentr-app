@@ -117,7 +117,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         chat: chatRoom,
         roomId: chatRoom.id,
         token: token,
-        item: item,
+        item: itemData,
       });
     }
   };
