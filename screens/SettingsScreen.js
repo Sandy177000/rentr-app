@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import CustomText from '../src/components/common/CustomText';
 import CustomButton from '../src/components/common/CustomButton';
 import { colors } from '../src/theme/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { resetItems } from '../store/itemsSlice';
 import Toast from 'react-native-toast-message';
+import { authStorage } from '../src/services';
 
 const SettingsScreen = () => {
   const theme = useTheme();
@@ -21,8 +21,7 @@ const SettingsScreen = () => {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      await AsyncStorage.removeItem('user');
-      await AsyncStorage.removeItem('token');
+      await authStorage.clearAuth();
       dispatch(logout());
       dispatch(resetItems());
       navigation.reset({

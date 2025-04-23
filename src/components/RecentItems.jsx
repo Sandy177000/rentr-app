@@ -1,11 +1,10 @@
 import {View, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomText from './common/CustomText';
-import {itemApi} from '../apis/item';
 import ListItem from './ListItem';
 import {useNavigation} from '@react-navigation/native';
 import {HorizontalListSection} from './common/horizontal.list.section/HorizontalListSection';
-
+import {itemApi} from '../services/api/index';
 const RecentItems = ({theme, type, title, limit}) => {
   const [recentItems, setRecentItems] = useState([]);
   const navigation = useNavigation();

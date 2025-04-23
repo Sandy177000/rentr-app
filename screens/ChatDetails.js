@@ -13,6 +13,7 @@ import {
   Linking,
   Dimensions,
   ActivityIndicator,
+  Text,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import _ from 'lodash';
@@ -268,6 +269,11 @@ const ChatDetails = ({route, navigation}) => {
             {link.screen && link.params && (
               <TouchableOpacity
                 style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 15,
+                  borderRadius: 10,
                   gap: 5,
                   backgroundColor:
                     messageItem.sender.id !== user?.id
@@ -277,16 +283,16 @@ const ChatDetails = ({route, navigation}) => {
                 onPress={() => {
                   handleMessageLink(link);
                 }}>
-                <CustomText
-                  variant="h4"
+                <Text
                   style={{
+                    fontSize: 12,
                     color:
                       messageItem.sender.id !== user?.id
                         ? colors.white
                         : theme.colors.primary,
                   }}>
                   Open Link
-                </CustomText>
+                </Text>
                 <Icon
                   name="external-link"
                   size={15}

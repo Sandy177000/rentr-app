@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {itemApi} from './../src/apis/item';
-import {userApi} from './../src/apis/user';
+import {itemApi} from '../src/services/api/index';
+import {userApi} from '../src/services/api/index';
 import _ from 'lodash';
 
 const initialState = {

@@ -29,7 +29,36 @@ import MainTabs from './src/components/MainTabs';
 
 
 const Stack = createStackNavigator();
-const queryClient = new QueryClient();
+
+// Configure React Query with appropriate settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 300000, // 5 minutes
+      cacheTime: 900000, // 15 minutes
+      refetchOnWindowFocus: process.env.NODE_ENV === 'production',
+      onError: (error) => {
+        // Global error handling for queries
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: error.message || 'An unexpected error occurred'
+        });
+      }
+    },
+    mutations: {
+      onError: (error) => {
+        // Global error handling for mutations
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: error.message || 'An unexpected error occurred'
+        });
+      }
+    }
+  }
+});
 
 const renderChatHeader = (props, route) => {
   return (
@@ -66,7 +95,6 @@ const renderChatHeader = (props, route) => {
 const App = () => {
   const theme = useTheme();
   return (
-    // <QueryClientProvider client={queryClient}>
     <GestureHandlerRootView style={{flex: 1}}>
       <NavigationContainer>
         <Stack.Navigator
@@ -150,16 +178,18 @@ const App = () => {
       </NavigationContainer>
       <Toast />
     </GestureHandlerRootView>
-    // </QueryClientProvider>
   );
 };
 
+// Root component with all providers properly arranged
 const Root = () => {
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
     </Provider>
   );
 };

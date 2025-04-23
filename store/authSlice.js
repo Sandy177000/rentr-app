@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authApi } from '../src/apis/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { userApi } from '../src/apis/user';
+import { authApi } from '../src/services/api/index';
+import { userApi } from '../src/services/api/index';
+import { authStorage } from '../src/services';
 
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authApi.login(credentials);
-      await AsyncStorage.setItem('user', JSON.stringify(response.user));
-      await AsyncStorage.setItem('token', response.token);
+      console.log('response in loginUser', response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -33,7 +32,7 @@ export const checkAuth = createAsyncThunk(
     'auth/checkAuth',
     async (_, { rejectWithValue }) => {
       try {
-        const userData = await AsyncStorage.getItem('user');
+        const userData = await authStorage.getUser();
         return userData ? JSON.parse(userData) : null;
       } catch (error) {
         return rejectWithValue(error.message);

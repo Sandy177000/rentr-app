@@ -7,11 +7,10 @@ import {
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
-import {itemApi} from '../src/apis/item';
+import {itemApi} from '../src/services/api/index';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from '../src/components/ListItem';
-import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import { TextInput } from 'react-native-gesture-handler';
 
 

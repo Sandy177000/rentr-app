@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {itemApi} from '../src/apis/item';
+import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import TwoColumnListView from '../src/components/TwoColumnListView';

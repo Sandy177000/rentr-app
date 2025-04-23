@@ -15,9 +15,9 @@ import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import Carousel from 'react-native-reanimated-carousel';
 import {colors} from '../src/theme/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {chatApi} from '../src/apis/chat';
+import {chatApi} from '../src/services/api/index';
 import CustomModal from '../src/components/common/CustomModal';
-import {itemApi} from '../src/apis/item';
+import {itemApi} from '../src/services/api/index';
 import Toast from 'react-native-toast-message';
 import FavoriteButton from '../src/components/FavoriteButton';
 

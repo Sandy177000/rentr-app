@@ -14,7 +14,7 @@ import Icons from 'react-native-vector-icons/FontAwesome';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import {useDispatch} from 'react-redux';
 import {updateUser} from '../../store/authSlice';
-import {userApi} from '../apis/user';
+import {userApi} from '../services/api/index';
 import CustomText from './common/CustomText';
 import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';

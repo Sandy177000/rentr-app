@@ -7,8 +7,8 @@ import {
   restoreUser,
   setError,
 } from '../../../store/authSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { authStorage } from '../../services';
 
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -26,8 +26,7 @@ export const useLogin = () => {
 
       const result = await dispatch(loginUser(formData)).unwrap();
       if (result) {
-        await AsyncStorage.setItem('user', JSON.stringify(result));
-        await AsyncStorage.setItem('token', result.token);
+        await authStorage.saveAuth(result);
         navigation.replace('MainTabs');
       } else {
         throw new Error('Login failed');
@@ -51,14 +50,14 @@ export const useLogin = () => {
   useEffect(() => {
     const checkAuthState = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem('user');
+        const storedUser = await authStorage.getUser();
         if (storedUser) {
           const {user, token} = JSON.parse(storedUser);
           dispatch(restoreUser({user, token}));
           navigation.replace('MainTabs');
         }
       } catch (err) {
-        await AsyncStorage.removeItem('user');
+        await authStorage.clearAuth();
       }
     };
     checkAuthState();

@@ -8,7 +8,7 @@ import {
 import { useTheme } from '../src/theme/ThemeProvider';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { chatApi } from '../src/apis/chat';
+import { chatApi } from '../src/services/api/index';
 import { useSelector } from 'react-redux';
 import ChatItem from '../src/components/ChatItem';
 import { selectCurrentToken, selectCurrentUser } from '../store/authSlice';

@@ -14,8 +14,8 @@ import {
 import {useTheme} from '../theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
-import {itemApi} from '../apis/item';
 import {useNavigation} from '@react-navigation/native';
+import {itemApi} from '../services/api/index';
 import CustomText from './common/CustomText';
 import CustomTextInputField from './common/CustomTextInputField';
 import Divider from './Divider';
