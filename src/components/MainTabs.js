@@ -15,11 +15,10 @@ import {Image} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {StyleSheet} from 'react-native';
 import {useState} from 'react';
-import { useTheme } from '../theme/ThemeProvider';
-import { MyListingsScreen } from '../../screens/MyListingsScreen';
+import {useTheme} from '../theme/ThemeProvider';
+import {MyListingsScreen} from '../../screens/MyListingsScreen';
 
 const MainTabs = () => {
-
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const theme = useTheme();
@@ -28,7 +27,6 @@ const MainTabs = () => {
   const routes = [
     {key: 'home', title: 'Home', icon: 'home'},
     {key: 'favorites', title: 'Favorites', icon: 'heart'},
-    {key: 'new', title: 'New', icon: 'plus'},
     {key: 'chat', title: 'Chat', icon: 'comment'},
     {
       key: 'profile',
@@ -41,7 +39,6 @@ const MainTabs = () => {
   const renderScene = SceneMap({
     home: HomeScreen,
     favorites: FavouritesScreen,
-    new: MyListingsScreen,
     profile: ProfileScreen,
     chat: ChatScreen,
   });
@@ -57,70 +54,63 @@ const MainTabs = () => {
   // Custom tab bar implementation
   const renderTabBar = () => (
     <View style={styles.tabBarContainer}>
-      <GestureHandlerRootView>
-        <PanGestureHandler
-          onGestureEvent={({nativeEvent}) => {
-            if (nativeEvent.translationX > 50) {
-              handleSwipe('right');
-            } else if (nativeEvent.translationX < -50) {
-              handleSwipe('left');
-            }
-          }}>
-          <View collapsable={false}>
-            <View style={[
-              styles.tabBar,
-              { backgroundColor: theme.colors.primary }
-            ]}>
-              {routes.map((route, i) => {
-                const isActive = index === i;
-                return (
-                  <TouchableOpacity
-                    key={route.key}
-                    style={styles.tabItem}
-                    onPress={() => setIndex(i)}
-                    activeOpacity={0.9}
-                  >
-                    <View style={{backgroundColor: isActive ? 'white' : theme.colors.primary, width: 40, height: 40, borderRadius: 100, alignItems: 'center', justifyContent: 'center'}}>
-                    {route.type === 'image' ? (
-                      <Image
-                        source={{uri: route.icon}}
-                        style={{width: 25, height: 25, borderRadius: 100}}
-                      />
-                    ) : (
-                        <Icon
-                          name={route.icon}
-                          color={isActive ? theme.colors.primary : 'white'}
-                          size={20}
-                        />
-                    )}
-                      </View>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-        </PanGestureHandler>
-      </GestureHandlerRootView>
+      <View collapsable={false}>
+        <View style={[styles.tabBar, {backgroundColor: theme.colors.primary}]}>
+          {routes.map((route, i) => {
+            const isActive = index === i;
+            return (
+              <TouchableOpacity
+                key={route.key}
+                style={styles.tabItem}
+                onPress={() => setIndex(i)}
+                activeOpacity={0.9}>
+                <View
+                  style={{
+                    backgroundColor: isActive ? 'white' : theme.colors.primary,
+                    width: 35,
+                    height: 35,
+                    borderRadius: 100,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  {route.type === 'image' ? (
+                    <Image
+                      source={{uri: route.icon}}
+                      style={{width: 26, height: 26, borderRadius: 100}}
+                    />
+                  ) : (
+                    <Icon
+                      name={route.icon}
+                      color={isActive ? theme.colors.primary : 'white'}
+                      size={18}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 
   return (
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{width: layout.width}}
-        renderTabBar={renderTabBar}
-        swipeEnabled={false}
-      />
+    <TabView
+      navigationState={{index, routes}}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{width: layout.width}}
+      renderTabBar={renderTabBar}
+      swipeEnabled={false}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
-    borderRadius: 300,
-    width: '80%',
+    borderRadius: 90,
+    width: '70%',
     alignSelf: 'center',
     height: 60,
     justifyContent: 'space-around',

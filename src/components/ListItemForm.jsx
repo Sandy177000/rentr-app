@@ -20,7 +20,6 @@ import CustomText from './common/CustomText';
 import CustomTextInputField from './common/CustomTextInputField';
 import Divider from './Divider';
 import CustomButton from './common/CustomButton';
-import globalStyles from '../theme/global.styles';
 import {createItemFormConfig} from '../utils/form/createItem';
 import {colors} from '../theme/theme';
 import Toast from 'react-native-toast-message';
@@ -249,7 +248,6 @@ export const ListItemForm = ({setVisible}) => {
                   paddingHorizontal: 12,
                   justifyContent: 'center',
                   alignItems: 'center',
-                  ...globalStyles.borderRadius,
                   paddingVertical: 10,
                   ...(isSelected && {backgroundColor: theme.colors.secondary})}}>
                   <CustomText variant="h4">{item}</CustomText>
@@ -258,7 +256,6 @@ export const ListItemForm = ({setVisible}) => {
             }}
             dropdownStyle={{
               backgroundColor: theme.colors.surface,
-              ...globalStyles.borderRadius,
               marginTop: 10,
             }}
           />
@@ -426,7 +423,6 @@ const styles = StyleSheet.create({
   imageButton: {
     width: 40,
     height: 40,
-    ...globalStyles.borderRadius,
   },
   imageButtonText: {
     marginLeft: 12,

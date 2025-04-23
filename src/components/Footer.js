@@ -2,8 +2,9 @@ import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import CustomText from './common/CustomText';
 import {useTheme} from '../theme/ThemeProvider';
-import { colors } from '../theme/theme';
-export default function Footer({fullHeight = false}) {
+
+
+export default function Footer() {
   const theme = useTheme();
   return (
     <View
@@ -11,10 +12,6 @@ export default function Footer({fullHeight = false}) {
         styles.container,
         {
           backgroundColor: theme.colors.primary,
-          height: fullHeight ? '100%' : 300,
-          flex: fullHeight ? 1 : 1,
-          borderColor: theme.colors.secondary,
-          borderWidth: 1,
         },
       ]}>
       <CustomText
@@ -29,6 +26,7 @@ export default function Footer({fullHeight = false}) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '100%',
     gap: 10,
     alignItems: 'center',

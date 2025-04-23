@@ -6,101 +6,108 @@ import {
   SafeAreaView,
   Text,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import {useTheme} from '../src/theme/ThemeProvider';
-import CustomText from '../src/components/common/CustomText';
 import {useRegister} from '../src/hooks/auth/useRegister';
-import CustomTextInputField from '../src/components/common/CustomTextInputField';
-import CustomButton from '../src/components/common/CustomButton';
 import {colors} from '../src/theme/theme';
-import { registerFormInputFields } from '../src/utils/form/registeration';
-import Toast from 'react-native-toast-message';
-import { validateEmail, validatePassword } from '../src/utils/auth/auth.utils';
-import { setError } from '../store/authSlice';
 import Divider from '../src/components/Divider';
+import InputField from '../src/components/common/InputField';
+import { getTextStyle } from '../src/utils/utils';
 
 export const RegisterScreen = ({navigation}) => {
-  const {formData, error, loading, handleFormData, handleRegister} = useRegister();
-  const theme = useTheme();
+  const {
+    formData,
+    error,
+    loading,
+    theme,
+    securePasswordEntry,
+    secureConfirmPasswordEntry,
+    setSecurePasswordEntry,
+    setSecureConfirmPasswordEntry,
+    handleFormData,
+    onRegister,
+  } = useRegister();
 
-  const validateForm = () => {
-    const {email, password, confirmPassword, firstName, lastName} = formData;
-    if(firstName === '' || lastName === '') {
-      setError('First name and last name are required');
-      return;
-    }
-    const emailValidationError = validateEmail(email);
-    if (emailValidationError) {
-      setError(emailValidationError);
-      return;
-    }
-    const passwordValidationError = validatePassword(password);
-    if (passwordValidationError) {
-      setError(passwordValidationError);
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match!');
-      return;
-    }
-  };
 
-  const onRegister = async () => {
-    try {
-      await handleRegister();
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Account created successfully!',
-      });
-    } catch (err) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error || 'Something went wrong',
-      });
-    }
-  };
-
-  const renderRegisterFormInputFields = () => {
-    return (
-      <View style={{gap: 10, marginTop: 20, marginBottom: 20}}>
-        {registerFormInputFields.map(field => (
-          <CustomTextInputField
-            {...field}
-            value={formData[field.key]}
-            onChangeText={value => handleFormData(field.key, value)}
-            placeholderColor={colors.gray}
-            onBlur={() => validateForm()}
-          />
-        ))}
-      </View>
-    );
-  };
 
   const renderForm = () => (
     <>
-      {renderRegisterFormInputFields()}
+      <View style={{gap: 10, marginTop: 20, marginBottom: 20}}>
+        <InputField
+          label="First Name"
+          value={formData.firstName}
+          onChangeText={value => handleFormData('firstName', value)}
+          placeholder="Enter your first name"
+          required
+        />
+
+        <InputField
+          label="Last Name"
+          value={formData.lastName}
+          onChangeText={value => handleFormData('lastName', value)}
+          placeholder="Enter your last name"
+          required
+        />
+
+        <InputField
+          label="Email"
+          value={formData.email}
+          onChangeText={value => handleFormData('email', value)}
+          placeholder="Enter your email"
+          required
+        />
+
+        <InputField
+          label="Password"
+          value={formData.password}
+          onChangeText={value => handleFormData('password', value)}
+          placeholder="Enter your password"
+          secure={securePasswordEntry}
+          toggleSecure={() => setSecurePasswordEntry(!securePasswordEntry)}
+          required
+        />
+
+        <InputField
+          label="Confirm Password"
+          value={formData.confirmPassword}
+          onChangeText={value => handleFormData('confirmPassword', value)}
+          placeholder="Confirm your password"
+          secure={secureConfirmPasswordEntry}
+          toggleSecure={() =>
+            setSecureConfirmPasswordEntry(!secureConfirmPasswordEntry)
+          }
+          required
+        />
+      </View>
+
       {error && (
-        <CustomText
+        <Text
           style={[
             styles.errorText,
             {color: theme.colors.error, alignSelf: 'center', marginBottom: 20},
           ]}>
           {error}
-        </CustomText>
+        </Text>
       )}
-      <CustomButton variant="primary" type="action" onPress={onRegister}>
-        {loading ? (
-          <CustomText variant="h3" style={{color: colors.white}} bold={800}>
-            CREATING ACCOUNT...
-          </CustomText>
-        ) : (
-          <CustomText variant="h3" style={{color: colors.white}} bold={800}>
-            REGISTER
-          </CustomText>
-        )}
-      </CustomButton>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          {
+            backgroundColor: theme.colors.primary,
+            padding: 15,
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        ]}
+        onPress={onRegister}>
+        <Text
+          style={[
+            getTextStyle('h3'),
+            {color: colors.white, fontWeight: '800', textAlign: 'center'},
+          ]}>
+          {loading ? 'CREATING ACCOUNT...' : 'REGISTER'}
+        </Text>
+      </TouchableOpacity>
     </>
   );
 
@@ -120,26 +127,31 @@ export const RegisterScreen = ({navigation}) => {
             Create Account
           </Text>
           <Divider />
-          <CustomText variant="h3" style={{color: theme.colors.text.secondary}}>
+          <Text
+            style={[getTextStyle('h3'), {color: theme.colors.text.secondary}]}>
             Complete your profile
-          </CustomText>
+          </Text>
           {renderForm()}
           <View style={styles.loginContainer}>
-            <CustomText
-              variant="h4"
-              style={{color: theme.colors.text.secondary}}>
+            <Text
+              style={[
+                getTextStyle('h4'),
+                {color: theme.colors.text.secondary},
+              ]}>
               Already have an account?{' '}
-            </CustomText>
-            <CustomButton
-              type="label"
-              onPress={() => navigation.navigate('Login')}>
-              <CustomText
-                variant="h4"
-                style={{color: theme.colors.primary}}
-                type="link">
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text
+                style={[
+                  getTextStyle('h4'),
+                  {
+                    color: theme.colors.primary,
+                    textDecorationLine: 'underline',
+                  },
+                ]}>
                 Login
-              </CustomText>
-            </CustomButton>
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -164,5 +176,14 @@ const styles = StyleSheet.create({
   errorText: {
     marginBottom: 16,
     textAlign: 'center',
+  },
+  input: {
+    flex: 1,
+    fontSize: 13,
+    borderRadius: 15,
+  },
+  button: {
+    borderRadius: 30,
+    flexDirection: 'row',
   },
 });

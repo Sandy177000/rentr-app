@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ListItem from '../src/components/ListItem';
 import CustomText from '../src/components/common/CustomText';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import TwoColumnListView from '../src/components/TwoColumnListView';
-import globalStyles from '../src/theme/global.styles';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();

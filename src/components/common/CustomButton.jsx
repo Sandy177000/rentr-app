@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
-import globalStyles from '../../theme/global.styles';
+
 const CustomButton = ({ onPress, style, children, variant = '', disabled = false, type = 'button'}) => {
   const theme = useTheme();
 

@@ -24,7 +24,7 @@ const ProfileSection = ({title, icon, onPress, theme}) => (
     </TouchableOpacity>
   );
 
-const styles = StyleSheet.create({  
+const styles = StyleSheet.create({
     sectionContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',

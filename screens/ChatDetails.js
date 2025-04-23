@@ -28,7 +28,6 @@ import Carousel from 'react-native-reanimated-carousel';
 import {formatDate, renderDateSeparator} from '../src/utils/utils';
 import useChatMessages from '../src/hooks/chat/useChatMessages';
 import Markdown from 'react-native-markdown-display';
-import CustomButton from '../src/components/common/CustomButton';
 import Toast from 'react-native-toast-message';
 import {colors} from '../src/theme/theme';
 
@@ -267,8 +266,7 @@ const ChatDetails = ({route, navigation}) => {
               {messageItem.content}
             </Markdown>
             {link.screen && link.params && (
-              <CustomButton
-                type="action"
+              <TouchableOpacity
                 style={{
                   gap: 5,
                   backgroundColor:
@@ -298,7 +296,7 @@ const ChatDetails = ({route, navigation}) => {
                       : theme.colors.primary
                   }
                 />
-              </CustomButton>
+              </TouchableOpacity>
             )}
             <CustomText
               variant="h4"

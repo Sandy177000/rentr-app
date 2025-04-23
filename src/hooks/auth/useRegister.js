@@ -4,8 +4,13 @@ import {
   registerUser,
   selectAuthError,
   clearError,
+  setError
 } from '../../../store/authSlice';
 import {useNavigation} from '@react-navigation/native';
+import {validateEmail, validatePassword} from '../../../src/utils/utils';
+import { useTheme } from '../../theme/ThemeProvider';
+import Toast from 'react-native-toast-message';
+
 export const useRegister = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
@@ -16,6 +21,9 @@ export const useRegister = () => {
     confirmPassword: '',
   });
 
+  const theme = useTheme();
+  const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
+  const [secureConfirmPasswordEntry, setSecureConfirmPasswordEntry] = useState(true);
   const error = useSelector(selectAuthError);
   const [loading, setLoading] = useState(false);
 
@@ -26,6 +34,7 @@ export const useRegister = () => {
   };
 
   const handleRegister = async () => {
+    validateForm();
     setLoading(true);
     try {
       const userData = {
@@ -37,6 +46,11 @@ export const useRegister = () => {
       const result = await dispatch(registerUser(userData)).unwrap();
       if (result) {
         navigation.replace('MainTabs');
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Account created successfully!',
+        });
       } else {
         throw new Error('Registration failed');
       }
@@ -44,6 +58,40 @@ export const useRegister = () => {
       console.error('Registration Error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const validateForm = () => {
+    const {email, password, confirmPassword, firstName, lastName} = formData;
+    if (firstName === '' || lastName === '') {
+      setError('First name and last name are required');
+      return;
+    }
+    const emailValidationError = validateEmail(email);
+    if (emailValidationError) {
+      setError(emailValidationError);
+      return;
+    }
+    const passwordValidationError = validatePassword(password);
+    if (passwordValidationError) {
+      setError(passwordValidationError);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+  };
+
+  const onRegister = async () => {
+    try {
+      await handleRegister();
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error || 'Something went wrong',
+      });
     }
   };
 
@@ -55,9 +103,16 @@ export const useRegister = () => {
     formData,
     error,
     loading,
+    theme,
+    secureConfirmPasswordEntry,
+    securePasswordEntry,
+    setSecurePasswordEntry,
+    setSecureConfirmPasswordEntry,
     setLoading,
     dispatch,
     handleFormData,
     handleRegister,
+    onRegister,
+    validateForm
   };
 };

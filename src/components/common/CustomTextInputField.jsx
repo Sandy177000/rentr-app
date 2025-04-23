@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import CustomText from './CustomText';
 import { useTheme } from '../../theme/ThemeProvider';
-import globalStyles from '../../theme/global.styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CustomTextInputField = ({label, value, onChangeText, placeholder, placeholderColor, required = false, type = 'text' }) => {
@@ -19,7 +18,7 @@ const CustomTextInputField = ({label, value, onChangeText, placeholder, placehol
       {label && <CustomText variant="h4" >{label}
         {required && <CustomText variant="h4" color={theme.colors.error}>*</CustomText>}
         </CustomText>}
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: theme.colors.surface, ...globalStyles.borderRadius, padding: 10}}>
+      <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: theme.colors.surface, padding: 10}}>
       <TextInput
         style={[styles.input, { color: theme.colors.text.primary}]}
         value={value}

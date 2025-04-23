@@ -6,19 +6,22 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import CustomText from '../src/components/common/CustomText';
-import CustomTextInputField from '../src/components/common/CustomTextInputField';
 import {useLogin} from '../src/hooks/auth/useLogin';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import CustomButton from '../src/components/common/CustomButton';
 import {colors} from '../src/theme/theme';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {useState} from 'react';
 
 export const LoginScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const {loading, error, handleLogin, formData, handleFormData} = useLogin();
 
@@ -54,21 +57,30 @@ export const LoginScreen = () => {
           Log in to continue
         </CustomText>
         <View style={{gap: 10, marginTop: 20, marginBottom: 20}}>
-          <CustomTextInputField
+          <TextInput
             label="Email"
+            style={[styles.input, {backgroundColor: theme.colors.surface}]}
             value={formData.email}
             onChangeText={value => handleFormData('email', value)}
             placeholder="Enter your email"
             placeholderColor={theme.colors.text.secondary}
           />
-          <CustomTextInputField
-            label="Password"
-            value={formData.password}
-            onChangeText={value => handleFormData('password', value)}
-            placeholder="Enter your password"
-            placeholderColor={theme.colors.text.secondary}
-            type="password"
-          />
+            <View style={[styles.passwordInput, {backgroundColor: theme.colors.surface}]}>
+              <TextInput
+              label="Password"
+              value={formData.password}
+              onChangeText={value => handleFormData('password', value)}
+              placeholder="Enter your password"
+              placeholderColor={theme.colors.text.secondary}
+              secureTextEntry={secureTextEntry}
+            />
+            <Icon
+              name={secureTextEntry ? 'eye-slash' : 'eye'}
+              size={20}
+              color={theme.colors.text.primary}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+            />
+          </View>
         </View>
         {error && (
           <CustomText
@@ -81,7 +93,10 @@ export const LoginScreen = () => {
             {error}
           </CustomText>
         )}
-        <CustomButton variant="primary" type="action" onPress={handleLoginWithToast}>
+        <CustomButton
+          variant="primary"
+          type="action"
+          onPress={handleLoginWithToast}>
           {loading ? (
             <ActivityIndicator size="small" color={colors.white} />
           ) : (
@@ -96,8 +111,13 @@ export const LoginScreen = () => {
           <CustomText variant="h4" style={{color: theme.colors.text.secondary}}>
             Don't have an account?{'  '}
           </CustomText>
-          <CustomButton type="label" onPress={() => navigation.navigate('Register')}>
-            <CustomText variant="h4" style={{color: theme.colors.primary}} type="link">
+          <CustomButton
+            type="label"
+            onPress={() => navigation.navigate('Register')}>
+            <CustomText
+              variant="h4"
+              style={{color: theme.colors.primary}}
+              type="link">
               Register
             </CustomText>
           </CustomButton>
@@ -120,5 +140,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
+  },
+  input: {
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  passwordInput: {
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

@@ -1,10 +1,8 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import CustomButton from './common/CustomButton';
+import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import globalStyles from '../theme/global.styles';
+import FavoriteButton from './FavoriteButton';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
@@ -12,31 +10,29 @@ const VerticalItemCard = ({
   item,
   theme,
   navigation,
-  isFavourite,
-  handleFavourite,
   showFavorite,
 }) => {
   return (
     <>
       <View style={styles.itemCard}>
         {showFavorite && (
-          <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-            {isFavourite ? (
-              <Icon name="heart" size={22} color={theme.colors.primary} />
-            ) : (
-              <Icon name="heart-o" size={22} color={'#FFFFFF'} />
-            )}
-          </CustomButton>
+          <View style={styles.heartIcon}>
+            <FavoriteButton 
+              item={item} 
+              size={22} 
+              style={{padding: 0}} 
+            />
+          </View>
         )}
-        <CustomButton
+        <TouchableOpacity
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite, showFavorite})}>
+          onPress={() => navigation.navigate('ItemDetails', {itemId: item.id})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}
             overlay
           />
-        </CustomButton>
+        </TouchableOpacity>
         <View style={styles.itemContent}>
         <CustomText
           bold={600}
@@ -79,12 +75,11 @@ const styles = StyleSheet.create({
     width: COLUMN_WIDTH,
     borderRadius: 12,
     overflow: 'hidden',
-    ...globalStyles.shadow,
   },
   imageContainer: {
-    width: '100%',
     height: 200,
-    position: 'relative',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   loadingContainer: {
     position: 'absolute',

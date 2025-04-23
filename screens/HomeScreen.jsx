@@ -12,15 +12,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
 import CustomButton from '../src/components/common/CustomButton';
-import globalStyles from '../src/theme/global.styles';
-import Icons from 'react-native-vector-icons/FontAwesome';
 
 const HomeScreen = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const [refreshing, setRefreshing] = useState(false);
   const items = useSelector(selectItems);
+  const [refreshing, setRefreshing] = useState(false);
   const categories = [
     {id: '1', name: 'Electronics', icon: 'laptop'},
     {id: '6', name: 'Books', icon: 'book'},
@@ -28,21 +26,21 @@ const HomeScreen = () => {
     {id: '5', name: 'Vehicles', icon: 'car'},
   ];
 
-  const fetchItems = useCallback(async () => {
-    try {
-      setRefreshing(true);
-      await dispatch(getItems()).unwrap();
-      setRefreshing(false);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
-      setRefreshing(false);
-    }
-  }, [dispatch]);
 
   useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setRefreshing(true);
+        await dispatch(getItems()).unwrap();
+      } catch (error) {
+        console.log('error', error);
+      } finally {
+        setRefreshing(false);
+      }
+    };
     fetchItems();
-  }, [dispatch, fetchItems]);
+    console.log('items fetch');
+  }, []);
 
   const renderCategory = ({item}) => (
     <TouchableOpacity
@@ -59,21 +57,40 @@ const HomeScreen = () => {
 
   const renderRecommendation = ({item, index}) => (
     <View style={{padding: 3}}>
-      <ListItem item={item} index={index} theme={theme} navigation={navigation} showFavorite={true} />
+      <ListItem
+        item={item}
+        index={index}
+        theme={theme}
+        navigation={navigation}
+        showFavorite={true}
+      />
     </View>
   );
 
   const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchItems();
-    setRefreshing(false);
+    const fetchItems = async () => {
+      try {
+        setRefreshing(true);
+        await dispatch(getItems()).unwrap();
+      } catch (error) {
+        console.log('error', error);
+      } finally {
+        setRefreshing(false);
+      }
+    };
+    fetchItems();
   };
 
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={{flexDirection: 'column', backgroundColor: theme.colors.background, borderBottomLeftRadius: 40, borderBottomRightRadius: 40}}>
-        
+      <View
+        style={{
+          flexDirection: 'column',
+          backgroundColor: theme.colors.background,
+          borderBottomLeftRadius: 40,
+          borderBottomRightRadius: 40,
+        }}>
         <View
           style={[
             styles.searchContainer,
@@ -89,43 +106,49 @@ const HomeScreen = () => {
               Search for items...
             </CustomText>
           </CustomButton>
-          
         </View>
-        
-        <Section
-          data={categories}
-          renderItem={renderCategory}
-        />
+
+        <Section data={categories} renderItem={renderCategory} />
       </View>
 
-      <View style={{flex: 1, borderTopLeftRadius: 40, borderTopRightRadius: 40, overflow: 'hidden', backgroundColor: theme.colors.background}}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }>
-        {items && (
-          <>
-            <Section
-              title="Latest Deals"
-              data={items}
-              renderItem={renderRecommendation}
-            />
-            <Section
-              title="Goods near you"
-              data={items.filter(item => item.category === 'Books')}
-              renderItem={renderRecommendation}
-            />
-            <Section
-              title="Recommended Electronics"
-              data={items.filter(item => item.category === 'Electronics')}
-              renderItem={renderRecommendation}
-            />
-          </>
-        )}
-        <Footer fullHeight={items?.length == 0} />
-      </ScrollView>
-      </View>
+      {items && (
+        <View
+          style={{
+            flex: 1,
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            overflow: 'hidden',
+            backgroundColor: theme.colors.background,
+            marginBottom: 100,
+        }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }>
+          {(
+            <>
+              <Section
+                title="Latest Deals"
+                data={items}
+                renderItem={renderRecommendation}
+              />
+              <Section
+                title="Goods near you"
+                data={items.filter(item => item.category === 'Books')}
+                renderItem={renderRecommendation}
+              />
+              <Section
+                title="Recommended Electronics"
+                data={items.filter(item => item.category === 'Electronics')}
+                renderItem={renderRecommendation}
+              />
+            </>
+          )}
+        </ScrollView>
+        </View>
+      )}
+      {!items && <Footer />}
     </View>
   );
 };
@@ -156,7 +179,6 @@ const styles = StyleSheet.create({
     minWidth: 120,
     gap: 8,
     borderRadius: 30,
-    ...globalStyles.shadow,
   },
 });
 

@@ -3,15 +3,13 @@ import {View, StyleSheet} from 'react-native';
 import CustomButton from './common/CustomButton';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import globalStyles from '../theme/global.styles';
+import FavoriteButton from './FavoriteButton';
+
 
 const HorizontalItemCard = ({
   item,
   theme,
   navigation,
-  isFavourite,
-  handleFavourite,
   showFavorite,
 }) => {
   return (
@@ -19,7 +17,7 @@ const HorizontalItemCard = ({
       <View style={styles.itemInfoContainer}>
         <CustomButton
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {item, isFavourite, showFavorite})}>
+          onPress={() => navigation.navigate('ItemDetails', {itemId: item.id})}>
           <CustomImage
             source={item.images?.[0]}
             style={styles.itemImage}
@@ -43,17 +41,18 @@ const HorizontalItemCard = ({
         </View>
       </View>
       {showFavorite && (
-        <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-          {isFavourite ? (
-            <Icon name="heart" size={22} color={theme.colors.primary} />
-          ) : (
-          <Icon name="heart-o" size={22} color={'#FFFFFF'} />
-          )}
-        </CustomButton>
+        <View style={styles.heartIcon}>
+          <FavoriteButton 
+            item={item} 
+            size={22} 
+            style={{padding: 0}} 
+          />
+        </View>
       )}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   itemCard: {
     paddingHorizontal: 3,
@@ -70,13 +69,12 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 70,
     height: 70,
+    borderRadius: 20,
     overflow: 'hidden',
-
   },
   itemImage: {
     width: '100%',
     height: '100%',
-    ...globalStyles.borderRadius,
   },
   itemContent: {
     paddingTop: 5,

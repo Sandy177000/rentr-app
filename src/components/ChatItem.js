@@ -7,7 +7,6 @@ import {avatar} from '../constants';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/authSlice';
 import CustomImage from './common/CustomImage';
-import globalStyles from '../theme/global.styles';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();
@@ -65,7 +64,7 @@ const ChatItem = ({item, token, index}) => {
 const styles = StyleSheet.create({
   chatItem: {
     padding: 15,
-    ...globalStyles.borderRadius,
+    borderRadius: 20,
   },
   avatar: {
     width: 45,

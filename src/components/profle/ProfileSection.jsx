@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../common/CustomText';
 import CustomButton from '../common/CustomButton';
-import globalStyles from '../../theme/global.styles';
+
 export const ProfileSection = ({title, icon, onPress, theme}) => (
   <CustomButton
     style={[styles.sectionContainer, {backgroundColor: theme.colors.surface}]}
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     padding: 25,
     marginBottom: 10,
     borderRadius: 30,
-    ...globalStyles.shadow,
   },
   sectionContent: {
     flexDirection: 'row',

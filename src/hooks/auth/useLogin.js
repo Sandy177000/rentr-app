@@ -6,7 +6,6 @@ import {
   clearError,
   restoreUser,
   setError,
-  logout,
 } from '../../../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -15,11 +14,7 @@ export const useLogin = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  // const [email, setEmail] = useState('admin@rentr.com'); // hello@world.com
-  // const [password, setPassword] = useState('Admin@123'); // Sandesh@2000
-  // const [email, setEmail] = useState('t@t.c'); // hello@world.com
-  // const [password, setPassword] = useState('Test@123'); // Sandesh@2000
-  const [formData, setFormData] = useState({email: 'sandeshyele2000@gmail.com', password: 'Qwerty@12345'}); // hello@world.com
+  const [formData, setFormData] = useState({email: 'sandeshyele2000@gmail.com', password: 'Qwerty@12345'});
   const error = useSelector(selectAuthError);
 
   const handleLogin = async () => {
@@ -38,7 +33,7 @@ export const useLogin = () => {
         throw new Error('Login failed');
       }
     } catch (err) {
-      dispatch(setError(err.message || 'Login error'));
+      dispatch(setError('Login error'));
       throw new Error(err.message || 'Login error');
     } finally {
       setLoading(false);

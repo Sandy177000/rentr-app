@@ -7,47 +7,37 @@ import {
   Image,
   useWindowDimensions,
   ActivityIndicator,
+  Text,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
-import CustomText from '../src/components/common/CustomText';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import Carousel from 'react-native-reanimated-carousel';
 import {colors} from '../src/theme/theme';
-import CustomButton from '../src/components/common/CustomButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  addFavourite,
-  addToFavourites,
-  removeFavourite,
-  removeFromFavourites,
-} from '../store/itemsSlice';
-import { chatApi } from '../src/apis/chat';
+import {chatApi} from '../src/apis/chat';
 import CustomModal from '../src/components/common/CustomModal';
-import { itemApi } from '../src/apis/item';
+import {itemApi} from '../src/apis/item';
 import Toast from 'react-native-toast-message';
-import { useFocusEffect } from '@react-navigation/native';
-import _ from 'lodash';
-
+import FavoriteButton from '../src/components/FavoriteButton';
 
 export const ItemDetailsScreen = ({route, navigation}) => {
+  let {item, itemId} = route.params;
   const token = useSelector(selectCurrentToken);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const theme = useTheme();
-  let {item, itemId, isFavourite, showFavorite} = route.params;
   const [itemData, setItemData] = useState(item);
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
-  const [favourite, setFavourite] = useState(isFavourite);
 
-
-  const fetchItem = async () => {
+  const fetchItem = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await itemApi.getItemById(itemId);
-      if(data) {
+      const itemIdToFetch = itemId || item?.id;
+      const data = await itemApi.getItemById(itemIdToFetch);
+      if (data) {
         setItemData(data);
       } else {
         Toast.show({
@@ -66,32 +56,25 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [item, itemId, navigation]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if(!item) {
-        fetchItem();
-      }
-    }, [item, itemId]),
-  );
-
-  const dispatch = useDispatch();
+  useEffect(() => {
+    fetchItem();
+  }, [fetchItem]);
 
   const handleRent = () => {
     // Implement rental logic
   };
 
-  const handleDelete = async (itemId) => {
+  const handleDelete = async id => {
     try {
       setLoading(true);
-      const {success} = await itemApi.deleteItem(itemId);
-      if(success) {
+      const {success} = await itemApi.deleteItem(id);
+      if (success) {
         Toast.show({
           type: 'success',
           text1: 'Item deleted successfully',
         });
-       
       } else {
         Toast.show({
           type: 'error',
@@ -123,15 +106,19 @@ export const ItemDetailsScreen = ({route, navigation}) => {
       position: 'top',
       visibilityTime: 3000,
     });
-
   };
 
   const handleContact = async () => {
     setShowModal(!showModal);
-    const {ownerId} = item;
-    if(ownerId) {
+    const {ownerId} = itemData;
+    if (ownerId) {
       const chatRoom = await chatApi.createChatRoom(ownerId);
-      navigation.navigate('ChatDetails', {chat: chatRoom, roomId: chatRoom.id, token: token, item: item});
+      navigation.navigate('ChatDetails', {
+        chat: chatRoom,
+        roomId: chatRoom.id,
+        token: token,
+        item: item,
+      });
     }
   };
 
@@ -152,116 +139,202 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     );
   };
 
-  const handleFavourite = async () => {
-    const initialFavouriteState = favourite;
-    try {
-        setFavourite(!favourite);
-      if (initialFavouriteState) {
-        dispatch(removeFavourite(item));
-        await dispatch(removeFromFavourites(item.id)).unwrap();
-      } else {
-        dispatch(addFavourite(item));
-        await dispatch(addToFavourites(item.id)).unwrap();
-      }
-    } catch (error) {
-        setFavourite(initialFavouriteState);
-      console.log('error in handleFavourite', error);
-    }
-  };
-
   const getColor = flag => {
     return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)';
   };
 
+  const renderLoading = () => {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  };
+
+  // Helper function to get text style based on variant (like CustomText)
+  const getTextStyle = (variant) => {
+    switch (variant) {
+      case 'h1': return { fontSize: 19 };
+      case 'h2': return { fontSize: 17 };
+      case 'h3': return { fontSize: 15 };
+      case 'h4': return { fontSize: 13 };
+      case 'h5': return { fontSize: 11 };
+      case 'h6': return { fontSize: 9 };
+      case 'h7': return { fontSize: 7 };
+      default: return { fontSize: 11 };
+    }
+  };
+
   return (
     <>
-       {loading && <ActivityIndicator size="large" color={theme.colors.primary} />}
-      <CustomModal showModal={showModal}>
-        <View style={[styles.contactModal, {backgroundColor: getColor(theme.isDark), borderColor: getColor(!theme.isDark), borderWidth: 0.2}]}>
-            <CustomText variant="h4" style={{textAlign: 'center'}}> A Message will be sent to the owner </CustomText>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 10 , paddingHorizontal: 20}}>
-            <CustomButton variant="primary" type="action" onPress={() => setShowModal(false)}>
-              <CustomText style={{color: colors.white}}>Close</CustomText>
-            </CustomButton>
-            <CustomButton variant="primary" type="action" onPress={handleContact}>
-              <CustomText style={{color: colors.white}}>Send Message</CustomText>
-            </CustomButton>
-          </View>
+      {loading ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
-      </CustomModal>
-      {itemData && <View
-        style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <View style={styles.carouselContainer}>
-          {showFavorite && (
-            <CustomButton style={styles.heartIcon} onPress={handleFavourite}>
-              {favourite ? (
-                <Icon name="heart" size={22} color={theme.colors.primary} />
-              ) : (
-                <Icon name="heart-o" size={22} color={colors.white} />
-              )}
-            </CustomButton>
-          )}
-          <Carousel
-            loop
-            width={width - 40}
-            height={300}
-            data={itemData.images || []}
-            onSnapToItem={setActiveIndex}
-            renderItem={({item: image}) => (
-              <Image
-                source={{uri: image}}
-                style={[styles.image, {width: width - 40}]}
-                resizeMode="cover"
-              />
-            )}
-          />
-          {itemData.images?.length > 1 && renderPaginationDots()}
-        </View>
-        <CustomText style={[styles.title, {color: theme.colors.text.primary}]}>
-          {itemData.title}
-        </CustomText>
-        <CustomText
-          style={[styles.description, {color: theme.colors.text.secondary}]}>
-          {itemData.description}
-        </CustomText>
-        <CustomText
-          style={[styles.price, {color: theme.colors.text.secondary}]}>
-          Rs. {itemData.price}/day
-        </CustomText>
+      ) : (
+        <>
+          <CustomModal showModal={showModal}>
+            <View
+              style={[
+                styles.contactModal,
+                {
+                  backgroundColor: getColor(theme.isDark),
+                  borderColor: getColor(!theme.isDark),
+                  borderWidth: 0.2,
+                },
+              ]}>
+              <Text 
+                style={[
+                  getTextStyle('h4'), 
+                  {
+                    textAlign: 'center',
+                    color: theme.colors.text.primary,
+                    fontFamily: theme.font
+                  }
+                ]}>
+                {' '}
+                A Message will be sent to the owner{' '}
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                  paddingHorizontal: 20,
+                }}>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    styles.centerContent,
+                    { backgroundColor: theme.colors.primary },
+                  ]}
+                  onPress={() => setShowModal(false)}>
+                  <Text style={{color: colors.white, fontSize: 13, fontFamily: theme.font}}>
+                    Close
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    styles.centerContent,
+                    { backgroundColor: theme.colors.primary },
+                  ]}
+                  onPress={handleContact}>
+                  <Text style={{color: colors.white, fontSize: 13, fontFamily: theme.font}}>
+                    Send Message
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </CustomModal>
+          {itemData && (
+            <View
+              style={[
+                styles.container,
+                {backgroundColor: theme.colors.background},
+              ]}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{
+                  backgroundColor: theme.colors.surface,
+                  borderRadius: 100,
+                  position: 'absolute',
+                  top: 20,
+                  left: 20,
+                  zIndex: 1000,
+                  width: 35,
+                  height: 35,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Icon
+                  name="angle-left"
+                  size={25}
+                  color={theme.colors.text.secondary}
+                />
+              </TouchableOpacity>
+              <View style={styles.carouselContainer}>
+                <View style={styles.favoriteButton}>
+                  <FavoriteButton item={itemData} size={24} />
+                </View>
+                <Carousel
+                  loop
+                  width={width}
+                  height={300}
+                  data={itemData.images || []}
+                  onSnapToItem={setActiveIndex}
+                  renderItem={({item: image}) => (
+                    <Image
+                      source={{uri: image}}
+                      style={[styles.image]}
+                      resizeMode="cover"
+                    />
+                  )}
+                />
+                {itemData.images?.length > 1 && renderPaginationDots()}
+              </View>
 
-        {itemData.ownerId === currentUser?.id ? (
-          <View style={{gap: 10}}>
-          {/* <CustomButton
-            style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
-            onPress={handleEdit}>
-            <CustomText
-              variant="h4"
-              style={{color: colors.white, fontWeight: '600'}}>
-              Edit Item
-            </CustomText>
-          </CustomButton> */}
-          <CustomButton
-            style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
-            onPress={() => handleDelete(itemData.id)}>
-            <CustomText
-              variant="h4"
-              style={{color: colors.white, fontWeight: '600'}}>
-              Delete Item
-            </CustomText>
-          </CustomButton>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={[styles.rentButton, {backgroundColor: theme.colors.primary}]}
-            onPress={() => setShowModal(!showModal)}>
-            <CustomText
-              variant="h4"
-              style={{color: colors.white, fontWeight: '600'}}>
-              Contact Owner
-            </CustomText>
-          </TouchableOpacity>
-        )}
-      </View> }
+              <View style={{padding: 20}}>
+                <Text
+                  style={[
+                    styles.title, 
+                    {color: theme.colors.text.primary, fontFamily: theme.font}
+                  ]}>
+                  {itemData.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.description,
+                    {color: theme.colors.text.secondary, fontFamily: theme.font},
+                  ]}>
+                  {itemData.description}
+                </Text>
+                <Text
+                  style={[
+                    styles.price, 
+                    {color: theme.colors.text.secondary, fontFamily: theme.font}
+                  ]}>
+                  Rs. {itemData.price}/day
+                </Text>
+
+                {itemData.ownerId === currentUser?.id ? (
+                  <View style={{gap: 10}}>
+                    <TouchableOpacity
+                      style={[
+                        styles.rentButton,
+                        {backgroundColor: theme.colors.error},
+                      ]}
+                      onPress={() => handleDelete(itemData.id)}>
+                      <Text
+                        style={[
+                          getTextStyle('h4'),
+                          {color: colors.white, fontWeight: '600', fontFamily: theme.font}
+                        ]}>
+                        Delete Item
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    style={[
+                      styles.rentButton,
+                      {backgroundColor: theme.colors.primary},
+                    ]}
+                    onPress={() => setShowModal(!showModal)}>
+                    <Text
+                      style={[
+                        getTextStyle('h4'),
+                        {color: colors.white, fontWeight: '600', fontFamily: theme.font}
+                      ]}>
+                      Contact Owner
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          )}
+        </>
+      )}
     </>
   );
 };
@@ -269,22 +342,25 @@ export const ItemDetailsScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    // padding: 20,
   },
   heartIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 30,
+    right: 30,
     zIndex: 1000,
   },
   carouselContainer: {
     position: 'relative',
     height: 300,
+    width: '100%',
     marginBottom: 20,
   },
   image: {
     height: 300,
-    borderRadius: 12,
+    width: '100%',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
   paginationDots: {
     flexDirection: 'row',
@@ -333,7 +409,34 @@ const styles = StyleSheet.create({
     gap: 30,
     width: '70%',
     padding: 20,
-  }
+  },
+  categoryItem: {
+    flex: 1,
+    height: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    maxWidth: 100,
+    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1000,
+  },
+  // Added styles from CustomButton
+  button: {
+    borderRadius: 30,
+    flexDirection: 'row',
+  },
+  centerContent: {
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default ItemDetailsScreen;
