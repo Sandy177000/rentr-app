@@ -26,13 +26,7 @@ const TwoColumnListView = ({
       return (
         <EmptyListComponent>
           {emptyText ? (
-            <View style={{backgroundColor: 'rgba(128, 128, 128, 0.1)', 
-              padding: 30, 
-              borderRadius: 30, 
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-            }}>
+            <View style={styles.emptyContainer}>
               <Icon
                 name="inbox"
                 size={50}
@@ -40,9 +34,7 @@ const TwoColumnListView = ({
               />
               <CustomText
                 variant="h4"
-                style={[
-                  {color: theme.colors.text.secondary},
-                ]}>
+                style={[{color: theme.colors.text.secondary}]}>
                 {emptyText}
               </CustomText>
             </View>
@@ -52,39 +44,37 @@ const TwoColumnListView = ({
         </EmptyListComponent>
       );
     } else {
-      return (
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      );
+      return <ActivityIndicator size="large" color={theme.colors.primary} />;
     }
   };
 
   return (
     <View style={{flex: 1}}>
-        <FlatList
-          data={items}
-          renderItem={({item, index}) => {
-            return (
-              <ListItem
-                item={item}
-                index={index}
-                theme={theme}
-                navigation={navigation}
-                showFavorite={showFavorite}
-              />
-            );
-          }}
-          keyExtractor={item => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={[
-            styles.listContent,
-            items.length === 0 && styles.emptyListContent,
-          ]}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-          }
-          ListEmptyComponent={getEmptyComponent()}
-        />
+      <FlatList
+        data={items}
+        renderItem={({item, index}) => {
+          return (
+            <ListItem
+              item={item}
+              index={index}
+              theme={theme}
+              navigation={navigation}
+              showFavorite={showFavorite}
+            />
+          );
+        }}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={[
+          styles.listContent,
+          items.length === 0 && styles.emptyListContent,
+        ]}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={getEmptyComponent()}
+      />
     </View>
   );
 };
@@ -102,7 +92,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  emptyContainer: {
+    backgroundColor: 'rgba(128, 128, 128, 0.1)',
+    padding: 30,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
 });
 
 export default TwoColumnListView;

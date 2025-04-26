@@ -1,7 +1,7 @@
 export const getBaseUrl = () => {
   // Use environment variables with defaults
   if(process.env.NODE_ENV === 'development') {
-    return process.env.DEV_API_URL || 'http://192.168.1.11:4000';
+    return process.env.DEV_API_URL || 'http://192.168.1.10:4000';
   }
   return process.env.PROD_API_URL || 'https://rentr-backend.onrender.com';
 };

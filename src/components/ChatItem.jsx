@@ -1,24 +1,23 @@
-import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import CustomText from './common/CustomText';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../theme/ThemeProvider';
 import {avatar} from '../constants';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '../../store/authSlice';
+import {useSelector} from 'react-redux';
+import {selectCurrentUser} from '../../store/authSlice';
 import CustomImage from './common/CustomImage';
 
 const ChatItem = ({item, token, index}) => {
   const theme = useTheme();
   const navigation = useNavigation();
   const user = useSelector(selectCurrentUser);
-  const participants = user ? item.participants.filter(
-    participant => participant.user.id !== user.id,
-  ) : [];
+  const participants = user
+    ? item.participants.filter(participant => participant.user.id !== user.id)
+    : [];
 
   return (
     <TouchableOpacity
-      key={`${item.participants[0].user.id}`}
       style={[styles.chatItem, {backgroundColor: theme.colors.surface}]}
       onPress={() =>
         navigation.navigate('ChatDetails', {
@@ -28,10 +27,10 @@ const ChatItem = ({item, token, index}) => {
           profileImage: participants[0]?.user?.profileImage,
         })
       }>
-      <View style={styles.chatContent}>
+      <View style={styles.chatContent} key={index}>
         <View style={styles.chatHeader}>
           {participants.map(participant => (
-            <View style={styles.avatar}>
+            <View style={styles.avatar} key={`${participant.user.id}-image`}>
               <CustomImage
                 source={participant.user.profileImage || avatar}
                 style={styles.avatar}
@@ -41,19 +40,25 @@ const ChatItem = ({item, token, index}) => {
           ))}
         </View>
         <View style={styles.chatFooter}>
-        {participants.map(participant => (
+          {participants.map(participant => (
             <CustomText
+              key={`${participant.user.id}-name`}
               variant="h3"
-              style={{color: theme.colors.text.primary, fontWeight: 'bold', marginTop: 5}}>
+              style={{
+                color: theme.colors.text.primary,
+                fontWeight: 'bold',
+                marginTop: 5,
+              }}>
               {participant.user.firstName}
             </CustomText>
           ))}
           <CustomText
             variant="body"
             style={{color: theme.colors.text.secondary}}
-            numberOfLines={1}
-          >
-            {item.messages[0]?.content.length > 50 ? item.messages[0]?.content.slice(0, 50) + '...' : item.messages[0]?.content}
+            numberOfLines={1}>
+            {item.messages[0]?.content.length > 50
+              ? item.messages[0]?.content.slice(0, 50) + '...'
+              : item.messages[0]?.content}
           </CustomText>
         </View>
       </View>
@@ -74,8 +79,7 @@ const styles = StyleSheet.create({
   chatContent: {
     flexDirection: 'row',
   },
-  chatHeader: {
-  },
+  chatHeader: {},
   chatName: {
     fontWeight: 'bold',
   },
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
     marginLeft: 13,
     flex: 1,
     alignItems: 'flex-start',
-    top:-5,
+    top: -5,
   },
   unreadBadge: {
     paddingHorizontal: 8,

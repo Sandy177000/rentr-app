@@ -3,7 +3,7 @@ import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import TwoColumnListView from '../src/components/TwoColumnListView';
-const CategoryItems = ({route}) => {
+const CategoryItemsScreen = ({route}) => {
   const {category} = route.params;
   const theme = useTheme();
   const [items, setItems] = useState([]);
@@ -38,4 +38,4 @@ const CategoryItems = ({route}) => {
   );
 };
 
-export default CategoryItems;
+export default CategoryItemsScreen;

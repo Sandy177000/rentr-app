@@ -14,12 +14,12 @@ import {useSelector} from 'react-redux';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import Carousel from 'react-native-reanimated-carousel';
 import {colors} from '../src/theme/theme';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {chatApi} from '../src/services/api/index';
 import CustomModal from '../src/components/common/CustomModal';
 import {itemApi} from '../src/services/api/index';
 import Toast from 'react-native-toast-message';
 import FavoriteButton from '../src/components/FavoriteButton';
+import ScreenHeader from '../src/components/ScreenHeader';
 
 export const ItemDetailsScreen = ({route, navigation}) => {
   let {item, itemId} = route.params;
@@ -140,7 +140,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   };
 
   const getColor = flag => {
-    return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)';
+    return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.85)';
   };
 
   const renderLoading = () => {
@@ -152,25 +152,31 @@ export const ItemDetailsScreen = ({route, navigation}) => {
   };
 
   // Helper function to get text style based on variant (like CustomText)
-  const getTextStyle = (variant) => {
+  const getTextStyle = variant => {
     switch (variant) {
-      case 'h1': return { fontSize: 19 };
-      case 'h2': return { fontSize: 17 };
-      case 'h3': return { fontSize: 15 };
-      case 'h4': return { fontSize: 13 };
-      case 'h5': return { fontSize: 11 };
-      case 'h6': return { fontSize: 9 };
-      case 'h7': return { fontSize: 7 };
-      default: return { fontSize: 11 };
+      case 'h1':
+        return {fontSize: 19};
+      case 'h2':
+        return {fontSize: 17};
+      case 'h3':
+        return {fontSize: 15};
+      case 'h4':
+        return {fontSize: 14};
+      case 'h5':
+        return {fontSize: 11};
+      case 'h6':
+        return {fontSize: 9};
+      case 'h7':
+        return {fontSize: 7};
+      default:
+        return {fontSize: 11};
     }
   };
 
   return (
     <>
       {loading ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-        </View>
+        renderLoading()
       ) : (
         <>
           <CustomModal showModal={showModal}>
@@ -183,17 +189,16 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                   borderWidth: 0.2,
                 },
               ]}>
-              <Text 
+              <Text
                 style={[
-                  getTextStyle('h4'), 
+                  getTextStyle('h4'),
                   {
                     textAlign: 'center',
                     color: theme.colors.text.primary,
-                    fontFamily: theme.font
-                  }
+                    fontFamily: theme.font,
+                  },
                 ]}>
-                {' '}
-                A Message will be sent to the owner{' '}
+                A Message will be sent to the owner
               </Text>
               <View
                 style={{
@@ -206,21 +211,31 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                   style={[
                     styles.button,
                     styles.centerContent,
-                    { backgroundColor: theme.colors.primary },
+                    {backgroundColor: theme.colors.primary},
                   ]}
                   onPress={() => setShowModal(false)}>
-                  <Text style={{color: colors.white, fontSize: 13, fontFamily: theme.font}}>
-                    Close
+                  <Text
+                    style={{
+                      color: colors.white,
+                      fontSize: 13,
+                      fontFamily: theme.font,
+                    }}>
+                    Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[
                     styles.button,
                     styles.centerContent,
-                    { backgroundColor: theme.colors.primary },
+                    {backgroundColor: theme.colors.primary},
                   ]}
                   onPress={handleContact}>
-                  <Text style={{color: colors.white, fontSize: 13, fontFamily: theme.font}}>
+                  <Text
+                    style={{
+                      color: colors.white,
+                      fontSize: 13,
+                      fontFamily: theme.font,
+                    }}>
                     Send Message
                   </Text>
                 </TouchableOpacity>
@@ -233,30 +248,15 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                 styles.container,
                 {backgroundColor: theme.colors.background},
               ]}>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={{
-                  backgroundColor: theme.colors.surface,
-                  borderRadius: 100,
-                  position: 'absolute',
-                  top: 20,
-                  left: 20,
-                  zIndex: 1000,
-                  width: 35,
-                  height: 35,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="angle-left"
-                  size={25}
-                  color={theme.colors.text.secondary}
-                />
-              </TouchableOpacity>
-              <View style={styles.carouselContainer}>
+              <ScreenHeader styles={{
+                position: 'absolute',
+                width: '100%',
+              }}>
                 <View style={styles.favoriteButton}>
                   <FavoriteButton item={itemData} size={24} />
                 </View>
+              </ScreenHeader>
+              <View style={styles.carouselContainer}>
                 <Carousel
                   loop
                   width={width}
@@ -277,22 +277,28 @@ export const ItemDetailsScreen = ({route, navigation}) => {
               <View style={{padding: 20}}>
                 <Text
                   style={[
-                    styles.title, 
-                    {color: theme.colors.text.primary, fontFamily: theme.font}
+                    styles.title,
+                    {color: theme.colors.text.primary, fontFamily: theme.font},
                   ]}>
                   {itemData.name}
                 </Text>
                 <Text
                   style={[
                     styles.description,
-                    {color: theme.colors.text.secondary, fontFamily: theme.font},
+                    {
+                      color: theme.colors.text.secondary,
+                      fontFamily: theme.font,
+                    },
                   ]}>
                   {itemData.description}
                 </Text>
                 <Text
                   style={[
-                    styles.price, 
-                    {color: theme.colors.text.secondary, fontFamily: theme.font}
+                    styles.price,
+                    {
+                      color: theme.colors.text.secondary,
+                      fontFamily: theme.font,
+                    },
                   ]}>
                   Rs. {itemData.price}/day
                 </Text>
@@ -308,7 +314,11 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                       <Text
                         style={[
                           getTextStyle('h4'),
-                          {color: colors.white, fontWeight: '600', fontFamily: theme.font}
+                          {
+                            color: colors.white,
+                            fontWeight: '600',
+                            fontFamily: theme.font,
+                          },
                         ]}>
                         Delete Item
                       </Text>
@@ -324,7 +334,11 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                     <Text
                       style={[
                         getTextStyle('h4'),
-                        {color: colors.white, fontWeight: '600', fontFamily: theme.font}
+                        {
+                          color: colors.white,
+                          fontWeight: '600',
+                          fontFamily: theme.font,
+                        },
                       ]}>
                       Contact Owner
                     </Text>
@@ -423,13 +437,12 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 1000,
+    right: 10,
+    zIndex: 10000,
   },
   // Added styles from CustomButton
   button: {
-    borderRadius: 30,
+    borderRadius: 15,
     flexDirection: 'row',
   },
   centerContent: {

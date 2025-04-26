@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../src/theme/ThemeProvider';
-import ListItem from '../src/components/ListItem';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomText from '../src/components/common/CustomText';
+import {useTheme} from '../src/theme/ThemeProvider';;
 import TwoColumnListView from '../src/components/TwoColumnListView';
 
 
@@ -25,7 +22,7 @@ const MyRentalsScreen = () => {
     <View style={styles.container}>
       <TwoColumnListView
         loading={loading}
-        items={rentalsData}
+        items={[]}
         theme={theme}
         navigation={navigation}
         onRefresh={()=>{

@@ -124,8 +124,12 @@ const ChatDetails = ({route, navigation}) => {
       }
 
       if (response.errorCode) {
-        console.error('ImagePicker Error:', response);
-        Alert.alert('Error', response.errorMessage || 'Failed to pick image');
+        console.log('ImagePicker Error:', response);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: response.errorMessage || 'An unexpected error occurred'
+        });
         return;
       }
 

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   h4: {
-    fontSize: 13,
+    fontSize: 14,
   },
   h5: {
     fontSize: 11,

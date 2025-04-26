@@ -1,5 +1,5 @@
 // screens/HomeScreen.js
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
@@ -11,7 +11,8 @@ import ListItem from '../src/components/ListItem';
 import {useDispatch, useSelector} from 'react-redux';
 import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
-import CustomButton from '../src/components/common/CustomButton';
+import {categories} from '../src/constants';
+import ScreenHeader from '../src/components/ScreenHeader';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -19,13 +20,6 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const items = useSelector(selectItems);
   const [refreshing, setRefreshing] = useState(false);
-  const categories = [
-    {id: '1', name: 'Electronics', icon: 'laptop'},
-    {id: '6', name: 'Books', icon: 'book'},
-    {id: '4', name: 'Sports', icon: 'futbol-o'},
-    {id: '5', name: 'Vehicles', icon: 'car'},
-  ];
-
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -40,14 +34,16 @@ const HomeScreen = () => {
     };
     fetchItems();
     console.log('items fetch');
-  }, []);
+  }, [dispatch]);
+
+  const handleNavigation = (navigateTo, data) =>{
+    navigation.navigate(navigateTo, data);
+  };
 
   const renderCategory = ({item}) => (
     <TouchableOpacity
       style={[styles.categoryItem, {backgroundColor: theme.colors.surface}]}
-      onPress={() =>
-        navigation.navigate('CategoryItems', {category: item.name})
-      }>
+      onPress={() => handleNavigation('CategoryItems', {category: item.name})}>
       <Icon name={item.icon} size={20} color={theme.colors.primary} />
       <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
         {item.name}
@@ -68,48 +64,67 @@ const HomeScreen = () => {
   );
 
   const handleRefresh = async () => {
-    const fetchItems = async () => {
-      try {
-        setRefreshing(true);
-        await dispatch(getItems()).unwrap();
-      } catch (error) {
-        console.log('error', error);
-      } finally {
-        setRefreshing(false);
-      }
-    };
-    fetchItems();
+    try {
+      setRefreshing(true);
+      await dispatch(getItems()).unwrap();
+      console.log('items fetch');
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setRefreshing(false);
+    }
   };
+
+  
 
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View
-        style={{
-          flexDirection: 'column',
-          backgroundColor: theme.colors.background,
-          borderBottomLeftRadius: 40,
-          borderBottomRightRadius: 40,
-        }}>
+      <ScreenHeader goBack={false}>
         <View
-          style={[
-            styles.searchContainer,
-            {backgroundColor: theme.colors.surface},
-          ]}>
-          <CustomButton
-            onPress={() => navigation.navigate('Search')}
-            style={[styles.searchPlaceholder]}>
-            <Icon name="search" size={20} color={theme.colors.text.secondary} />
-            <CustomText
-              variant="h4"
-              style={{color: theme.colors.text.secondary}}>
-              Search for items...
-            </CustomText>
-          </CustomButton>
+          style={{
+            flexDirection: 'row',
+            gap: 10,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: 10,
+            flex: 1,
+          }}>
+            <TouchableOpacity
+              onPress={() => handleNavigation('Search')}
+              style={[styles.searchPlaceholder,{ backgroundColor: theme.colors.surface}]}>
+              <Icon
+                name="search"
+                size={20}
+                color={theme.colors.text.secondary}
+              />
+              <CustomText
+                variant="h4"
+                style={{color: theme.colors.text.secondary}}>
+                Search for items...
+              </CustomText>
+            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=> handleNavigation('FavouritesScreen')}
+            style={{
+              padding: 15,
+              backgroundColor: theme.colors.surface,
+              borderRadius: 100,
+            }}>
+            <Icon name="heart-o" size={20} color={theme.colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>handleNavigation('ChatScreen')}
+            style={{
+              padding: 15,
+              backgroundColor: theme.colors.surface,
+              borderRadius: 100,
+            }}>
+            <Icon name="comment-o" size={20} color={theme.colors.primary} />
+          </TouchableOpacity>
         </View>
-
+      </ScreenHeader>
         <Section data={categories} renderItem={renderCategory} />
-      </View>
 
       {items && (
         <View
@@ -120,32 +135,35 @@ const HomeScreen = () => {
             overflow: 'hidden',
             backgroundColor: theme.colors.background,
             marginBottom: 100,
-        }}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }>
-          {(
-            <>
-              <Section
-                title="Latest Deals"
-                data={items}
-                renderItem={renderRecommendation}
+          }}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
               />
-              <Section
-                title="Goods near you"
-                data={items.filter(item => item.category === 'Books')}
-                renderItem={renderRecommendation}
-              />
-              <Section
-                title="Recommended Electronics"
-                data={items.filter(item => item.category === 'Electronics')}
-                renderItem={renderRecommendation}
-              />
-            </>
-          )}
-        </ScrollView>
+            }>
+            {
+              <>
+                <Section
+                  title="Latest Deals"
+                  data={items}
+                  renderItem={renderRecommendation}
+                />
+                <Section
+                  title="Goods near you"
+                  data={items.filter(item => item.category === 'Books')}
+                  renderItem={renderRecommendation}
+                />
+                <Section
+                  title="Recommended Electronics"
+                  data={items.filter(item => item.category === 'Electronics')}
+                  renderItem={renderRecommendation}
+                />
+              </>
+            }
+          </ScrollView>
         </View>
       )}
       {!items && <Footer />}
@@ -159,16 +177,19 @@ const styles = StyleSheet.create({
     padding: 3,
   },
   searchPlaceholder: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 15,
+    borderRadius: 30,
     gap: 10,
   },
   searchContainer: {
     padding: 15,
+    // flexGrow: 1,
     flexDirection: 'row',
     borderRadius: 30,
-    margin: 10,
+    flex: 1,
   },
   categoryItem: {
     paddingHorizontal: 16,

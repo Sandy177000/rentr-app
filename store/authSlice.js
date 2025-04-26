@@ -8,7 +8,6 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authApi.login(credentials);
-      console.log('response in loginUser', response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);

@@ -5,18 +5,16 @@ import {selectCurrentUser} from '../../store/authSlice';
 import {avatar} from '../constants';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {View} from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {PanGestureHandler} from 'react-native-gesture-handler';
 import HomeScreen from '../../screens/HomeScreen';
-import FavouritesScreen from '../../screens/FavouritesScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
-import ChatScreen from '../../screens/ChatScreen';
 import {Image} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {StyleSheet} from 'react-native';
 import {useState} from 'react';
 import {useTheme} from '../theme/ThemeProvider';
-import {MyListingsScreen} from '../../screens/MyListingsScreen';
+import { MyListingsScreen } from '../../screens/MyListingsScreen';
+import MyRentalsScreen from '../../screens/MyRentalsScreen';
+import NewItemScreen from '../../screens/NewItemScreen';
 
 const MainTabs = () => {
   const layout = useWindowDimensions();
@@ -26,8 +24,8 @@ const MainTabs = () => {
 
   const routes = [
     {key: 'home', title: 'Home', icon: 'home'},
-    {key: 'favorites', title: 'Favorites', icon: 'heart'},
-    {key: 'chat', title: 'Chat', icon: 'comment'},
+    {key: 'myOrders', title: 'myOrders', icon: 'shopping-cart'},
+    {key: 'newItem', title: 'newItem', icon: 'plus'},
     {
       key: 'profile',
       title: 'Profile',
@@ -38,18 +36,11 @@ const MainTabs = () => {
 
   const renderScene = SceneMap({
     home: HomeScreen,
-    favorites: FavouritesScreen,
+    myOrders: MyRentalsScreen,
     profile: ProfileScreen,
-    chat: ChatScreen,
+    newItem: NewItemScreen,
   });
 
-  const handleSwipe = direction => {
-    if (direction === 'left' && index < routes.length - 1) {
-      setIndex(index + 1);
-    } else if (direction === 'right' && index > 0) {
-      setIndex(index - 1);
-    }
-  };
 
   // Custom tab bar implementation
   const renderTabBar = () => (

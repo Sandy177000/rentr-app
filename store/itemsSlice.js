@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {itemApi} from '../src/services/api/index';
 import {userApi} from '../src/services/api/index';
 import _ from 'lodash';
+import { createSelector } from 'reselect';
 
 const initialState = {
   items: [],
@@ -88,7 +89,6 @@ export const removeFromFavourites = createAsyncThunk(
   async (itemId, {rejectWithValue}) => {
     try {
       const response = await userApi.removeFromFavourites(itemId);
-      console.log('Response in removeFromFavourites:', response);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -132,7 +132,6 @@ const itemsSlice = createSlice({
         return item;
       });
 
-      console.log('Updated items in addFavourite:', payloadItem.id);
       state.items = newItems;
     },
     removeFavourite: (state, action) => {
@@ -150,7 +149,6 @@ const itemsSlice = createSlice({
         }
         return item;
       });
-      console.log('Updated items in removeFavourite:', newItems);
       state.items = newItems;
     },
     resetItems: state => {
@@ -251,8 +249,10 @@ export const {
 export const selectItems = state => state.items.items;
 export const selectUserItems = state => state.items.userItems;
 export const selectFavourites = state => state.items.favourites;
-export const selectFavouriteIds = state =>
-  state.items.favourites.map(item => item.id);
+export const selectFavouriteIds = createSelector(
+  [selectFavourites],
+  (favourites) => favourites.map(item => item.id)
+);
 export const selectLoading = state => state.items.loading;
 export const selectError = state => state.items.error;
 

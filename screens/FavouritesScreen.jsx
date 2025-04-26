@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../src/components/common/CustomText';
-import { useDispatch, useSelector } from 'react-redux';
-import { getFavouriteItems, selectFavourites } from '../store/itemsSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getFavouriteItems, selectFavourites} from '../store/itemsSlice';
 import TwoColumnListView from '../src/components/TwoColumnListView';
+import ScreenHeader from '../src/components/ScreenHeader';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();
@@ -26,37 +27,37 @@ const FavouritesScreen = () => {
     }
   };
 
-  const emptyComponent = ()=>{
+  const emptyComponent = () => {
     return (
-    <View style={[styles.emptyContainer, {backgroundColor: 'rgba(128, 128, 128, 0.1)'}]}>
-    <Icon
-        name="heart-o"
-        size={45}
-        color={theme.colors.text.secondary}
-        style={styles.emptyIcon}
-      />
-      <CustomText
-        variant="h4"
-        style={{color: theme.colors.text.secondary}}>
-        No favourites yet
-      </CustomText>
-      <CustomText
-        variant="h4"
-        style={{color: theme.colors.text.secondary}}>
-        Items you love will appear here
-      </CustomText>
+      <View
+        style={[
+          styles.emptyContainer,
+          {backgroundColor: 'rgba(128, 128, 128, 0.1)'},
+        ]}>
+        <Icon
+          name="heart-o"
+          size={45}
+          color={theme.colors.text.secondary}
+          style={styles.emptyIcon}
+        />
+        <CustomText variant="h4" style={{color: theme.colors.text.secondary}}>
+          No favourites yet
+        </CustomText>
+        <CustomText variant="h4" style={{color: theme.colors.text.secondary}}>
+          Items you love will appear here
+        </CustomText>
       </View>
-  )
+    );
   };
 
   useEffect(() => {
     getFavourites();
   }, []);
 
-
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <ScreenHeader title={'Favorites'}/>
       <TwoColumnListView
         loading={loading}
         items={favourites}
@@ -73,6 +74,7 @@ const FavouritesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 3,
   },
   listContent: {
     padding: 16,

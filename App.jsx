@@ -21,12 +21,13 @@ import ThemeScreen from './screens/ThemeScreen';
 import SearchScreen from './screens/SearchScreen';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import ChatDetails from './screens/ChatDetails';
-import CategoryItems from './screens/CategoryItems';
+import CategoryItemsScreen from './screens/CategoryItemsScreen';
 import {avatar} from './src/constants';
 import CustomImage from './src/components/common/CustomImage';
 import Toast from 'react-native-toast-message';
 import MainTabs from './src/components/MainTabs';
-
+import FavouritesScreen from './screens/FavouritesScreen';
+import ChatScreen from './screens/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,26 +39,26 @@ const queryClient = new QueryClient({
       staleTime: 300000, // 5 minutes
       cacheTime: 900000, // 15 minutes
       refetchOnWindowFocus: process.env.NODE_ENV === 'production',
-      onError: (error) => {
+      onError: error => {
         // Global error handling for queries
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: error.message || 'An unexpected error occurred'
+          text2: error.message || 'An unexpected error occurred',
         });
-      }
+      },
     },
     mutations: {
-      onError: (error) => {
+      onError: error => {
         // Global error handling for mutations
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: error.message || 'An unexpected error occurred'
+          text2: error.message || 'An unexpected error occurred',
         });
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 const renderChatHeader = (props, route) => {
@@ -136,8 +137,18 @@ const App = () => {
             component={ItemDetailsScreen}
           />
           <Stack.Screen
+            name="FavouritesScreen"
+            options={{title: 'Favorites', headerShown: false}}
+            component={FavouritesScreen}
+          />
+          <Stack.Screen
+            name="ChatScreen"
+            options={{title: 'Chats', headerShown: false}}
+            component={ChatScreen}
+          />
+          <Stack.Screen
             name="MyListings"
-            options={{title: 'My Items'}}
+            options={{title: 'My Items', headerShown: false}}
             component={MyListingsScreen}
           />
           <Stack.Screen
@@ -172,7 +183,7 @@ const App = () => {
           <Stack.Screen
             name="CategoryItems"
             options={{title: 'Category Items'}}
-            component={CategoryItems}
+            component={CategoryItemsScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -195,4 +206,3 @@ const Root = () => {
 };
 
 export default Root;
-

@@ -52,7 +52,7 @@ export const useLogin = () => {
       try {
         const storedUser = await authStorage.getUser();
         if (storedUser) {
-          const {user, token} = JSON.parse(storedUser);
+          const {user, token} = storedUser;
           dispatch(restoreUser({user, token}));
           navigation.replace('MainTabs');
         }

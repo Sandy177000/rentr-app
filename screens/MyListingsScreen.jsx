@@ -1,18 +1,15 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 import CustomText from '../src/components/common/CustomText';
-import {ListItemForm} from '../src/components/ListItemForm';
 import TwoColumnListView from '../src/components/TwoColumnListView';
 import CustomModal from '../src/components/common/CustomModal';
+import NewItemForm from '../src/components/NewItemForm';
+import ScreenHeader from '../src/components/ScreenHeader';
+
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
@@ -22,7 +19,6 @@ export const MyListingsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
-  const bottomSheetRef = useRef(null);
 
   const fetchListings = async () => {
     setLoading(true);
@@ -34,11 +30,17 @@ export const MyListingsScreen = () => {
     fetchListings();
   }, []);
 
-
   return (
     <>
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <ScreenHeader>
+          <View style={{flex: 1}}>
+            <CustomText variant="h2" style={{textAlign: 'center'}}>
+              My Items
+            </CustomText>
+          </View>
+        </ScreenHeader>
         <TwoColumnListView
           loading={loading}
           items={myListings}
@@ -46,9 +48,9 @@ export const MyListingsScreen = () => {
           navigation={navigation}
           onRefresh={fetchListings}
           emptyText="No listings found"
-          showFavorite={true}
+          showFavorite={false}
         />
-        {(
+        {
           <TouchableOpacity
             style={[
               styles.addButton,
@@ -56,17 +58,13 @@ export const MyListingsScreen = () => {
             ]}
             onPress={() => setVisible(!visible)}>
             <Icon name="plus" size={20} color="#FFFFFF" />
-            <CustomText style={styles.addButtonText}>List New Item</CustomText>
           </TouchableOpacity>
-        )}
+        }
       </View>
       {visible && (
-          <CustomModal
-            showModal={visible}
-            setShowModal={setVisible}
-          >
-            <ListItemForm setVisible={setVisible} />
-          </CustomModal>
+        <CustomModal showModal={visible} setShowModal={setVisible}>
+          <NewItemForm setVisible={setVisible} />
+        </CustomModal>
       )}
     </>
   );
@@ -75,6 +73,7 @@ export const MyListingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 3
   },
   listContent: {
     padding: 16,
@@ -125,22 +124,14 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
+    bottom: 80,
     right: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    borderRadius: 15,
+    width: 60,
+    height: 60,
   },
   addButtonText: {
     color: '#FFFFFF',

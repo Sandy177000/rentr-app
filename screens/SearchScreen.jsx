@@ -12,12 +12,15 @@ import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from '../src/components/ListItem';
 import { TextInput } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../store/authSlice';
 
 
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const user = useSelector(selectCurrentUser)
   const theme = useTheme();
   const navigation = useNavigation();
 
@@ -37,7 +40,8 @@ const SearchScreen = () => {
     try {
       setLoading(true);
       const searchResults = await itemApi.searchItems(query);
-      setResults(searchResults);
+      const searchItems = searchResults.filter((item)=>item.ownerId!==user.id)
+      setResults(searchItems);
     } catch (error) {
       console.error('Search error:', JSON.stringify(error));
       setResults([]);
