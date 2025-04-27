@@ -36,7 +36,7 @@ const HomeScreen = () => {
     console.log('items fetch');
   }, [dispatch]);
 
-  const handleNavigation = (navigateTo, data) =>{
+  const handleNavigation = (navigateTo, data) => {
     navigation.navigate(navigateTo, data);
   };
 
@@ -75,24 +75,29 @@ const HomeScreen = () => {
     }
   };
 
-  
-
   return (
-    <View
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader goBack={false}>
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 10,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: 10,
-            flex: 1,
-          }}>
+    <>
+      <View
+        style={[
+          styles.container,
+          {backgroundColor: theme.colors.background + '80'},
+        ]}>
+        <ScreenHeader goBack={false}>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 10,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              margin: 10,
+              flex: 1,
+            }}>
             <TouchableOpacity
               onPress={() => handleNavigation('Search')}
-              style={[styles.searchPlaceholder,{ backgroundColor: theme.colors.surface}]}>
+              style={[
+                styles.searchPlaceholder,
+                {backgroundColor: theme.colors.surface},
+              ]}>
               <Icon
                 name="search"
                 size={20}
@@ -104,70 +109,72 @@ const HomeScreen = () => {
                 Search for items...
               </CustomText>
             </TouchableOpacity>
-          <TouchableOpacity
-            onPress={()=> handleNavigation('FavouritesScreen')}
-            style={{
-              padding: 15,
-              backgroundColor: theme.colors.surface,
-              borderRadius: 100,
-            }}>
-            <Icon name="heart-o" size={20} color={theme.colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={()=>handleNavigation('ChatScreen')}
-            style={{
-              padding: 15,
-              backgroundColor: theme.colors.surface,
-              borderRadius: 100,
-            }}>
-            <Icon name="comment-o" size={20} color={theme.colors.primary} />
-          </TouchableOpacity>
-        </View>
-      </ScreenHeader>
+            <TouchableOpacity
+              onPress={() => handleNavigation('FavouritesScreen')}
+              style={{
+                padding: 15,
+                backgroundColor: theme.colors.surface,
+                borderRadius: 100,
+              }}>
+              <Icon name="heart-o" size={20} color={theme.colors.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleNavigation('ChatScreen')}
+              style={{
+                padding: 15,
+                backgroundColor: theme.colors.surface,
+                borderRadius: 100,
+              }}>
+              <Icon name="comment-o" size={20} color={theme.colors.primary} />
+            </TouchableOpacity>
+          </View>
+        </ScreenHeader>
         <Section data={categories} renderItem={renderCategory} />
-
-      {items && (
-        <View
-          style={{
-            flex: 1,
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
-            overflow: 'hidden',
-            backgroundColor: theme.colors.background,
-            marginBottom: 100,
-          }}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-              />
-            }>
-            {
-              <>
-                <Section
-                  title="Latest Deals"
-                  data={items}
-                  renderItem={renderRecommendation}
+        {items.length != 0 && (
+          <View
+            style={{
+              flex: 1,
+              borderTopLeftRadius: 40,
+              borderTopRightRadius: 40,
+              overflow: 'hidden',
+              backgroundColor: theme.colors.background,
+              marginBottom: 100,
+            }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
                 />
-                <Section
-                  title="Goods near you"
-                  data={items.filter(item => item.category === 'Books')}
-                  renderItem={renderRecommendation}
-                />
-                <Section
-                  title="Recommended Electronics"
-                  data={items.filter(item => item.category === 'Electronics')}
-                  renderItem={renderRecommendation}
-                />
-              </>
-            }
-          </ScrollView>
-        </View>
-      )}
-      {!items && <Footer />}
-    </View>
+              }>
+              {
+                <>
+                  <Section
+                    title="Latest Deals"
+                    icon="lightning"
+                    data={items}
+                    renderItem={renderRecommendation}
+                  />
+                  <Section
+                    title="Goods near you"
+                    icon="map"
+                    data={items.filter(item => item.category === 'Books')}
+                    renderItem={renderRecommendation}
+                  />
+                  <Section
+                    title="Recommended Electronics"
+                    data={items.filter(item => item.category === 'Electronics')}
+                    renderItem={renderRecommendation}
+                  />
+                </>
+              }
+            </ScrollView>
+          </View>
+        )}
+      </View>
+      {<Footer />}
+    </>
   );
 };
 

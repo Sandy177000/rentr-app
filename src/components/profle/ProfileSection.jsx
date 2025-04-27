@@ -6,7 +6,7 @@ import CustomButton from '../common/CustomButton';
 
 export const ProfileSection = ({title, icon, onPress, theme}) => (
   <CustomButton
-    style={[styles.sectionContainer, {backgroundColor: theme.colors.surface}]}
+    style={[styles.sectionContainer, {backgroundColor: theme.colors.background}]}
     onPress={onPress}>
     <View style={styles.sectionContent}>
       <Icons name={icon} size={15} color={theme.colors.text.primary} />

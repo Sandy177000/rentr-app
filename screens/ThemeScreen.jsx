@@ -18,6 +18,7 @@ import {updateUser, updateUserTheme} from '../store/authSlice';
 import CustomButton from '../src/components/common/CustomButton';
 import Toast from 'react-native-toast-message';
 import {darkTheme, lightTheme} from '../src/theme/theme';
+import ScreenHeader from '../src/components/ScreenHeader';
 
 export default function ThemeScreen() {
   const theme = useTheme();
@@ -221,7 +222,8 @@ export default function ThemeScreen() {
   );
 
   return (
-    <>
+    <View style={styles.container}>
+      <ScreenHeader title={"Theme"}/>
       <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
         contentContainerStyle={styles.contentContainer}>
@@ -280,14 +282,14 @@ export default function ThemeScreen() {
           setVisible={setFontsVisible}
         />
       )}
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 3,
   },
   contentContainer: {
     padding: 16,

@@ -11,6 +11,7 @@ import { logout } from '../store/authSlice';
 import { resetItems } from '../store/itemsSlice';
 import Toast from 'react-native-toast-message';
 import { authStorage } from '../src/services';
+import ScreenHeader from '../src/components/ScreenHeader';
 
 const SettingsScreen = () => {
   const theme = useTheme();
@@ -76,6 +77,7 @@ const SettingsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <ScreenHeader title={"Settings"}/>
       <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Account</CustomText>
@@ -109,7 +111,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 3,
   },
   section: {
     marginBottom: 20,

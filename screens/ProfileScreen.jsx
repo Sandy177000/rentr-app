@@ -35,7 +35,7 @@ const ProfileScreen = () => {
   const renderProfile = () => {
     return (
       <ScrollView
-        style={[styles.container, {backgroundColor: theme.colors.background}]}
+        style={[styles.container, {backgroundColor: theme.colors.primary + '20'}]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -55,7 +55,6 @@ const ProfileScreen = () => {
         <View
           style={[
             styles.sectionsContainer,
-            {backgroundColor: theme.colors.background},
           ]}>
           <ProfileSection
             title="My Listed Items"

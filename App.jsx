@@ -158,12 +158,12 @@ const App = () => {
           />
           <Stack.Screen
             name="Settings"
-            options={{title: 'Settings'}}
+            options={{title: 'Settings', headerShown: false}}
             component={SettingsScreen}
           />
           <Stack.Screen
             name="Theme"
-            options={{title: 'Theme'}}
+            options={{title: 'Theme', headerShown: false}}
             component={ThemeScreen}
           />
           <Stack.Screen

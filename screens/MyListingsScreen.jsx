@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 80,
-    right: 20,
+    bottom: 30,
+    right: 30,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

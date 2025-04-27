@@ -92,7 +92,7 @@ export const itemApi = {
       const response = await apiClient.get('/items/user');
       return response.data;
     } catch (error) {
-      console.error('Error fetching user items:', error);
+      console.error('Error fetching user items:', JSON.stringify(error));
       return [];
     }
   },

@@ -8,6 +8,7 @@ import {useSelector} from 'react-redux';
 import ChatItem from '../src/components/ChatItem';
 import {selectCurrentToken, selectCurrentUser} from '../store/authSlice';
 import ScreenHeader from '../src/components/ScreenHeader';
+import EmptyListComponent from '../src/components/EmptyListComponent';
 const ChatScreen = () => {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,7 +81,7 @@ const ChatScreen = () => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.chatList}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
+          <EmptyListComponent>
             <Icon
               name="comments-o"
               size={50}
@@ -90,7 +91,7 @@ const ChatScreen = () => {
               style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
               No chats found
             </CustomText>
-          </View>
+          </EmptyListComponent>
         }
       />
     </View>

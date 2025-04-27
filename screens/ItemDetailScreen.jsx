@@ -251,6 +251,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
               <ScreenHeader styles={{
                 position: 'absolute',
                 width: '100%',
+                backgroundColor: 'transparent'
               }}>
                 <View style={styles.favoriteButton}>
                   <FavoriteButton item={itemData} size={24} />
