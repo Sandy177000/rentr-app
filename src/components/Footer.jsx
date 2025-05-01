@@ -11,13 +11,12 @@ export default function Footer() {
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.primary + '50',
+          backgroundColor: theme.colors.surface,
         },
       ]}>
       <CustomText
-        variant="h1"
         bold={900}
-        style={{color: theme.colors.primary}}>
+        style={{color: theme.colors.primary, fontSize: 22}}>
         Rentr. {';)'}
       </CustomText>
     </View>
@@ -26,9 +25,9 @@ export default function Footer() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderTopRightRadius: 100,
+    borderTopRightRadius: 30,
+    height: 700,
   },
 });

@@ -81,7 +81,9 @@ const SettingsScreen = () => {
       <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Account</CustomText>
-          <SettingItem title="Personal Information" icon="user" onPress={() => { }} />
+          <SettingItem title="Personal Information" icon="user" onPress={() => {
+            navigation.navigate('PersonalInfo');
+           }} />
           <SettingItem title="Notifications" icon="bell" onPress={() => { }} />
         </View>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>

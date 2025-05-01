@@ -73,7 +73,7 @@ const MainTabs = () => {
                     <Icon
                       name={route.icon}
                       color={isActive ? theme.colors.primary : 'white'}
-                      size={18}
+                      size={20}
                     />
                   )}
                 </View>

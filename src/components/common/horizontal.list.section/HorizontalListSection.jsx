@@ -4,7 +4,7 @@ import React from 'react';
 import CustomText from '../../../components/common/CustomText';
 import {useTheme} from '../../../theme/ThemeProvider';
 
-export const HorizontalListSection = ({title, data, renderItem}) => {
+export const HorizontalListSection = ({title, data, renderItem, style}) => {
   const theme = useTheme();
   return (
     <>
@@ -13,7 +13,7 @@ export const HorizontalListSection = ({title, data, renderItem}) => {
           style={{
             padding: 10,
             borderRadius: 30,
-            marginBottom: 8,
+            ...style,
           }}>
           {title && (
             <View
@@ -21,21 +21,21 @@ export const HorizontalListSection = ({title, data, renderItem}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingBottom: 8,
+                padding: 10,
               }}>
               <CustomText
-                style={{color: theme.colors.text.primary, marginLeft: 10}}
-                variant="h4"
+                style={{color: theme.colors.text.primary}}
+                variant="h1"
                 bold={700}>
-                {title?.toUpperCase()}
+                {title}
               </CustomText>
             </View>
           )}
           <View
             style={{
               borderRadius: 30,
-              overflow: 'hidden',
               flexDirection: 'row',
+              overflow: 'hidden',
             }}>
             <FlatList
               horizontal

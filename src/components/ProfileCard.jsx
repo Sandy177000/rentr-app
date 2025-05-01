@@ -19,10 +19,12 @@ import CustomText from './common/CustomText';
 import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../theme/theme';
+import CustomModal from './common/CustomModal';
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
 
   const handleUpdateProfileImage = async source => {
     // remove mediaType as photos from options
@@ -110,7 +112,7 @@ const ProfileCard = ({user, theme, navigation}) => {
         style={[
           styles.header,
           {
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.colors.surface,
             shadowColor: theme.colors.primary,
             borderColor: theme.colors.primary,
             borderWidth: 0.2,
@@ -121,7 +123,12 @@ const ProfileCard = ({user, theme, navigation}) => {
           style={styles.settingsButton}>
           <Icons name="gear" size={24} color={theme.colors.secondary} />
         </TouchableOpacity>
-        <View style={styles.profileImageContainer}>
+        <TouchableOpacity style={styles.profileImageContainer} onPress={()=>{
+          if(count == 2){
+            
+          }
+          setCount(count + 1);
+        }}>
           {loading ? (
             <ActivityIndicator
               size="small"
@@ -145,8 +152,8 @@ const ProfileCard = ({user, theme, navigation}) => {
             onPress={() => setModalVisible(!modalVisible)}>
             <Icons name="pencil" size={14} color="white" />
           </TouchableOpacity>
-        </View>
-        <CustomText style={{color: theme.colors.text.primary}} variant="h1">
+        </TouchableOpacity>
+        <CustomText style={{color: theme.colors.text.secondary}} variant="h1">
           {user.firstName} {user.lastName}
         </CustomText>
       </View>

@@ -9,7 +9,6 @@ const ScreenHeader = ({children, styles, goBack = true, title}) => {
   return (
     <View
       style={{
-        backgroundColor: theme.colors.background,
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',

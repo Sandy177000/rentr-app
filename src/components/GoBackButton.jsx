@@ -15,7 +15,7 @@ function GoBackButton({styles}) {
         borderRadius: 13,
         width: 40,
         position: 'absolute',
-        left: 10,
+        left: 20,
         zIndex: 10,
         height: 40,
         alignItems: 'center',

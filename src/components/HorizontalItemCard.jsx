@@ -19,7 +19,7 @@ const HorizontalItemCard = ({
           style={styles.imageContainer}
           onPress={() => navigation.navigate('ItemDetails', {itemId: item.id})}>
           <CustomImage
-            source={item.images?.[0]}
+            source={item.images?.[0].uri}
             style={styles.itemImage}
             overlay
           />

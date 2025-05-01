@@ -35,7 +35,7 @@ const ProfileScreen = () => {
   const renderProfile = () => {
     return (
       <ScrollView
-        style={[styles.container, {backgroundColor: theme.colors.primary + '20'}]}
+        style={[styles.container, {backgroundColor: theme.colors.background}]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

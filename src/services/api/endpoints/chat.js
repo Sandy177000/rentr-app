@@ -55,6 +55,7 @@ export const chatApi = {
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
+      console.log('mediaUpload', data);
       const response = await apiClient.post(
         '/chat/media-upload',
         data,

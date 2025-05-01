@@ -34,7 +34,7 @@ const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'tex
       style={[
         {
           color: theme.colors.text.primary,
-          fontFamily: theme.font,
+          fontFamily: 'inter',
           fontWeight: bold ? bold : 'normal',
           textDecorationLine: type === 'link' ? 'underline' : 'none',
         },

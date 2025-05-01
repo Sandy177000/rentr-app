@@ -42,10 +42,10 @@ const HomeScreen = () => {
 
   const renderCategory = ({item}) => (
     <TouchableOpacity
-      style={[styles.categoryItem, {backgroundColor: theme.colors.surface}]}
+      style={[styles.categoryItem, {backgroundColor: theme.colors.background}]}
       onPress={() => handleNavigation('CategoryItems', {category: item.name})}>
       <Icon name={item.icon} size={20} color={theme.colors.primary} />
-      <CustomText variant="h4" style={[{color: theme.colors.text.primary}]}>
+      <CustomText bold={700} style={[{color: theme.colors.text.primary, fontSize: 13}]}>
         {item.name}
       </CustomText>
     </TouchableOpacity>
@@ -80,7 +80,7 @@ const HomeScreen = () => {
       <View
         style={[
           styles.container,
-          {backgroundColor: theme.colors.background + '80'},
+          {backgroundColor: theme.colors.surface},
         ]}>
         <ScreenHeader goBack={false}>
           <View
@@ -96,7 +96,7 @@ const HomeScreen = () => {
               onPress={() => handleNavigation('Search')}
               style={[
                 styles.searchPlaceholder,
-                {backgroundColor: theme.colors.surface},
+                {backgroundColor: theme.colors.background},
               ]}>
               <Icon
                 name="search"
@@ -113,24 +113,24 @@ const HomeScreen = () => {
               onPress={() => handleNavigation('FavouritesScreen')}
               style={{
                 padding: 15,
-                backgroundColor: theme.colors.surface,
+                backgroundColor: theme.colors.background,
                 borderRadius: 100,
               }}>
-              <Icon name="heart-o" size={20} color={theme.colors.primary} />
+              <Icon name="heart-o" size={20} color={theme.colors.text.secondary} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleNavigation('ChatScreen')}
               style={{
                 padding: 15,
-                backgroundColor: theme.colors.surface,
+                backgroundColor: theme.colors.background,
                 borderRadius: 100,
               }}>
-              <Icon name="comment-o" size={20} color={theme.colors.primary} />
+              <Icon name="comment-o" size={20} color={theme.colors.text.secondary} />
             </TouchableOpacity>
           </View>
         </ScreenHeader>
         <Section data={categories} renderItem={renderCategory} />
-        {items.length != 0 && (
+        {(
           <View
             style={{
               flex: 1,
@@ -138,7 +138,6 @@ const HomeScreen = () => {
               borderTopRightRadius: 40,
               overflow: 'hidden',
               backgroundColor: theme.colors.background,
-              marginBottom: 100,
             }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -157,7 +156,7 @@ const HomeScreen = () => {
                     renderItem={renderRecommendation}
                   />
                   <Section
-                    title="Goods near you"
+                    title="Goods Near You"
                     icon="map"
                     data={items.filter(item => item.category === 'Books')}
                     renderItem={renderRecommendation}
@@ -169,11 +168,11 @@ const HomeScreen = () => {
                   />
                 </>
               }
+            {<Footer />}
             </ScrollView>
           </View>
         )}
       </View>
-      {<Footer />}
     </>
   );
 };
@@ -181,7 +180,6 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 3,
   },
   searchPlaceholder: {
     flexGrow: 1,
@@ -200,12 +198,12 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
     minWidth: 120,
-    gap: 8,
+    gap: 10,
     borderRadius: 30,
   },
 });

@@ -26,7 +26,7 @@ import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
 import CustomImage from '../src/components/common/CustomImage';
 import Carousel from 'react-native-reanimated-carousel';
-import {formatDate, renderDateSeparator} from '../src/utils/utils';
+import { renderDateSeparator } from '../src/utils/utils';
 import useChatMessages from '../src/hooks/chat/useChatMessages';
 import Markdown from 'react-native-markdown-display';
 import Toast from 'react-native-toast-message';
@@ -182,11 +182,11 @@ const ChatDetails = ({route, navigation}) => {
             {messageItem.media && messageItem.media.length > 0 && (
               <View
                 style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                  padding: 3,
-                  borderRadius: 10,
+                   overflow: 'hidden',
+                   borderRadius: 10,
+                   marginTop: 10,
                 }}>
-                <View style={{width: 250}}>
+                <View style={{width: 250, height: 250}}>
                   {messageItem.media.length <= 3 ? (
                     messageItem.media.map((image, messageItemIndex) => (
                       <TouchableOpacity
@@ -196,7 +196,7 @@ const ChatDetails = ({route, navigation}) => {
                           setShowImageCarousel(true);
                         }}>
                         <FastImage
-                          source={{uri: image}}
+                          source={{uri: image.uri}}
                           style={[styles.messageImage, {marginBottom: 5}]}
                           resizeMode={FastImage.resizeMode.cover}
                           onLoadStart={() => (
@@ -217,7 +217,7 @@ const ChatDetails = ({route, navigation}) => {
                               setShowImageCarousel(true);
                             }}>
                             <FastImage
-                              source={{uri: image}}
+                              source={{uri: image.uri}}
                               style={{
                                 width: 120,
                                 height: 120,
@@ -226,7 +226,7 @@ const ChatDetails = ({route, navigation}) => {
                               }}
                               resizeMode={FastImage.resizeMode.cover}
                             />
-                            {index === 3 && messageItem.media.length > 4 && (
+                            {messageItemIndex === 3 && messageItem.media.length > 4 && (
                               <View style={styles.imageCountOverlay}>
                                 <CustomText style={styles.imageCountText}>
                                   +{messageItem.media.length - 4}
@@ -248,7 +248,7 @@ const ChatDetails = ({route, navigation}) => {
                       ? '#FFFFFF'
                       : theme.colors.text.primary,
                   fontSize: 14,
-                  marginLeft: 5,
+                  marginHorizontal: 5,
                 },
                 // Style for links
                 link: {
@@ -309,7 +309,7 @@ const ChatDetails = ({route, navigation}) => {
               </TouchableOpacity>
             )}
             <CustomText
-              variant="h4"
+              variant="h5"
               style={[
                 styles.timestamp,
                 {
@@ -328,16 +328,6 @@ const ChatDetails = ({route, navigation}) => {
             </CustomText>
           </View>
         </View>
-        {/* {showDateSeparator && (
-          <View style={styles.dateSeparator}>
-            <CustomText
-              variant="h4"
-              style={[styles.dateSeparatorText, { color: theme.colors.text.secondary }]}
-            >
-              {formatDate(messageItem.createdAt)}
-            </CustomText>
-          </View>
-        )} */}
       </View>
     );
   };
@@ -359,7 +349,7 @@ const ChatDetails = ({route, navigation}) => {
             data={selectedImages}
             renderItem={({item: carouselImage}) => (
               <FastImage
-                source={{uri: carouselImage}}
+                source={{uri: carouselImage.uri}}
                 style={{width: width, height: width}}
                 resizeMode={FastImage.resizeMode.contain}
               />
@@ -476,12 +466,12 @@ const ChatDetails = ({route, navigation}) => {
         style={{backgroundColor: theme.colors.surface}}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={() => fetchMessages(1, false)}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={loading}
+        //     onRefresh={() => fetchMessages(1, false)}
+        //   />
+        // }
         data={[...messages].reverse()}
         renderItem={renderMessage}
         contentContainerStyle={styles.messageList}
@@ -514,8 +504,8 @@ const styles = StyleSheet.create({
   messageBubble: {
     maxWidth: 270,
     minWidth: 70,
-    padding: 5,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    borderRadius: 15,
     marginBottom: 8,
   },
   myMessage: {
@@ -525,7 +515,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   timestamp: {
-    marginTop: 4,
+    marginVertical: 4,
     alignSelf: 'flex-end',
   },
   inputContainer: {

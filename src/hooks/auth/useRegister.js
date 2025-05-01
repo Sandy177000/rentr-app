@@ -10,6 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 import {validateEmail, validatePassword} from '../../../src/utils/utils';
 import { useTheme } from '../../theme/ThemeProvider';
 import Toast from 'react-native-toast-message';
+import { authStorage } from '../../services';
 
 export const useRegister = () => {
   const navigation = useNavigation();
@@ -45,6 +46,7 @@ export const useRegister = () => {
       };
       const result = await dispatch(registerUser(userData)).unwrap();
       if (result) {
+        await authStorage.saveAuth(result);
         navigation.replace('MainTabs');
         Toast.show({
           type: 'success',

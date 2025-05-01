@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFavouriteIds, toggleFavoriteStatus } from '../../store/itemsSlice';
 import { useTheme } from '../theme/ThemeProvider';
+import { colors } from '../theme/theme';
 
 const FavoriteButton = ({ item, size = 24, style }) => {
   const dispatch = useDispatch();
@@ -26,9 +27,9 @@ const FavoriteButton = ({ item, size = 24, style }) => {
       style={[styles.container, style]}
     >
       <Icon
-        name={isFavorite ? 'heart' : 'heart-o'}
+        name={isFavorite ? 'heart' : 'heart'}
         size={size}
-        color={isFavorite ? theme.colors.primary : '#8E8E93'}
+        color={isFavorite ? theme.colors.primary : colors.white}
       />
     </TouchableOpacity>
   );

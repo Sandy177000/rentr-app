@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 30,
     flexDirection: 'row',
+    margin: 3,
   },
   centerContent: {
     padding: 15,

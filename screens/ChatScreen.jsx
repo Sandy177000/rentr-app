@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    marginLeft: 50,
+    marginLeft: 65,
     fontSize: 14,
   },
   chatList: {

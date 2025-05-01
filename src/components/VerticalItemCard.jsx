@@ -3,53 +3,44 @@ import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import FavoriteButton from './FavoriteButton';
+import Animated, {FadeInDown} from 'react-native-reanimated';
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
-const VerticalItemCard = ({
-  item,
-  theme,
-  navigation,
-  showFavorite,
-}) => {
+const VerticalItemCard = ({item, theme, navigation, showFavorite}) => {
   return (
     <>
-      <View style={styles.itemCard}>
+      <View style={styles.itemCard} entering={FadeInDown}>
         {showFavorite && (
           <View style={styles.heartIcon}>
-            <FavoriteButton 
-              item={item} 
-              size={22} 
-              style={{padding: 0}} 
-            />
+            <FavoriteButton item={item} size={22} style={{padding: 0}} />
           </View>
         )}
         <TouchableOpacity
           style={styles.imageContainer}
           onPress={() => navigation.navigate('ItemDetails', {itemId: item.id})}>
           <CustomImage
-            source={item.images?.[0]}
+            source={item.images?.[0].uri}
             style={styles.itemImage}
             overlay
           />
         </TouchableOpacity>
-        <View style={styles.itemContent}>
-        <CustomText
-          bold={600}
-          variant="h4"
-          style={{color: theme.colors.text.primary}}
-          numberOfLines={1}>
-          {item.name}
-        </CustomText>
-        <CustomText
-          bold={600}
-          variant="h4"
-          style={{color: theme.colors.text.secondary}}>
-          Rs. {item.price}/day
-        </CustomText>
+        <View style={[styles.itemContent, {backgroundColor: theme.colors.surface}]}>
+          <CustomText
+            bold={600}
+            variant="h4"
+            style={{color: theme.colors.text.primary}}
+            numberOfLines={1}>
+            {item.name}
+          </CustomText>
+          <CustomText
+            bold={900}
+            variant="h4"
+            style={{color: theme.colors.text.secondary}}>
+            Rs. {item.price} / DAY
+          </CustomText>
+        </View>
       </View>
-      </View>
-      
     </>
   );
 };
@@ -63,8 +54,8 @@ const styles = StyleSheet.create({
   },
   heartIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 15,
+    right: 15,
     zIndex: 1000,
   },
   row: {
@@ -73,7 +64,7 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     width: COLUMN_WIDTH,
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: 'hidden',
   },
   imageContainer: {
@@ -95,44 +86,20 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   itemContent: {
-    paddingTop: 10,
-    borderTopRightRadius: 12,
-    borderTopLeftRadius: 12,
+    paddingTop: 15,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 0,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: 'white',
-    paddingBottom: 30,
     paddingHorizontal: 10,
-
+    paddingVertical: 30,
+    gap: 5,
   },
   itemPrice: {
     marginBottom: 12,
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    marginLeft: 8,
   },
   emptyContainer: {
     flex: 1,

@@ -1,7 +1,7 @@
 export const getBaseUrl = () => {
   // Use environment variables with defaults
   if(process.env.NODE_ENV === 'development') {
-    return process.env.DEV_API_URL || 'http://192.168.1.10:4000';
+    return 'http://10.0.2.2:4000';
   }
   return process.env.PROD_API_URL || 'https://rentr-backend.onrender.com';
 };
@@ -14,7 +14,7 @@ export const getApiUrl = () => {
 export const getApiConfig = () => {
   return {
     baseURL: getApiUrl(),
-    timeout: 10000, // 10 seconds timeout
+    timeout: 30000, // 30 seconds timeout
     headers: {
       'Content-Type': 'application/json',
     }

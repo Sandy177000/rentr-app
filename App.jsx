@@ -28,6 +28,7 @@ import Toast from 'react-native-toast-message';
 import MainTabs from './src/components/MainTabs';
 import FavouritesScreen from './screens/FavouritesScreen';
 import ChatScreen from './screens/ChatScreen';
+import PersonalInfoScreen from './screens/PersonalInfoScreen';
 
 const Stack = createStackNavigator();
 
@@ -73,7 +74,7 @@ const renderChatHeader = (props, route) => {
         <Icon
           name="angle-left"
           size={25}
-          style={{marginLeft: 20}}
+          style={{marginLeft: 25}}
           onPress={props.onPress}
           color={props.tintColor}
         />
@@ -177,6 +178,12 @@ const App = () => {
               title: route.params?.name || 'Chat',
               headerTitleAlign: 'left',
               headerLeft: props => renderChatHeader(props, route),
+              headerStyle: {
+                height: 70,
+                backgroundColor: theme.colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
             })}
             component={ChatDetails}
           />
@@ -184,6 +191,11 @@ const App = () => {
             name="CategoryItems"
             options={{title: 'Category Items'}}
             component={CategoryItemsScreen}
+          />
+          <Stack.Screen
+            name="PersonalInfo"
+            options={{title: 'Personal Information', headerShown: false}}
+            component={PersonalInfoScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

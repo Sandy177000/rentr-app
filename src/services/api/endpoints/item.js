@@ -26,8 +26,8 @@ export const itemApi = {
   createItem: async item => {
     try {
       // Special case for multipart/form-data
-      const headers = {'Content-Type': 'multipart/form-data'};
-      const response = await apiClient.post('/items', item, {headers});
+      // const headers = {'Content-Type': 'multipart/form-data'};
+      const response = await apiClient.post('/items', item);
       return response.data;
     } catch (error) {
       console.error('Error creating item:', error);
@@ -43,10 +43,14 @@ export const itemApi = {
    */
   updateItem: async (id, item) => {
     try {
-      const response = await apiClient.put(`/items/${id}`, item);
+      // const headers = {'Content-Type': 'multipart/form-data'};
+      console.log('item to be updated', item);
+      
+      const response = await apiClient.patch(`/items/${id}`, item);
+      console.log('response', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error updating item:', error);
+      console.error('Error updating item:', error.message);
       throw error;
     }
   },

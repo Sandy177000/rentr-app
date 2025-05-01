@@ -7,7 +7,7 @@ const ProfileSection = ({title, icon, onPress, theme}) => (
     <TouchableOpacity
       style={[
         styles.sectionContainer,
-        {backgroundColor: theme.colors.background},
+        {backgroundColor: theme.colors.surface},
       ]}
       onPress={onPress}>
       <View style={styles.sectionContent}>

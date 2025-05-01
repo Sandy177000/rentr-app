@@ -1,5 +1,4 @@
 import { authStorage } from '../../storage/storageService';
-import Toast from 'react-native-toast-message';
 
 /**
  * Request interceptor to add authentication token to requests

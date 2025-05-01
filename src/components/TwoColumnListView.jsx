@@ -70,9 +70,6 @@ const TwoColumnListView = ({
           styles.listContent,
           items.length === 0 && styles.emptyListContent,
         ]}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-        }
         ListEmptyComponent={getEmptyComponent()}
       />
     </View>

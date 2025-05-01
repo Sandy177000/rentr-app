@@ -17,33 +17,34 @@ import {useTheme} from '../theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'react-native-image-picker';
-import {itemApi} from '../services/api/index';
+import {chatApi, itemApi} from '../services/api/index';
 import Divider from './Divider';
 import {colors} from '../theme/theme';
 import Toast from 'react-native-toast-message';
 import SelectDropdown from 'react-native-select-dropdown';
 import {categories} from '../constants';
 import {Calendar} from 'react-native-calendars';
-
-const NewItemForm = ({setVisible}) => {
+import CustomText from './common/CustomText';
+import { useNavigation } from '@react-navigation/native';
+const NewItemForm = ({setVisible, item, editing = false}) => {
   const theme = useTheme();
-
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    rentalPeriod: 'daily',
+    name: item?.name || '',
+    description: item?.description || '',
+    price: item?.price ? item?.price + '' : '',
+    rentalPeriod: item?.rentalPeriod || 'daily',
     dateRange: {
-      startDate: '',
-      endDate: '',
+      startDate: item?.dateRange?.startDate || '',
+      endDate: item?.dateRange?.endDate || '',
     },
-    category: '',
+    category: item?.category || '',
     location: {
-      latitude: 19.076,
-      longitude: 72.8777,
-      address: '',
+      latitude: item?.location?.latitude || 19.076,
+      longitude: item?.location?.longitude || 72.8777,
+      address: item?.location?.address || '',
     },
-    images: [],
+    images: item?.images || [],
   });
   const [loading, setLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -291,44 +292,40 @@ const NewItemForm = ({setVisible}) => {
 
     setLoading(true);
     try {
-      const submitFormData = new FormData();
+
+      const mediaData = new FormData();
       formData.images.forEach((image, index) => {
-        submitFormData.append('images', {
-          uri: image.uri,
-          type: image.type || 'image/jpeg',
+        mediaData.append('images', {
+        uri: image.uri,
+        type: image.type || 'image/jpeg',
           name: `${formData.name}_image_${index}.jpg`,
         });
       });
 
-      submitFormData.append('name', formData.name);
-      submitFormData.append('description', formData.description);
-      submitFormData.append('price', formData.price);
-      submitFormData.append('rentalPeriod', formData.rentalPeriod);
-      submitFormData.append('dateRange', JSON.stringify(formData.dateRange));
-      submitFormData.append('category', formData.category);
+      const imageUrls = await chatApi.mediaUpload(mediaData);
 
-      // If you have location data
-      if (formData.location && formData.location.latitude) {
-        submitFormData.append(
-          'latitude',
-          formData.location.latitude.toString(),
-        );
-        submitFormData.append(
-          'longitude',
-          formData.location.longitude.toString(),
-        );
-        if (formData.location.address) {
-          submitFormData.append('locationAddress', formData.location.address);
-        }
-      }
+      const submitFormData = {
+        name: formData.name,
+        description: formData.description,
+        price: formData.price,
+        rentalPeriod: formData.rentalPeriod,
+        dateRange: formData.dateRange,
+        category: formData.category,
+        images: imageUrls,
+      };
 
       if (submitFormData) {
-        const response = await itemApi.createItem(submitFormData);
+        let response;
+        if (editing) {
+          response = await itemApi.updateItem(item.id, submitFormData);
+        } else {
+          response = await itemApi.createItem(submitFormData);
+        }
         if (response.item) {
           Toast.show({
             type: 'success',
             text1: 'Success',
-            text2: 'Item listed successfully',
+            text2: editing ? 'Item updated successfully' : 'Item listed successfully',
           });
           setFormData({
             name: '',
@@ -349,6 +346,7 @@ const NewItemForm = ({setVisible}) => {
           });
           setMarkedDates({});
           setVisible(false);
+          navigation.replace('ItemDetails', {item: response.item});
         } else {
           Toast.show({
             type: 'error',
@@ -500,7 +498,7 @@ const NewItemForm = ({setVisible}) => {
                         }),
                       }}>
                       <Text style={{color: theme.colors.text.primary}}>
-                        {selectedItem?.name || 'Select category'}
+                        {formData.category || 'Select category'}
                       </Text>
                       <Icon
                         name={isOpened ? 'chevron-up' : 'chevron-down'}
@@ -619,7 +617,7 @@ const NewItemForm = ({setVisible}) => {
 
                   {formData.dateRange.startDate &&
                     formData.dateRange.endDate && (
-                      <View style={styles.selectedDaysInfo}>
+                      <View style={[styles.selectedDaysInfo, {backgroundColor: theme.colors.surface}]}>
                         <Text style={{color: theme.colors.text.primary}}>
                           Selected: {calculateDays()} day
                           {calculateDays() !== 1 ? 's' : ''}
@@ -693,7 +691,7 @@ const NewItemForm = ({setVisible}) => {
                 {formData.images.map((image, index) => (
                   <View key={index} style={styles.imagePreview}>
                     <Image
-                      source={{uri: image.uri}}
+                      source={{uri: image.uri ? image.uri : image}}
                       style={styles.previewImage}
                     />
                     <TouchableOpacity
@@ -716,15 +714,16 @@ const NewItemForm = ({setVisible}) => {
       <View
         style={{
           flexDirection: 'row',
-          padding: 20,
+          padding: 15,
           position: 'absolute',
           bottom: 0,
           gap: 10,
+          backgroundColor: theme.colors.background,
         }}>
         <TouchableOpacity
           style={[
             styles.submitButton,
-            {backgroundColor: theme.colors.secondary},
+            // {backgroundColor: theme.colors.secondary},
             loading && styles.disabledButton,
           ]}
           onPress={() => {
@@ -732,9 +731,12 @@ const NewItemForm = ({setVisible}) => {
             resetFormData();
           }}
           disabled={loading}>
-          <Text style={[styles.submitButtonText, {textAlign: 'center'}]}>
+          <CustomText
+            variant="h3"
+            bold={700}
+            style={{textAlign: 'center', color: theme.colors.text.primary}}>
             CANCEL
-          </Text>
+          </CustomText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -747,9 +749,12 @@ const NewItemForm = ({setVisible}) => {
           {loading ? (
             <ActivityIndicator size="small" color={colors.white} />
           ) : (
-            <Text style={[styles.submitButtonText, {textAlign: 'center'}]}>
-              ADD ITEM
-            </Text>
+            <CustomText
+              variant="h3"
+              bold={700}
+              style={{textAlign: 'center', color: colors.white}}>
+              {editing ? 'UPDATE ITEM' : 'ADD ITEM'}
+            </CustomText>
           )}
         </TouchableOpacity>
       </View>
@@ -882,7 +887,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   confirmDatesButton: {
     paddingVertical: 6,
