@@ -179,7 +179,6 @@ export const ItemDetailsScreen = ({route, navigation}) => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <CustomText variant="h1" bold={700}>
               {itemData.name}
-              {JSON.stringify(itemData.images)}
             </CustomText>
             <CustomText variant="h3" bold={700}>
               Rs. {itemData.price}/day
@@ -287,14 +286,11 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                   data={itemData.images || []}
                   onSnapToItem={setActiveIndex}
                   renderItem={({item: image}) => (
-                    <>
-                      <Text>{'imageuri ' + JSON.stringify(image)}</Text>
                       <Image
                         source={{uri: image.uri}}
                         style={[styles.image]}
                         resizeMode="cover"
                       />
-                    </>
                   )}
                 />
                 {itemData.images?.length > 1 && renderPaginationDots()}
