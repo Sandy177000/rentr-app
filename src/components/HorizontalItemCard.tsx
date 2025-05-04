@@ -4,14 +4,14 @@ import CustomButton from './common/CustomButton';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import FavoriteButton from './FavoriteButton';
-
-
+import {ListItemProps} from './types';
+import {placeholderImage} from '../constants';
 const HorizontalItemCard = ({
   item,
   theme,
   navigation,
   showFavorite,
-}) => {
+}: ListItemProps) => {
   return (
     <View style={styles.itemCard}>
       <View style={styles.itemInfoContainer}>
@@ -22,6 +22,7 @@ const HorizontalItemCard = ({
             source={item.images?.[0].uri}
             style={styles.itemImage}
             overlay
+            placeholder={placeholderImage}
           />
         </CustomButton>
         <View style={styles.itemContent}>
@@ -42,11 +43,7 @@ const HorizontalItemCard = ({
       </View>
       {showFavorite && (
         <View style={styles.heartIcon}>
-          <FavoriteButton 
-            item={item} 
-            size={22} 
-            style={{padding: 0}} 
-          />
+          <FavoriteButton item={item} size={22} style={{padding: 0}} />
         </View>
       )}
     </View>
@@ -64,7 +61,6 @@ const styles = StyleSheet.create({
   itemInfoContainer: {
     flexDirection: 'row',
     gap: 10,
-
   },
   imageContainer: {
     width: 70,

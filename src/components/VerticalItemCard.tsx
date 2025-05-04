@@ -3,14 +3,17 @@ import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import FavoriteButton from './FavoriteButton';
-import Animated, {FadeInDown} from 'react-native-reanimated';
+import { ListItemProps } from './types';
+import { placeholderImage } from '../constants';
+
+
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
-const VerticalItemCard = ({item, theme, navigation, showFavorite}) => {
+const VerticalItemCard = ({item, theme, navigation, showFavorite}: ListItemProps) => {
   return (
     <>
-      <View style={styles.itemCard} entering={FadeInDown}>
+      <View style={styles.itemCard}>
         {showFavorite && (
           <View style={styles.heartIcon}>
             <FavoriteButton item={item} size={22} style={{padding: 0}} />
@@ -23,6 +26,7 @@ const VerticalItemCard = ({item, theme, navigation, showFavorite}) => {
             source={item.images?.[0].uri}
             style={styles.itemImage}
             overlay
+            placeholder={placeholderImage}
           />
         </TouchableOpacity>
         <View style={[styles.itemContent, {backgroundColor: theme.colors.surface}]}>
@@ -30,13 +34,16 @@ const VerticalItemCard = ({item, theme, navigation, showFavorite}) => {
             bold={600}
             variant="h4"
             style={{color: theme.colors.text.primary}}
-            numberOfLines={1}>
+            props={{numberOfLines: 1}}
+          >
             {item.name}
           </CustomText>
           <CustomText
             bold={900}
             variant="h4"
-            style={{color: theme.colors.text.secondary}}>
+            style={{color: theme.colors.text.secondary}}
+            props={{numberOfLines: 1}}
+          >
             Rs. {item.price} / DAY
           </CustomText>
         </View>

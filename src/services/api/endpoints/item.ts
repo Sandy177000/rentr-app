@@ -1,13 +1,9 @@
 import {apiClient} from '../apiClient';
-
+import { Item } from './../../../components/types';
 /**
  * API module for item-related operations
  */
 export const itemApi = {
-  /**
-   * Get all items
-   * @returns {Promise<Array>} List of items
-   */
   getItems: async () => {
     try {
       const response = await apiClient.get('/items');
@@ -18,15 +14,8 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Create a new item
-   * @param {Object} item - The item data to create
-   * @returns {Promise<Object>} Created item data
-   */
-  createItem: async item => {
+  createItem: async (item: Item) => {
     try {
-      // Special case for multipart/form-data
-      // const headers = {'Content-Type': 'multipart/form-data'};
       const response = await apiClient.post('/items', item);
       return response.data;
     } catch (error) {
@@ -35,32 +24,18 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Update an existing item
-   * @param {string} id - Item ID to update
-   * @param {Object} item - Updated item data
-   * @returns {Promise<Object>} Updated item data
-   */
-  updateItem: async (id, item) => {
+  updateItem: async (id: string, item: Item) => {
     try {
-      // const headers = {'Content-Type': 'multipart/form-data'};
-      console.log('item to be updated', item);
-      
       const response = await apiClient.patch(`/items/${id}`, item);
       console.log('response', response.data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating item:', error.message);
       throw error;
     }
   },
 
-  /**
-   * Delete an item
-   * @param {string} id - Item ID to delete
-   * @returns {Promise<Object>} Deletion result
-   */
-  deleteItem: async id => {
+  deleteItem: async (id: string) => {
     try {
       const response = await apiClient.delete(`/items/${id}`);
       return response.data;
@@ -70,12 +45,7 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Search for items
-   * @param {string} query - Search query string
-   * @returns {Promise<Array>} Search results
-   */
-  searchItems: async query => {
+  searchItems: async (query: string) => {
     try {
       const response = await apiClient.get('/items/search', {
         params: {query},
@@ -87,10 +57,7 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Get items belonging to the current user
-   * @returns {Promise<Array>} User's items
-   */
+
   getUserItems: async () => {
     try {
       const response = await apiClient.get('/items/user');
@@ -101,12 +68,7 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Get items by category
-   * @param {string} category - Category to filter by
-   * @returns {Promise<Array>} Category filtered items
-   */
-  getCategoryItems: async category => {
+  getCategoryItems: async (category: string) => {
     try {
       const response = await apiClient.get('/items/category', {
         params: {category},
@@ -118,12 +80,7 @@ export const itemApi = {
     }
   },
 
-  /**
-   * Get a specific item by ID
-   * @param {string} id - Item ID to retrieve
-   * @returns {Promise<Object>} Item data
-   */
-  getItemById: async id => {
+  getItemById: async (id: string) => {
     try {
       const response = await apiClient.get(`/items/${id}`);
       return response.data;

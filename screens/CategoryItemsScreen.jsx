@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
@@ -10,7 +10,7 @@ const CategoryItemsScreen = ({route}) => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const fetchCategoryItems = async () => {
+  const fetchCategoryItems = useCallback(async () => {
     try {
       setLoading(true);
       const res = await itemApi.getCategoryItems(category);
@@ -20,11 +20,11 @@ const CategoryItemsScreen = ({route}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category]);
 
   useEffect(() => {
     fetchCategoryItems();
-  }, [category]);
+  }, [fetchCategoryItems]);
 
   return (
     <TwoColumnListView

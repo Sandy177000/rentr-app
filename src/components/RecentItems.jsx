@@ -1,22 +1,24 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import CustomText from './common/CustomText';
 import ListItem from './ListItem';
 import {useNavigation} from '@react-navigation/native';
 import {HorizontalListSection} from './common/horizontal.list.section/HorizontalListSection';
 import {itemApi} from '../services/api/index';
-const RecentItems = ({theme, type, title, limit}) => {
+
+
+const RecentItems = ({theme, type, title, limit, loading}) => {
   const [recentItems, setRecentItems] = useState([]);
   const navigation = useNavigation();
 
-  const fetchRecentItems = async () => {
+  const fetchRecentItems = useCallback(async () => {
     try {
       const listings = await itemApi.getUserItems();
       setRecentItems(listings.slice(0, limit));
     } catch (error) {
       console.error('Error fetching recent items:', error);
     }
-  };
+  }, [limit]);
 
   useEffect(() => {
     switch (type) {
@@ -26,7 +28,7 @@ const RecentItems = ({theme, type, title, limit}) => {
       case 'rentals':
         break;
     }
-  }, [limit, type]);
+  }, [fetchRecentItems, type, loading]);
 
   return (
     <>
@@ -34,8 +36,8 @@ const RecentItems = ({theme, type, title, limit}) => {
         <View style={styles.recentSection}>
           <CustomText
             bold={600}
-            variant="h3"
-            style={[{color: theme.colors.text.primary}]}>
+            variant="h2"
+            style={[{color: theme.colors.text.primary, paddingHorizontal: 30}]}>
             {title}
           </CustomText>
           <HorizontalListSection

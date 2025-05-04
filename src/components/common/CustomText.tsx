@@ -4,7 +4,15 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
 
-const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'text', ...props }) => {
+type CustomTextProps = {
+  style?: any;
+  variant?: string;
+  bold?: number;
+  children?: React.ReactNode;
+  type?: string;
+  props?: any;
+}
+const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'text', ...props }: CustomTextProps) => {
   const theme = useTheme();
 
   const getVariantStyle = () => {
@@ -28,16 +36,19 @@ const CustomText = ({ style, variant = 'body', bold = 400, children, type = 'tex
     }
   };
 
+  const getTextStyle = () => {
+    return {
+      color: theme.colors.text.primary,
+      fontWeight: bold ? bold : 'normal',
+      textDecorationLine: type === 'link' ? 'underline' : 'none',
+    };
+  };
+
   return (
     <Text
       {...props}
       style={[
-        {
-          color: theme.colors.text.primary,
-          fontFamily: 'inter',
-          fontWeight: bold ? bold : 'normal',
-          textDecorationLine: type === 'link' ? 'underline' : 'none',
-        },
+        getTextStyle(),
         getVariantStyle(),
         style,
       ]}

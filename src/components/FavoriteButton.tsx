@@ -1,31 +1,32 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import {TouchableOpacity, StyleSheet, ViewStyle} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectFavouriteIds, toggleFavoriteStatus } from '../../store/itemsSlice';
-import { useTheme } from '../theme/ThemeProvider';
-import { colors } from '../theme/theme';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectFavouriteIds, toggleFavoriteStatus} from '../../store/itemsSlice';
+import {useTheme} from '../theme/ThemeProvider';
+import {colors} from '../theme/theme';
+import {Item} from './types';
 
-const FavoriteButton = ({ item, size = 24, style }) => {
+type FavoriteButtonProps = {
+  item: Item;
+  size?: number;
+  style?: ViewStyle;
+};
+
+const FavoriteButton = ({item, size = 24, style}: FavoriteButtonProps) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  // Get favorite IDs directly from Redux
   const favouriteIds = useSelector(selectFavouriteIds);
-  // Check if this item is in favorites
   const isFavorite = item && favouriteIds.includes(item.id);
 
   const handleToggleFavorite = () => {
-    dispatch(toggleFavoriteStatus({
-      item,
-      isFavorite: isFavorite,
-    }));
+    dispatch(toggleFavoriteStatus({item, isFavorite}));
   };
 
   return (
     <TouchableOpacity
       onPress={handleToggleFavorite}
-      style={[styles.container, style]}
-    >
+      style={[styles.container, style]}>
       <Icon
         name={isFavorite ? 'heart' : 'heart'}
         size={size}

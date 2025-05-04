@@ -12,8 +12,7 @@ import {MyListingsScreen} from './screens/MyListingsScreen';
 import {RegisterScreen} from './screens/RegisterScreen';
 import MyRentalsScreen from './screens/MyRentalsScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {View} from 'react-native';
+import {View, SafeAreaView} from 'react-native';
 import {useTheme} from './src/theme/ThemeProvider';
 import {LoginScreen} from './screens/LoginScreen';
 import {ThemeProvider} from './src/theme/ThemeProvider';
@@ -62,7 +61,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const renderChatHeader = (props, route) => {
+const renderChatHeader = (props, route, theme) => {
   return (
     <View
       style={{
@@ -76,7 +75,7 @@ const renderChatHeader = (props, route) => {
           size={25}
           style={{marginLeft: 25}}
           onPress={props.onPress}
-          color={props.tintColor}
+          color={theme.colors.text.secondary}
         />
       )}
       <CustomImage
@@ -97,7 +96,7 @@ const renderChatHeader = (props, route) => {
 const App = () => {
   const theme = useTheme();
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Login"
@@ -154,7 +153,7 @@ const App = () => {
           />
           <Stack.Screen
             name="MyRentals"
-            options={{title: 'My Rentals'}}
+            options={{title: 'My Rentals', headerShown: false}}
             component={MyRentalsScreen}
           />
           <Stack.Screen
@@ -177,7 +176,7 @@ const App = () => {
             options={({route}) => ({
               title: route.params?.name || 'Chat',
               headerTitleAlign: 'left',
-              headerLeft: props => renderChatHeader(props, route),
+              headerLeft: props => renderChatHeader(props, route, theme),
               headerStyle: {
                 height: 70,
                 backgroundColor: theme.colors.background,
@@ -200,7 +199,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />
-    </GestureHandlerRootView>
+    </SafeAreaView>
   );
 };
 

@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
-  Platform,
   Linking,
   ActivityIndicator,
   StyleSheet,
@@ -19,7 +18,8 @@ import CustomText from './common/CustomText';
 import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../theme/theme';
-import CustomModal from './common/CustomModal';
+import { isIOS } from '../utils/utils';
+
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const ProfileCard = ({user, theme, navigation}) => {
   const [count, setCount] = useState(0);
 
   const handleUpdateProfileImage = async source => {
-    // remove mediaType as photos from options
+
     const options = {
       quality: 0.8,
       maxWidth: 1200,
@@ -53,7 +53,7 @@ const ProfileCard = ({user, theme, navigation}) => {
             {
               text: 'Open Settings',
               onPress: () => {
-                if (Platform.OS === 'ios') {
+                if (isIOS()) {
                   Linking.openURL('app-settings:');
                 } else {
                   Linking.openSettings();
@@ -183,21 +183,13 @@ const ProfilePickerModal = ({
             {
               backgroundColor: getColor(theme.isDark),
               borderColor: getColor(!theme.isDark),
-              borderWidth: 0.2,
             },
           ]}>
           <TouchableOpacity
             style={[
               {
                 backgroundColor: theme.colors.primary,
-                position: 'absolute',
-                top: -10,
-                right: -10,
-                borderRadius: 100,
-                height: 40,
-                width: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
+                ...styles.closeButton,
               },
             ]}
             onPress={() => setModalVisible(false)} // Close the modal
@@ -212,7 +204,7 @@ const ProfilePickerModal = ({
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                {padding: 30, backgroundColor: theme.colors.surface},
+                { backgroundColor: theme.colors.surface},
               ]}
               onPress={() => {
                 handleUpdateProfileImage('gallery');
@@ -222,7 +214,7 @@ const ProfilePickerModal = ({
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                {padding: 30, backgroundColor: theme.colors.surface},
+                { backgroundColor: theme.colors.surface},
               ]}
               onPress={() => handleUpdateProfileImage('camera')}>
               <Icon name="camera" size={20} color={theme.colors.text.primary} />
@@ -292,6 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     width: '70%',
     position: 'relative',
+    borderWidth: 0.2,
   },
   modalButtonContainer: {
     flexDirection: 'row',
@@ -304,6 +297,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 30,
   },
   modalButtonText: {
     fontWeight: '600',
@@ -314,6 +308,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     textTransform: 'uppercase',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    borderRadius: 100,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default ProfileCard;

@@ -4,10 +4,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   useWindowDimensions,
   ActivityIndicator,
-  Text,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useSelector} from 'react-redux';
@@ -22,15 +20,30 @@ import FavoriteButton from '../src/components/FavoriteButton';
 import ScreenHeader from '../src/components/ScreenHeader';
 import NewItemForm from '../src/components/NewItemForm';
 import CustomText from '../src/components/common/CustomText';
+import {Item} from '../src/components/types';
+import CustomImage from '../src/components/common/CustomImage';
 
-export const ItemDetailsScreen = ({route, navigation}) => {
+type ItemDetailsScreenProps = {
+  route: {
+    params: {
+      item: Item;
+      itemId: string;
+    };
+  };
+  navigation: any;
+};
+
+export const ItemDetailsScreen = ({
+  route,
+  navigation,
+}: ItemDetailsScreenProps) => {
   let {item, itemId} = route.params;
   const token = useSelector(selectCurrentToken);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const theme = useTheme();
-  const [itemData, setItemData] = useState(item);
+  const [itemData, setItemData] = useState<Item>(item);
   const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
@@ -41,7 +54,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
       const itemIdToFetch = itemId || item?.id;
       const data = await itemApi.getItemById(itemIdToFetch);
       if (data) {
-        setItemData(data);
+        setItemData(data as Item);
       } else {
         Toast.show({
           type: 'error',
@@ -49,7 +62,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         });
         navigation.goBack();
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
       Toast.show({
         type: 'error',
@@ -65,11 +78,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     fetchItem();
   }, [fetchItem]);
 
-  const handleRent = () => {
-    // Implement rental logic
-  };
-
-  const handleDelete = async id => {
+  const handleDelete = async (id: string) => {
     try {
       setLoading(true);
       const {success} = await itemApi.deleteItem(id);
@@ -89,7 +98,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
         index: 0,
         routes: [{name: 'MainTabs', params: {initialIndex: 3}}],
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting item:', error);
       Toast.show({
         type: 'error',
@@ -132,7 +141,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     );
   };
 
-  const getColor = flag => {
+  const getColor = (flag: boolean) => {
     return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.85)';
   };
 
@@ -144,52 +153,129 @@ export const ItemDetailsScreen = ({route, navigation}) => {
     );
   };
 
-  // Helper function to get text style based on variant (like CustomText)
-  const getTextStyle = variant => {
-    switch (variant) {
-      case 'h1':
-        return {fontSize: 19};
-      case 'h2':
-        return {fontSize: 17};
-      case 'h3':
-        return {fontSize: 15};
-      case 'h4':
-        return {fontSize: 14};
-      case 'h5':
-        return {fontSize: 11};
-      case 'h6':
-        return {fontSize: 9};
-      case 'h7':
-        return {fontSize: 7};
-      default:
-        return {fontSize: 11};
-    }
-  };
-
-  const renderItemDetails = () => {
+  const renderDetails = () => {
     return (
-        <View
-          style={{
-            backgroundColor: theme.colors.surface,
-            padding: 20,
-            borderBottomLeftRadius: 15,
-            borderBottomRightRadius: 15,
-            width: '100%',
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <CustomText variant="h1" bold={700}>
-              {itemData.name}
-            </CustomText>
-            <CustomText variant="h3" bold={700}>
-              Rs. {itemData.price}/day
-            </CustomText>
-          </View>
-          <CustomText variant="h4">{itemData.description}</CustomText>
+      <View
+        style={{
+          backgroundColor: theme.colors.surface,
+          padding: 20,
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15,
+          width: '100%',
+        }}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <CustomText variant="h1" bold={700}>
+            {itemData.name}
+          </CustomText>
+          <CustomText variant="h3" bold={700}>
+            Rs. {itemData.price}/day
+          </CustomText>
         </View>
-
+        <CustomText variant="h4">{itemData.description}</CustomText>
+      </View>
     );
   };
 
+  const renderHeader = (data: Item) => {
+    return (
+      <ScreenHeader styles={styles.screenHeader}>
+        <View style={styles.favoriteButton}>
+          <FavoriteButton item={data} size={24} />
+        </View>
+      </ScreenHeader>
+    );
+  };
+
+  const renderActions = () => {
+    return (
+      <View style={{padding: 20}}>
+        {itemData.ownerId === currentUser?.id ? (
+          <View style={{gap: 10, flexDirection: 'row', marginTop: 10}}>
+            <TouchableOpacity
+              style={[
+                styles.rentButton,
+                {backgroundColor: theme.colors.primary},
+              ]}
+              onPress={() => setShowEditModal(!showEditModal)}>
+              <CustomText
+                variant="h4"
+                style={{
+                  color: colors.white,
+                  fontWeight: '600',
+                }}>
+                Edit Item
+              </CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
+              onPress={() => handleDelete(itemData.id)}>
+              <CustomText
+                variant="h4"
+                style={{
+                  color: colors.white,
+                  fontWeight: '600',
+                }}>
+                Delete Item
+              </CustomText>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.rentButton,
+              {backgroundColor: theme.colors.primary, width: '100%'},
+            ]}
+            onPress={() => setShowModal(!showModal)}>
+            <CustomText
+              variant="h4"
+              style={{
+                color: colors.white,
+                fontWeight: '600',
+              }}>
+              Contact Owner
+            </CustomText>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+  const renderCarousel = (data: Item) => {
+    return (
+      <View style={styles.carouselContainer}>
+        <Carousel
+          loop
+          width={width}
+          height={300}
+          data={data.images || []}
+          onSnapToItem={setActiveIndex}
+          renderItem={({item: image}) => (
+            <CustomImage
+              source={image.uri}
+              style={[styles.image]}
+            />
+          )}
+        />
+        {data.images?.length > 1 && renderPaginationDots()}
+      </View>
+    );
+  };
+
+  const renderItemDetails = () => {
+    if (!itemData) { return null; }
+    return (
+      <View
+        style={[
+          styles.container,
+          {backgroundColor: theme.colors.background},
+        ]}>
+        {renderHeader(itemData)}
+        {renderCarousel(itemData)}
+        {renderDetails()}
+        {renderActions()}
+      </View>
+    );
+  };
   return (
     <>
       {loading ? (
@@ -228,7 +314,6 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                     style={{
                       color: colors.white,
                       fontSize: 13,
-                      fontFamily: theme.font,
                     }}>
                     Cancel
                   </CustomText>
@@ -245,7 +330,6 @@ export const ItemDetailsScreen = ({route, navigation}) => {
                     style={{
                       color: colors.white,
                       fontSize: 13,
-                      fontFamily: theme.font,
                     }}>
                     Send Message
                   </CustomText>
@@ -262,97 +346,7 @@ export const ItemDetailsScreen = ({route, navigation}) => {
               />
             </CustomModal>
           )}
-          {itemData && (
-            <View
-              style={[
-                styles.container,
-                {backgroundColor: theme.colors.background},
-              ]}>
-              <ScreenHeader
-                styles={{
-                  position: 'absolute',
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                }}>
-                <View style={styles.favoriteButton}>
-                  <FavoriteButton item={itemData} size={24} />
-                </View>
-              </ScreenHeader>
-              <View style={styles.carouselContainer}>
-                <Carousel
-                  loop
-                  width={width}
-                  height={300}
-                  data={itemData.images || []}
-                  onSnapToItem={setActiveIndex}
-                  renderItem={({item: image}) => (
-                      <Image
-                        source={{uri: image.uri}}
-                        style={[styles.image]}
-                        resizeMode="cover"
-                      />
-                  )}
-                />
-                {itemData.images?.length > 1 && renderPaginationDots()}
-              </View>
-              {renderItemDetails()}
-              <View style={{padding: 20}}>
-                {itemData.ownerId === currentUser?.id ? (
-                  <View style={{gap: 10, flexDirection: 'row', marginTop: 10}}>
-                    <TouchableOpacity
-                      style={[
-                        styles.rentButton,
-                        {backgroundColor: theme.colors.primary},
-                      ]}
-                      onPress={() => setShowEditModal(!showEditModal)}>
-                      <CustomText
-                        variant="h4"
-                        style={{
-                          color: colors.white,
-                          fontWeight: '600',
-                          fontFamily: theme.font,
-                        }}>
-                        Edit Item
-                      </CustomText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[
-                        styles.rentButton,
-                        {backgroundColor: theme.colors.error},
-                      ]}
-                      onPress={() => handleDelete(itemData.id)}>
-                      <CustomText
-                        variant="h4"
-                        style={{
-                          color: colors.white,
-                          fontWeight: '600',
-                          fontFamily: theme.font,
-                        }}>
-                        Delete Item
-                      </CustomText>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <TouchableOpacity
-                    style={[
-                      styles.rentButton,
-                      {backgroundColor: theme.colors.primary, width: '100%'},
-                    ]}
-                    onPress={() => setShowModal(!showModal)}>
-                    <CustomText
-                      variant="h4"
-                      style={{
-                        color: colors.white,
-                        fontWeight: '600',
-                        fontFamily: theme.font,
-                      }}>
-                      Contact Owner
-                    </CustomText>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          )}
+          {renderItemDetails()}
         </>
       )}
     </>
@@ -362,7 +356,11 @@ export const ItemDetailsScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 20,
+  },
+  screenHeader: {
+    position: 'absolute',
+    width: '100%',
+    backgroundColor: 'transparent',
   },
   heartIcon: {
     position: 'absolute',
@@ -378,6 +376,7 @@ const styles = StyleSheet.create({
   image: {
     height: 300,
     width: '100%',
+    resizeMode: 'cover',
   },
   paginationDots: {
     flexDirection: 'row',
@@ -444,7 +443,6 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1000,
   },
-  // Added styles from CustomButton
   button: {
     borderRadius: 15,
     flexDirection: 'row',

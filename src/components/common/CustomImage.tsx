@@ -4,7 +4,14 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
 import { placeholderImage } from '../../constants';
 
-const CustomImage = ({source, style, overlay, placeholder, showLoading = true}) => {
+type CustomImageProps = {
+  source: string;
+  style: any;
+  overlay?: boolean;
+  placeholder?: string;
+  showLoading?: boolean;
+}
+const CustomImage = ({source, style, overlay, placeholder, showLoading = true}: CustomImageProps) => {
   const [imageLoading, setImageLoading] = useState(true);
   const theme = useTheme();
   return (

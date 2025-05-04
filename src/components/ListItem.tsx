@@ -1,12 +1,12 @@
 import React from 'react';
-import Animated, {FadeInDown} from 'react-native-reanimated';
 import VerticalItemCard from './VerticalItemCard';
 import HorizontalItemCard from './HorizontalItemCard';
 import { View } from 'react-native';
+import { ListItemProps } from './types';
 
-const ListItem = ({item, theme, index, navigation, animate = true, horizontal = false, showFavorite = false}) => {
+const ListItem = ({item, theme, navigation, horizontal = false, showFavorite = false}: ListItemProps) => {
   return (
-    <View entering={FadeInDown.delay(index * 1)}>
+    <View>
       { horizontal ? (
         <HorizontalItemCard
           item={item}

@@ -1,11 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useCallback} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-} from 'react-native';
+import {View, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectCurrentUser, getUserInfo} from '../store/authSlice';
 import {useTheme} from '../src/theme/ThemeProvider';
@@ -19,10 +14,10 @@ const ProfileScreen = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     const userData = await dispatch(getUserInfo()).unwrap();
     return userData;
-  };
+  }, [dispatch]);
 
   const onRefresh = useCallback(() => {
     setLoading(true);
@@ -30,7 +25,7 @@ const ProfileScreen = () => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-  }, []);
+  }, [fetchUser]);
 
   const renderProfile = () => {
     return (
@@ -39,7 +34,7 @@ const ProfileScreen = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
-              refreshing={loading}
+            refreshing={loading}
             onRefresh={onRefresh}
             tintColor={theme.colors.text.primary}
             colors={[theme.colors.text.primary]}
@@ -52,35 +47,28 @@ const ProfileScreen = () => {
           navigation={navigation}
           fetchUser={fetchUser}
         />
-        <View
-          style={[
-            styles.sectionsContainer,
-          ]}>
+        <View style={[styles.sectionsContainer]}>
           <ProfileSection
             title="My Listed Items"
             icon="list"
             onPress={() => navigation.navigate('MyListings')}
             theme={theme}
           />
-          <ProfileSection
-            title="Items Rented by Me"
-            icon="shopping-cart"
-            onPress={() => navigation.navigate('MyRentals')}
-            theme={theme}
-          />
-          <RecentItems
-            theme={theme}
-            type="listings"
-            title="Recently Listed Items"
-            limit={5}
-          />
-          <RecentItems
-            theme={theme}
-            type="rentals"
-            title="Recently Rented Items"
-            limit={5}
-          />
         </View>
+        <RecentItems
+          loading={loading}
+          theme={theme}
+          type="listings"
+          title="Recently Listed Items"
+          limit={5}
+        />
+        <RecentItems
+          loading={loading}
+          theme={theme}
+          type="rentals"
+          title="Recently Rented Items"
+          limit={5}
+        />
       </ScrollView>
     );
   };
@@ -93,8 +81,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionsContainer: {
+    flexWrap: 'wrap',
     marginTop: 20,
     paddingHorizontal: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
   },
 });
 

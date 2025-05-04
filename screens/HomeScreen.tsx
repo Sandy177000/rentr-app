@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,13 +13,14 @@ import Footer from '../src/components/Footer';
 import {getItems, selectItems} from '../store/itemsSlice';
 import {categories} from '../src/constants';
 import ScreenHeader from '../src/components/ScreenHeader';
+import { Item } from '../src/components/types';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
   const items = useSelector(selectItems);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -36,11 +37,11 @@ const HomeScreen = () => {
     console.log('items fetch');
   }, [dispatch]);
 
-  const handleNavigation = (navigateTo, data) => {
+  const handleNavigation = (navigateTo: string, data: any | null) => {
     navigation.navigate(navigateTo, data);
   };
 
-  const renderCategory = ({item}) => (
+  const renderCategory = ({item}: {item: any}) => (
     <TouchableOpacity
       style={[styles.categoryItem, {backgroundColor: theme.colors.background}]}
       onPress={() => handleNavigation('CategoryItems', {category: item.name})}>
@@ -51,11 +52,10 @@ const HomeScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderRecommendation = ({item, index}) => (
+  const renderRecommendation = ({item}: {item: Item}) => (
     <View style={{padding: 3}}>
       <ListItem
         item={item}
-        index={index}
         theme={theme}
         navigation={navigation}
         showFavorite={true}
@@ -151,19 +151,17 @@ const HomeScreen = () => {
                 <>
                   <Section
                     title="Latest Deals"
-                    icon="lightning"
                     data={items}
                     renderItem={renderRecommendation}
                   />
                   <Section
                     title="Goods Near You"
-                    icon="map"
-                    data={items.filter(item => item.category === 'Books')}
+                    data={items.filter((item: Item) => item.category === 'Books')}
                     renderItem={renderRecommendation}
                   />
                   <Section
                     title="Recommended Electronics"
-                    data={items.filter(item => item.category === 'Electronics')}
+                    data={items.filter((item: Item) => item.category === 'Electronics')}
                     renderItem={renderRecommendation}
                   />
                 </>

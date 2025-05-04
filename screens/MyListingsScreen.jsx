@@ -34,13 +34,7 @@ export const MyListingsScreen = () => {
     <>
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <ScreenHeader>
-          <View style={{flex: 1}}>
-            <CustomText variant="h2" style={{textAlign: 'center'}}>
-              My Items
-            </CustomText>
-          </View>
-        </ScreenHeader>
+        <ScreenHeader title="My Items" />
         <TwoColumnListView
           loading={loading}
           items={myListings}

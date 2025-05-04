@@ -1,12 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, FlatList} from 'react-native';
+import {View, FlatList, ViewStyle} from 'react-native';
 import React from 'react';
-import CustomText from '../../../components/common/CustomText';
+import CustomText from '../CustomText';
 import {useTheme} from '../../../theme/ThemeProvider';
+import ListItemSeparator from '../../ListItemSeparator';
 
-export const HorizontalListSection = ({title, data, renderItem, style}) => {
+type HorizontalListSectionProps = {
+  title?: string;
+  data: any[];
+  renderItem: any;
+  style?: ViewStyle;
+};
+
+export const HorizontalListSection = ({title, data, renderItem, style}: HorizontalListSectionProps) => {
   const theme = useTheme();
-  return (
+  return (  
     <>
       {data.length > 0 && (
         <View
@@ -43,7 +51,7 @@ export const HorizontalListSection = ({title, data, renderItem, style}) => {
               renderItem={renderItem}
               keyExtractor={item => item.id}
               showsHorizontalScrollIndicator={false}
-              ItemSeparatorComponent={() => <View style={{width: 10}} />}
+              ItemSeparatorComponent={ListItemSeparator}
               contentContainerStyle={{paddingHorizontal: 10, marginBottom: 2}}
             />
           </View>

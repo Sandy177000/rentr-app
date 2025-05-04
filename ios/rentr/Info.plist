@@ -6,6 +6,10 @@
 	<string>We need access to your camera to take photos of items you want to list</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to select photos of items you want to list</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show nearby items for rent.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to show nearby items for rent.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -73,6 +77,9 @@
 		<string>ProximaNova-Regular.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>PoppinsBlack900.ttf</string>
+		<string>PoppinsBold700.ttf</string>
+		<string>PoppinsRegular400.ttf</string>
 	</array>
 </dict>
 </plist>

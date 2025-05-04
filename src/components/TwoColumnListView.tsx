@@ -4,23 +4,31 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
-  RefreshControl,
 } from 'react-native';
 import CustomText from './common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from './ListItem';
 import EmptyListComponent from './EmptyListComponent';
+import { Item } from './types';
 
+type TwoColumnListViewProps = {
+  loading: boolean;
+  items: Item[];
+  theme: any;
+  navigation: any;
+  emptyText: string;
+  emptyComponent: () => React.ReactNode;
+  showFavorite: boolean;
+}
 const TwoColumnListView = ({
   loading,
   items,
   theme,
   navigation,
-  onRefresh,
   emptyText,
   emptyComponent,
   showFavorite,
-}) => {
+}: TwoColumnListViewProps) => {
   const getEmptyComponent = () => {
     if (!loading && items.length === 0) {
       return (
@@ -39,7 +47,7 @@ const TwoColumnListView = ({
               </CustomText>
             </View>
           ) : (
-            emptyComponent()
+              emptyComponent()
           )}
         </EmptyListComponent>
       );
@@ -49,14 +57,13 @@ const TwoColumnListView = ({
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <FlatList
         data={items}
-        renderItem={({item, index}) => {
+        renderItem={({item}) => {
           return (
             <ListItem
               item={item}
-              index={index}
               theme={theme}
               navigation={navigation}
               showFavorite={showFavorite}
@@ -77,6 +84,9 @@ const TwoColumnListView = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   listContent: {
     padding: 16,
     paddingBottom: 100,

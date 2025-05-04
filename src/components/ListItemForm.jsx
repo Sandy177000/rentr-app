@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Platform,
   Linking,
   ActivityIndicator,
 } from 'react-native';
@@ -24,7 +23,7 @@ import {createItemFormConfig} from '../utils/form/createItem';
 import {colors} from '../theme/theme';
 import Toast from 'react-native-toast-message';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import {isIOS} from '../utils/utils';
 
 export const ListItemForm = ({setVisible}) => {
   const theme = useTheme();
@@ -69,7 +68,7 @@ export const ListItemForm = ({setVisible}) => {
             text1: 'Camera Permission Required',
             text2: 'Please click on this to enable camera access.',
             onPress: () => {
-              if (Platform.OS === 'ios') {
+              if (isIOS()) {
                 Linking.openURL('app-settings:');
               } else {
                 Linking.openSettings();

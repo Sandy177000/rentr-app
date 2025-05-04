@@ -4,7 +4,11 @@ import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from '../theme/ThemeProvider';
 
-function GoBackButton({styles}) {
+type GoBackButtonProps = {
+  styles?: any;
+}
+
+function GoBackButton({styles}: GoBackButtonProps) {
   const navigation = useNavigation();
   const theme = useTheme();
   return (
@@ -12,7 +16,7 @@ function GoBackButton({styles}) {
       onPress={() => navigation.goBack()}
       style={{
         backgroundColor: theme.colors.surface,
-        borderRadius: 13,
+        borderRadius: 8,
         width: 40,
         position: 'absolute',
         left: 20,
@@ -20,6 +24,8 @@ function GoBackButton({styles}) {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
+        borderBottomColor: 'rgba(0, 0, 0, 0.2)',
+        borderBottomWidth: 3,
         ...styles
       }}>
       <Icon name="angle-left" size={25} color={theme.colors.text.secondary} />

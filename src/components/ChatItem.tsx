@@ -1,16 +1,23 @@
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import CustomText from './common/CustomText';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useTheme} from '../theme/ThemeProvider';
 import {avatar} from '../constants';
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from '../../store/authSlice';
 import CustomImage from './common/CustomImage';
+import { Chat } from './types';
 
-const ChatItem = ({item, token, index}) => {
+type ChatItemProps = {
+  item: Chat;
+  token: string;
+  index: number;
+};
+
+const ChatItem = ({item, token, index}: ChatItemProps) => {
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
   const user = useSelector(selectCurrentUser);
   const participants = user
     ? item.participants.filter(participant => participant.user.id !== user.id)
@@ -55,7 +62,7 @@ const ChatItem = ({item, token, index}) => {
           <CustomText
             variant="body"
             style={{color: theme.colors.text.secondary}}
-            numberOfLines={1}>
+            props={{numberOfLines: 1}}>
             {item.messages[0]?.content.length > 50
               ? item.messages[0]?.content.slice(0, 50) + '...'
               : item.messages[0]?.content}

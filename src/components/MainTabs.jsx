@@ -1,5 +1,5 @@
-import React from 'react';
-import {useWindowDimensions, TouchableOpacity} from 'react-native';
+import React, { useCallback, useState, useMemo } from 'react';
+import {useWindowDimensions, TouchableOpacity } from 'react-native';
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from '../../store/authSlice';
 import {avatar} from '../constants';
@@ -10,19 +10,17 @@ import ProfileScreen from '../../screens/ProfileScreen';
 import {Image} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {StyleSheet} from 'react-native';
-import {useState} from 'react';
 import {useTheme} from '../theme/ThemeProvider';
-import { MyListingsScreen } from '../../screens/MyListingsScreen';
 import MyRentalsScreen from '../../screens/MyRentalsScreen';
 import NewItemScreen from '../../screens/NewItemScreen';
-
+import {isKeyboardVisible} from '../utils/utils';
 const MainTabs = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const theme = useTheme();
   const user = useSelector(selectCurrentUser);
 
-  const routes = [
+  const routes = useMemo(() => [
     {key: 'home', title: 'Home', icon: 'home'},
     {key: 'myOrders', title: 'myOrders', icon: 'shopping-cart'},
     {key: 'newItem', title: 'newItem', icon: 'plus'},
@@ -32,20 +30,29 @@ const MainTabs = () => {
       icon: user?.profileImage || avatar,
       type: 'image',
     },
-  ];
+  ], [user?.profileImage]);
 
-  const renderScene = SceneMap({
-    home: HomeScreen,
-    myOrders: MyRentalsScreen,
-    profile: ProfileScreen,
-    newItem: NewItemScreen,
-  });
+  const renderScene = useMemo(() => 
+    SceneMap({
+      home: HomeScreen,
+      myOrders: MyRentalsScreen,
+      profile: ProfileScreen,
+      newItem: NewItemScreen,
+    }), 
+  []);
+
+  const handleIndexChange = useCallback((i) => {
+    setIndex(i);
+  }, []);
 
 
-  // Custom tab bar implementation
-  const renderTabBar = () => (
-    <View style={styles.tabBarContainer}>
-      <View collapsable={false}>
+  const renderTabBar = useCallback(() => {
+
+    if (isKeyboardVisible()) {
+      return null;
+    }
+    return (
+      <View style={styles.tabBarContainer} pointerEvents="box-none">
         <View style={[styles.tabBar, {backgroundColor: theme.colors.primary}]}>
           {routes.map((route, i) => {
             const isActive = index === i;
@@ -57,7 +64,9 @@ const MainTabs = () => {
                 activeOpacity={0.9}>
                 <View
                   style={{
-                    backgroundColor: isActive ? 'white' : theme.colors.primary,
+                    backgroundColor: isActive
+                      ? 'white'
+                      : theme.colors.primary,
                     width: 35,
                     height: 35,
                     borderRadius: 100,
@@ -82,17 +91,24 @@ const MainTabs = () => {
           })}
         </View>
       </View>
-    </View>
-  );
+    );
+  }, [index, routes, theme.colors.primary]);
+
+
+  const initialLayout = useMemo(() => ({
+    width: layout.width
+  }), [layout.width]);
 
   return (
     <TabView
       navigationState={{index, routes}}
       renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{width: layout.width}}
+      onIndexChange={handleIndexChange}
+      initialLayout={initialLayout}
       renderTabBar={renderTabBar}
       swipeEnabled={false}
+      lazy={true}
+      lazyPreloadDistance={0}
     />
   );
 };

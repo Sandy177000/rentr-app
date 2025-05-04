@@ -57,7 +57,7 @@ const FavouritesScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader title={'Favorites'}/>
+      <ScreenHeader title={'Favorites'} />
       <TwoColumnListView
         loading={loading}
         items={favourites}

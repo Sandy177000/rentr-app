@@ -71,7 +71,7 @@ const useChatMessages = (roomId, token, user, item) => {
         try {
           let imageUrls = item.images || [];
 
-          const content = `I am interested in this item for rent. Can we connect to discuss the details?
+          const content = `Hi, I am interested in this item for rent. Can we connect to discuss the details?
           Item Details:
           • Name: ${item.name}
           • Price: ${item.price}
@@ -155,7 +155,6 @@ const useChatMessages = (roomId, token, user, item) => {
         };
 
         socket.emit('send_message', newMessage);
-
         setMedia([]);
         setMessage('');
         await chatApi.sendMessage({

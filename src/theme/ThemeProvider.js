@@ -18,40 +18,13 @@ export const ThemeProvider = ({children}) => {
   const [customTheme, setCustomTheme] = useState(() => {
     const userTheme = user?.theme?.lightTheme || lightTheme;
     const isDark = user?.theme?.isDark || false;
+    const theme = isDark ? darkTheme : lightTheme;
 
     return {
       isDark,
-      colors: {
-        background: isDark
-          ? (user?.theme?.darkTheme || darkTheme).colors.background
-          : userTheme.colors.background,
-        surface: isDark
-          ? (user?.theme?.darkTheme || darkTheme).colors.surface
-          : userTheme.colors.surface,
-        primary: isDark
-          ? (user?.theme?.darkTheme || darkTheme).colors.primary
-          : userTheme.colors.primary,
-        secondary: isDark
-          ? (user?.theme?.darkTheme || darkTheme).colors.secondary
-          : userTheme.colors.secondary,
-        error: isDark
-          ? (user?.theme?.darkTheme || darkTheme).colors.error
-          : userTheme.colors.error,
-        text: {
-          primary: isDark
-            ? (user?.theme?.darkTheme || darkTheme).colors.text.primary
-            : userTheme.colors.text.primary,
-          secondary: isDark
-            ? (user?.theme?.darkTheme || darkTheme).colors.text.secondary
-            : userTheme.colors.text.secondary,
-        },
-      },
-      fonts: isDark
-        ? (user?.theme?.darkTheme || darkTheme).fonts
-        : userTheme.fonts,
-      font: isDark
-        ? (user?.theme?.darkTheme || darkTheme).font
-        : userTheme.font,
+      colors: theme.colors,
+      fonts: theme.fonts,
+      font: 'PoppinsRegular400',
     };
   });
 
@@ -66,7 +39,7 @@ export const ThemeProvider = ({children}) => {
         isDark: user.theme.isDark || false,
         colors: userTheme.colors,
         fonts: userTheme.fonts,
-        font: userTheme.font,
+        font: 'PoppinsRegular400',
       }));
     }
   }, [user]);

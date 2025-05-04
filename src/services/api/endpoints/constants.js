@@ -1,5 +1,7 @@
 export const getBaseUrl = () => {
   // Use environment variables with defaults
+
+  return 'http://192.168.1.22:4000';
   if(process.env.NODE_ENV === 'development') {
     return 'http://10.0.2.2:4000';
   }

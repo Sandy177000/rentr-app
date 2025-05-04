@@ -48,26 +48,22 @@ const ChatScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader>
+      <ScreenHeader title="Chats">
         <View
           style={{
-            flex: 1,
+            height: 45,
+            borderRadius: 30,
+            backgroundColor: theme.colors.surface,
+            paddingHorizontal: 10,
+            marginRight: 15,
           }}>
-          <View
-            style={{
-              backgroundColor: theme.colors.surface,
-              borderRadius: 30,
-              flexDirection: 'row',
-               height: 50
-            }}>
-            <TextInput
-              style={[styles.searchInput, {color: theme.colors.text.primary}]}
-              placeholder="Search chats..."
-              placeholderTextColor={theme.colors.text.secondary}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-          </View>
+          <TextInput
+            style={[styles.searchInput, {color: theme.colors.text.primary}]}
+            placeholder="Search chats..."
+            placeholderTextColor={theme.colors.text.secondary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
       </ScreenHeader>
 
@@ -82,15 +78,21 @@ const ChatScreen = () => {
         contentContainerStyle={styles.chatList}
         ListEmptyComponent={
           <EmptyListComponent>
-            <Icon
-              name="comments-o"
-              size={50}
-              color={theme.colors.text.secondary}
-            />
-            <CustomText
-              style={[styles.emptyText, {color: theme.colors.text.secondary}]}>
-              No chats found
-            </CustomText>
+            <View style={styles.emptyContainer}>
+              <Icon
+                name="comments-o"
+                size={50}
+                color={theme.colors.text.secondary}
+              />
+              <CustomText
+                variant="h4"
+                style={[
+                  styles.emptyText,
+                  {color: theme.colors.text.secondary},
+                ]}>
+                No chats found
+              </CustomText>
+            </View>
           </EmptyListComponent>
         }
       />
@@ -101,7 +103,6 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 15,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -117,17 +118,19 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    marginLeft: 65,
-    fontSize: 14,
+    width: 170,
   },
   chatList: {
     flex: 1,
     gap: 10,
   },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    backgroundColor: 'rgba(128, 128, 128, 0.1)',
+    padding: 30,
+    borderRadius: 30,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
   },
   emptyText: {
     marginTop: 10,

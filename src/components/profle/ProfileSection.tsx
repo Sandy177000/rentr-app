@@ -4,7 +4,14 @@ import Icons from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../common/CustomText';
 import CustomButton from '../common/CustomButton';
 
-export const ProfileSection = ({title, icon, onPress, theme}) => (
+type ProfileSectionProps = {
+  title: string;
+  icon: string;
+  onPress: () => void;
+  theme: any;
+};
+
+export const ProfileSection = ({title, icon, onPress, theme}: ProfileSectionProps) => (
   <CustomButton
     style={[styles.sectionContainer, {backgroundColor: theme.colors.surface}]}
     onPress={onPress}>
@@ -29,6 +36,7 @@ const styles = StyleSheet.create({
     padding: 25,
     marginBottom: 10,
     borderRadius: 30,
+    flex: 1,
   },
   sectionContent: {
     flexDirection: 'row',
