@@ -22,17 +22,23 @@ import useChatMessages from '../src/hooks/chat/useChatMessages';
 import Toast from 'react-native-toast-message';
 import Message from '../src/components/Message';
 import DateSeparator from '../src/components/DateSeparator';
-import { Chat, Media, Message as MessageType, Participant, Item } from '../src/components/types';
-import { NavigationProp } from '@react-navigation/native';
-import { handleMediaPicker } from '../src/utils/utils';
+import {
+  TChat,
+  TMedia,
+  TMessage,
+  TParticipant,
+  TItem,
+} from '../src/components/types';
+import {NavigationProp} from '@react-navigation/native';
+import {handleMediaPicker} from '../src/utils/utils';
 
 type ChatDetailsProps = {
   route: {
     params: {
-      chat: Chat;
+      chat: TChat;
       roomId: string;
       token: string;
-      item: Item;
+      item: TItem;
     };
   };
   navigation: NavigationProp<any>;
@@ -45,13 +51,16 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
   const flatListRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const modalHeight = useRef(new Animated.Value(0)).current;
-  const participant = chat?.participants?.filter((p: Participant) => p.user?.id !== user?.id);
-  const [selectedImages, setSelectedImages] = useState<Media[]>([]);
+  const participant = chat?.participants?.filter(
+    (p: TParticipant) => p.user?.id !== user?.id,
+  );
+  const [selectedImages, setSelectedImages] = useState<TMedia[]>([]);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const width = Dimensions.get('window').width;
 
   const {
     loadingMessage,
+    loading,
     message,
     messages,
     media,
@@ -63,7 +72,9 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
   } = useChatMessages(roomId, token, user, item);
 
   useEffect(() => {
-    let title = participant.map((p: Participant) => p.user?.firstName).join(', ');
+    let title = participant
+      .map((p: TParticipant) => p.user?.firstName)
+      .join(', ');
     navigation.setOptions({
       title: title,
     });
@@ -84,20 +95,29 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
     });
   };
 
-  const handleMessageLink = useCallback((link: any) => {
-    try {
-      navigation.navigate(link.screen, link.params);
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        text1: 'Error',
-        text2: 'Failed to navigate to the link',
-        type: 'error',
-      });
-    }
-  }, [navigation]);
+  const handleMessageLink = useCallback(
+    (link: any) => {
+      try {
+        navigation.navigate(link.screen, link.params);
+      } catch (error) {
+        console.log(error);
+        Toast.show({
+          text1: 'Error',
+          text2: 'Failed to navigate to the link',
+          type: 'error',
+        });
+      }
+    },
+    [navigation],
+  );
 
-  const renderMessage = ({item: messageItem, index}: {item: MessageType, index: number}) => {
+  const renderMessage = ({
+    item: messageItem,
+    index,
+  }: {
+    item: TMessage;
+    index: number;
+  }) => {
     return (
       <>
         <DateSeparator
@@ -114,7 +134,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
           setShowImageCarousel={setShowImageCarousel}
           handleMessageLink={handleMessageLink}
         />
-    </>
+      </>
     );
   };
 
@@ -133,7 +153,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
             width={width}
             height={width}
             data={selectedImages}
-            renderItem={({item: carouselImage}: {item: Media}) => (
+            renderItem={({item: carouselImage}: {item: TMedia}) => (
               <FastImage
                 source={{uri: carouselImage.uri}}
                 style={{width: width, height: width}}
@@ -197,7 +217,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
     );
   };
 
-  const renderInputMediaPreview = (mediaData: Media[]) => {
+  const renderInputMediaPreview = (mediaData: TMedia[]) => {
     return (
       mediaData.length > 0 && (
         <View style={styles.imageSection}>
@@ -205,7 +225,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
             style={styles.imagePreviewContainer}
             showsHorizontalScrollIndicator={false}
             horizontal={true}>
-            {mediaData.map((image: Media, index: number) => (
+            {mediaData.map((image: TMedia, index: number) => (
               <View key={index} style={styles.imagePreview}>
                 <CustomImage source={image.uri} style={styles.previewImage} />
                 <TouchableOpacity
@@ -247,17 +267,23 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        style={{backgroundColor: theme.colors.surface}}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.3}
-        data={[...messages].reverse()}
-        renderItem={renderMessage}
-        contentContainerStyle={styles.messageList}
-        inverted={true}
-        keyExtractor={item => item.id}
-      />
+      {!loading ? (
+        <FlatList
+          ref={flatListRef}
+          style={{backgroundColor: theme.colors.surface}}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.3}
+          data={[...messages].reverse()}
+          renderItem={renderMessage}
+          contentContainerStyle={styles.messageList}
+          inverted={true}
+          keyExtractor={item => item.id}
+        />
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      )}
       {renderImagePickerModal()}
       {renderInputSection()}
       {renderCarouselPreview()}
@@ -284,7 +310,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 4,
+    padding: 10,
     borderRadius: 30,
     margin: 8,
     width: '95%',

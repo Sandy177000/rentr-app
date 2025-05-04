@@ -2,7 +2,7 @@ import React, {memo, useRef, useState, useEffect} from 'react';
 import {View, StyleSheet, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useTheme} from '../theme/ThemeProvider';
-import {Location} from './types';
+import { TLocation } from './types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { isAndroid } from '../utils/utils';
 
@@ -12,7 +12,7 @@ type OpenStreetMapProps = {
   zoom?: number;
   height?: number | string;
   isDraggable?: boolean;
-  onLocationSelect?: (location: Location) => void;
+  onLocationSelect?: (location: TLocation) => void;
 };
 
 const OpenStreetMap = memo(

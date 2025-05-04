@@ -5,10 +5,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {selectFavouriteIds, toggleFavoriteStatus} from '../../store/itemsSlice';
 import {useTheme} from '../theme/ThemeProvider';
 import {colors} from '../theme/theme';
-import {Item} from './types';
+import {TItem} from './types';
 
 type FavoriteButtonProps = {
-  item: Item;
+  item: TItem;
   size?: number;
   style?: ViewStyle;
 };

@@ -188,7 +188,7 @@ const App = () => {
           />
           <Stack.Screen
             name="CategoryItems"
-            options={{title: 'Category Items'}}
+            options={{title: 'Category Items', headerShown: false}}
             component={CategoryItemsScreen}
           />
           <Stack.Screen

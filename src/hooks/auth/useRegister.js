@@ -11,7 +11,7 @@ import {validateEmail, validatePassword} from '../../../src/utils/utils';
 import { useTheme } from '../../theme/ThemeProvider';
 import Toast from 'react-native-toast-message';
 import { authStorage } from '../../services';
-
+import { dismissKeyboard } from '../../../src/utils/utils';
 export const useRegister = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
@@ -37,6 +37,7 @@ export const useRegister = () => {
   const handleRegister = async () => {
     validateForm();
     setLoading(true);
+    dismissKeyboard(); // TODO: check if this is needed
     try {
       const userData = {
         email: formData.email,

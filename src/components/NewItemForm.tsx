@@ -5,31 +5,33 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
   ActivityIndicator,
   Text,
   TextInput,
+  ViewStyle,
 } from 'react-native';
-import {useTheme} from '../theme/ThemeProvider';
+import { useTheme } from '../theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {chatApi, itemApi} from '../services/api/index';
+import { chatApi, itemApi } from '../services/api/index';
 import Divider from './Divider';
-import {colors} from '../theme/theme';
+import { colors } from '../theme/theme';
 import Toast from 'react-native-toast-message';
 import SelectDropdown from 'react-native-select-dropdown';
-import {categories} from '../constants';
-import {Calendar} from 'react-native-calendars';
+import { categories } from '../constants';
+import { Calendar, DateData } from 'react-native-calendars';
 import CustomText from './common/CustomText';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import MapViewer from './MapViewer';
-import {getLocationName, isKeyboardVisible, handleMediaPicker} from '../utils/utils';
-import { Item } from './types';
+import { isKeyboardVisible, handleMediaPicker } from '../utils/utils';
+import { TItem, TLocation, TRootStackParamList, TFormData } from './types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import CustomImage from './common/CustomImage';
 
 type NewItemFormProps = {
   setVisible: (visible: boolean) => void;
-  item: Item;
+  item?: TItem;
   editing?: boolean;
   fullScreen?: boolean;
 };
@@ -41,8 +43,9 @@ const NewItemForm = ({
   fullScreen = false,
 }: NewItemFormProps) => {
   const theme = useTheme();
-  const navigation = useNavigation();
-  const [formData, setFormData] = useState({
+  const navigation = useNavigation<StackNavigationProp<TRootStackParamList>>();
+
+  const [formData, setFormData] = useState<TFormData>({
     name: item?.name || '',
     description: item?.description || '',
     price: item?.price ? item?.price + '' : '',
@@ -52,10 +55,10 @@ const NewItemForm = ({
       endDate: item?.dateRange?.endDate || '',
     },
     category: item?.category || '',
-    location: {
-      latitude: item?.location?.latitude || -1,
-      longitude: item?.location?.longitude || -1,
-      address: item?.location?.address || '',
+    location: item?.location || {
+      latitude: -1,
+      longitude: -1,
+      address: '',
     },
     images: item?.images || [],
   });
@@ -64,7 +67,7 @@ const NewItemForm = ({
   const [showMap, setShowMap] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
 
-  const onDayPress = day => {
+  const onDayPress = (day: DateData) => {
     // If we don't have a start date or we're selecting a new range (after having both start and end dates)
     if (
       !formData.dateRange.startDate ||
@@ -87,7 +90,7 @@ const NewItemForm = ({
         [startDate]: {
           selected: true,
           color: theme.colors.primary,
-          textColor: 'white',
+          textColor: colors.white,
           startingDay: true,
           endingDay: true,
         },
@@ -123,8 +126,8 @@ const NewItemForm = ({
   };
 
   // Function to get the date range between start and end dates
-  const getDateRange = (startDate, endDate) => {
-    const range = {};
+  const getDateRange = (startDate: string, endDate: string) => {
+    const range: {[key: string]: any} = {};
     let start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -132,7 +135,7 @@ const NewItemForm = ({
     range[startDate] = {
       selected: true,
       color: theme.colors.primary,
-      textColor: 'white',
+      textColor: colors.white,
       startingDay: true,
     };
 
@@ -145,7 +148,7 @@ const NewItemForm = ({
       range[dateString] = {
         selected: true,
         color: theme.colors.primary + '80', // Add transparency
-        textColor: 'white',
+        textColor: colors.white,
       };
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -154,7 +157,7 @@ const NewItemForm = ({
     range[endDate] = {
       selected: true,
       color: theme.colors.primary,
-      textColor: 'white',
+      textColor: colors.white,
       endingDay: true,
     };
 
@@ -167,7 +170,7 @@ const NewItemForm = ({
     return today.toISOString().split('T')[0];
   };
 
-  const handleFormChange = (field, value) => {
+  const handleFormChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
@@ -191,14 +194,14 @@ const NewItemForm = ({
     if (formData.dateRange.startDate && formData.dateRange.endDate) {
       const start = new Date(formData.dateRange.startDate);
       const end = new Date(formData.dateRange.endDate);
-      const diffTime = Math.abs(end - start);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end days
       return diffDays;
     }
     return 0;
   };
 
-  const handleImagePicker = async type => {
+  const handleImagePicker = async (type: string) => {
     handleMediaPicker(type, (asset: any) => {
       setFormData(prev => ({
         ...prev,
@@ -207,7 +210,7 @@ const NewItemForm = ({
     });
   };
 
-  const removeImage = index => {
+  const removeImage = (index: number) => {
     const newImages = [...formData.images];
     newImages.splice(index, 1);
     handleFormChange('images', newImages);
@@ -223,7 +226,7 @@ const NewItemForm = ({
     };
 
     for (const [field, label] of Object.entries(requiredFields)) {
-      if (!formData[field]) {
+      if (!formData[field as keyof typeof formData]) {
         Toast.show({
           type: 'error',
           text1: 'Missing Information',
@@ -265,7 +268,7 @@ const NewItemForm = ({
 
       const imageUrls = await chatApi.mediaUpload(mediaData);
 
-      const submitFormData = {
+      const submitFormData: TFormData = {
         name: formData.name,
         description: formData.description,
         price: formData.price,
@@ -279,7 +282,7 @@ const NewItemForm = ({
       if (submitFormData) {
         let response;
         if (editing) {
-          response = await itemApi.updateItem(item.id, submitFormData);
+          response = await itemApi.updateItem(item?.id, submitFormData);
         } else {
           response = await itemApi.createItem(submitFormData);
         }
@@ -330,7 +333,7 @@ const NewItemForm = ({
     });
   };
 
-  const handleLocationSelect = location => {
+  const handleLocationSelect = (location: TLocation) => {
     console.log('Location:', location);
     setFormData(prev => ({
       ...prev,
@@ -338,7 +341,7 @@ const NewItemForm = ({
     }));
   };
 
-  const getContainerStyle = () => {
+  const getContainerStyle = (): ViewStyle => {
     if (fullScreen) {
       return {
         width: '100%',
@@ -355,6 +358,7 @@ const NewItemForm = ({
   };
 
   const renderLocationSection = () => {
+    const { address } = formData.location;
     return (
       <View style={styles.groupContainer}>
         <CustomText variant="h3" bold={700} style={{color: theme.colors.text.primary}}>
@@ -380,12 +384,9 @@ const NewItemForm = ({
                 marginLeft: 8,
                 flex: 1,
               }}>
-              {formData.location.latitude === -1
+              {address === ''
                 ? 'Select location'
-                : getLocationName(
-                    formData.location.latitude,
-                    formData.location.longitude,
-                  )}
+                : address}
             </Text>
           </View>
         </TouchableOpacity>
@@ -697,8 +698,8 @@ const NewItemForm = ({
               showsHorizontalScrollIndicator={false}>
               {formData.images.map((image, index) => (
                 <View key={index} style={styles.imagePreview}>
-                  <Image
-                    source={{uri: image.uri ? image.uri : image}}
+                  <CustomImage
+                    source={image.uri}
                     style={styles.previewImage}
                   />
                   <TouchableOpacity
@@ -750,7 +751,7 @@ const NewItemForm = ({
           borderTopColor: theme.colors.surface,
         }}>
         <TouchableOpacity
-          style={[styles.submitButton, loading && styles.disabledButton]}
+          style={[styles.submitButton, loading && styles.disabledButton, {borderColor: theme.colors.primary, borderWidth: 1}]}
           onPress={() => {
             setVisible(false);
             resetFormData();
@@ -887,7 +888,7 @@ const styles = StyleSheet.create({
   submitButton: {
     flex: 1,
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -950,7 +951,6 @@ const styles = StyleSheet.create({
   },
   locationButton: {
     borderRadius: 12,
-    height: 'fit-content',
     justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 12,

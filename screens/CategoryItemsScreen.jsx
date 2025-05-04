@@ -3,6 +3,8 @@ import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useNavigation} from '@react-navigation/native';
 import TwoColumnListView from '../src/components/TwoColumnListView';
+import ScreenHeader from '../src/components/ScreenHeader';
+import { View } from 'react-native';
 const CategoryItemsScreen = ({route}) => {
   const {category} = route.params;
   const theme = useTheme();
@@ -27,14 +29,16 @@ const CategoryItemsScreen = ({route}) => {
   }, [fetchCategoryItems]);
 
   return (
-    <TwoColumnListView
-      loading={loading}
-      items={items}
-      theme={theme}
-      navigation={navigation}
-      onRefresh={fetchCategoryItems}
-      emptyText="No items for this category"
-    />
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <ScreenHeader title={category} />
+      <TwoColumnListView
+        loading={loading}
+        items={items}
+        theme={theme}
+        navigation={navigation}
+        emptyText="No items for this category"
+      />
+    </View>
   );
 };
 

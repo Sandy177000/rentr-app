@@ -4,14 +4,14 @@ import CustomButton from './common/CustomButton';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import FavoriteButton from './FavoriteButton';
-import {ListItemProps} from './types';
+import {TListItemProps} from './types';
 import {placeholderImage} from '../constants';
 const HorizontalItemCard = ({
   item,
   theme,
   navigation,
   showFavorite,
-}: ListItemProps) => {
+}: TListItemProps) => {
   return (
     <View style={styles.itemCard}>
       <View style={styles.itemInfoContainer}>
@@ -30,7 +30,7 @@ const HorizontalItemCard = ({
             bold={600}
             variant="h4"
             style={{color: theme.colors.text.primary}}
-            numberOfLines={1}>
+            props={{numberOfLines: 1}}>
             {item.name}
           </CustomText>
           <CustomText

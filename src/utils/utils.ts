@@ -1,8 +1,11 @@
 import { Keyboard, Platform, Linking, Alert } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
+import Geolocation from 'react-native-geolocation-service';
+import { TDateRange } from '../components/types';
+import moment from 'moment';
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: string): string => {
   const messageDate = new Date(date);
   const today = new Date();
   const yesterday = new Date(today);
@@ -13,7 +16,11 @@ export const formatDate = (date: string) => {
   } else if (messageDate.toDateString() === yesterday.toDateString()) {
     return 'Yesterday';
   } else {
-    return messageDate.toLocaleDateString();
+    return messageDate.toLocaleDateString('en-IN', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
   }
 };
 
@@ -114,7 +121,7 @@ export const handleMediaPicker = async (source: string, callback: (asset: any) =
     maxWidth: 1200,
     maxHeight: 1200,
     saveToPhotos: true,
-    mediaType: source === 'camera' ? 'video' : 'photo',
+    mediaType: 'photo', // Supporting only photo
   };
   try {
     let response;
@@ -167,5 +174,35 @@ export const handleMediaPicker = async (source: string, callback: (asset: any) =
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+
+export const isAvailable = (dateRange: TDateRange) => {
+  const today = moment();
+  const startDate = moment(dateRange.startDate);
+  const endDate = moment(dateRange.endDate);
+  return today.isAfter(startDate) && today.isBefore(endDate);
+};
+
+
+export const dismissKeyboard = (): void => {
+  Keyboard.dismiss();
+};
+
+export const getUserLocation = async (successCallback: (position: any) => void, errorCallback: (error: any) => void) => {
+  try {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        successCallback(position);
+      },
+      (error) => {
+        console.log(error);
+        errorCallback(error);
+      },
+    );
+  } catch (error) {
+    console.error('Error getting user location:', error);
+    return null;
   }
 };

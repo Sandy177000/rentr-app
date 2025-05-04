@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {colors} from '../theme/theme';
 import CustomText from './common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { MessageProps } from './types';
+import { TMessageProps } from './types';
 
 
 const Message = memo(({
@@ -16,7 +16,7 @@ const Message = memo(({
   setSelectedImages,
   setShowImageCarousel,
   handleMessageLink,
-}: MessageProps) => {
+}: TMessageProps) => {
   const link = _.get(messageItem, 'metadata.link', {});
 
   return (

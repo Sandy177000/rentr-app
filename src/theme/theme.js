@@ -37,6 +37,7 @@ export const darkTheme = {
     primary: '#599df9',
     secondary: '#ABABAB',
     error: '#ff005c',
+    success: '#008000',
     text: {
       primary: '#FFFFFF',
       secondary: '#ABABAB'

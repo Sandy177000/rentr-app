@@ -2,9 +2,9 @@ import React from 'react';
 import VerticalItemCard from './VerticalItemCard';
 import HorizontalItemCard from './HorizontalItemCard';
 import { View } from 'react-native';
-import { ListItemProps } from './types';
+import { TListItemProps } from './types';
 
-const ListItem = ({item, theme, navigation, horizontal = false, showFavorite = false}: ListItemProps) => {
+const ListItem = ({item, theme, navigation, horizontal = false, showFavorite = false}: TListItemProps) => {
   return (
     <View>
       { horizontal ? (

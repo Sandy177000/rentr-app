@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useSelector} from 'react-redux';
@@ -20,14 +21,19 @@ import FavoriteButton from '../src/components/FavoriteButton';
 import ScreenHeader from '../src/components/ScreenHeader';
 import NewItemForm from '../src/components/NewItemForm';
 import CustomText from '../src/components/common/CustomText';
-import {Item} from '../src/components/types';
+import {TItem} from '../src/components/types';
 import CustomImage from '../src/components/common/CustomImage';
-
+import Chip from '../src/components/Chip';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {formatDate, isAvailable} from '../src/utils/utils';
+import Divider from '../src/components/Divider';
+import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 type ItemDetailsScreenProps = {
   route: {
     params: {
-      item: Item;
+      item: TItem;
       itemId: string;
+      showFavorite?: boolean;
     };
   };
   navigation: any;
@@ -37,14 +43,14 @@ export const ItemDetailsScreen = ({
   route,
   navigation,
 }: ItemDetailsScreenProps) => {
-  let {item, itemId} = route.params;
+  let {item, itemId, showFavorite} = route.params;
   const token = useSelector(selectCurrentToken);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const theme = useTheme();
-  const [itemData, setItemData] = useState<Item>(item);
-  const {width} = useWindowDimensions();
+  const [itemData, setItemData] = useState<TItem>(item);
+  const {width, height} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
 
@@ -54,7 +60,7 @@ export const ItemDetailsScreen = ({
       const itemIdToFetch = itemId || item?.id;
       const data = await itemApi.getItemById(itemIdToFetch);
       if (data) {
-        setItemData(data as Item);
+        setItemData(data as TItem);
       } else {
         Toast.show({
           type: 'error',
@@ -78,7 +84,14 @@ export const ItemDetailsScreen = ({
     fetchItem();
   }, [fetchItem]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | undefined) => {
+    if (!id) {
+      Toast.show({
+        type: 'error',
+        text1: 'Item not found',
+      });
+      return;
+    }
     try {
       setLoading(true);
       const {success} = await itemApi.deleteItem(id);
@@ -153,76 +166,167 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const renderDetails = () => {
+  const renderAvailability = () => {
+    if (!itemData?.dateRange) {
+      return null;
+    }
+    const available = isAvailable(itemData?.dateRange);
+
     return (
       <View
         style={{
-          backgroundColor: theme.colors.surface,
-          padding: 20,
-          borderBottomLeftRadius: 15,
-          borderBottomRightRadius: 15,
-          width: '100%',
+          gap: 10,
+          marginTop: 10,
+          position: 'absolute',
+          bottom: 15,
+          right: 15,
         }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <CustomText variant="h1" bold={700}>
-            {itemData.name}
-          </CustomText>
-          <CustomText variant="h3" bold={700}>
-            Rs. {itemData.price}/day
-          </CustomText>
-        </View>
-        <CustomText variant="h4">{itemData.description}</CustomText>
+        {available && (
+          <Chip
+            item={{name: 'Available'}}
+            style={styles.availableChip}
+            iconStyle={{color: colors.white, name: 'check-circle'}}
+            textStyle={{color: colors.white}}
+          />
+        )}
+        {!available && (
+          <Chip
+            item={{name: 'Not Available'}}
+            style={{
+              ...styles.availableChip,
+              backgroundColor: theme.colors.error,
+              width: 150,
+            }}
+            iconStyle={{color: colors.white, name: 'times-circle'}}
+            textStyle={{color: colors.white}}
+          />
+        )}
       </View>
     );
   };
 
-  const renderHeader = (data: Item) => {
+  const renderDetails = () => {
+    return (
+      <BottomSheet
+        snapPoints={['50%', '90%']}
+        enablePanDownToClose={false}
+        enableDynamicSizing={true}
+        enableHandlePanningGesture={true}
+        backgroundComponent={(props) => (
+          <View style={{
+            ...props.style,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderTopRightRadius: 30,
+          }}></View>
+        )}
+      >
+        <BottomSheetView
+          style={{
+            padding: 25,
+            height: '100%',
+          }}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <CustomText variant="h1" bold={700}>
+              {itemData.name}
+            </CustomText>
+
+            <CustomText variant="h2" bold={900}>
+              Rs. {itemData.price}/day
+            </CustomText>
+          </View>
+          <Divider />
+
+          <CustomText variant="h3" bold={700}>
+            Description
+          </CustomText>
+          <Divider />
+          <CustomText variant="h4" style={{marginTop: 10}}>
+            {itemData.description.slice(0, 400)}
+          </CustomText>
+          <CustomText variant="h4">
+            Available from {formatDate(itemData.dateRange.startDate)} to{' '}
+            {formatDate(itemData.dateRange.endDate)}
+          </CustomText>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+              marginVertical: 10,
+              backgroundColor: 'transparent',
+            }}>
+            <Chip
+              item={{name: itemData.category}}
+              style={[styles.categoryChip, {backgroundColor: theme.colors.surface}]}
+              navigation={navigation}
+              navigationData={{
+                navigateTo: 'CategoryItems',
+                data: {category: itemData.category},
+              }}
+            />
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
+    );
+  };
+
+  const renderHeader = (data: TItem) => {
     return (
       <ScreenHeader styles={styles.screenHeader}>
-        <View style={styles.favoriteButton}>
-          <FavoriteButton item={data} size={24} />
-        </View>
+        {showFavorite && (
+          <View style={styles.favoriteButton}>
+            <FavoriteButton item={data} size={24} />
+          </View>
+        )}
       </ScreenHeader>
     );
   };
 
   const renderActions = () => {
     return (
-      <View style={{padding: 20}}>
+      <View
+        style={{
+          paddingHorizontal: 15,
+          position: 'absolute',
+          bottom: 15,
+          left: 1,
+        }}>
         {itemData.ownerId === currentUser?.id ? (
           <View style={{gap: 10, flexDirection: 'row', marginTop: 10}}>
+            <TouchableOpacity
+              style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
+              onPress={() => handleDelete(itemData.id)}>
+              <Icon name="trash" size={20} color={colors.white} />
+              {/* <CustomText
+                variant="h4"
+                style={{
+                  color: colors.white,
+                  fontWeight: '600',
+                }}>
+                DELETE ITEM
+              </CustomText> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.rentButton,
                 {backgroundColor: theme.colors.primary},
               ]}
               onPress={() => setShowEditModal(!showEditModal)}>
-              <CustomText
+              <Icon name="pencil" size={20} color={colors.white} />
+              {/* <CustomText
                 variant="h4"
                 style={{
                   color: colors.white,
                   fontWeight: '600',
                 }}>
-                Edit Item
-              </CustomText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
-              onPress={() => handleDelete(itemData.id)}>
-              <CustomText
-                variant="h4"
-                style={{
-                  color: colors.white,
-                  fontWeight: '600',
-                }}>
-                Delete Item
-              </CustomText>
+                EDIT ITEM
+              </CustomText> */}
             </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
             style={[
-              styles.rentButton,
+              styles.contactOwnerButton,
               {backgroundColor: theme.colors.primary, width: '100%'},
             ]}
             onPress={() => setShowModal(!showModal)}>
@@ -232,7 +336,7 @@ export const ItemDetailsScreen = ({
                 color: colors.white,
                 fontWeight: '600',
               }}>
-              Contact Owner
+              CONTACT OWNER
             </CustomText>
           </TouchableOpacity>
         )}
@@ -240,39 +344,36 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const renderCarousel = (data: Item) => {
+  const renderCarousel = (data: TItem) => {
     return (
       <View style={styles.carouselContainer}>
         <Carousel
           loop
           width={width}
-          height={300}
+          height={900}
           data={data.images || []}
           onSnapToItem={setActiveIndex}
           renderItem={({item: image}) => (
-            <CustomImage
-              source={image.uri}
-              style={[styles.image]}
-            />
+            <CustomImage source={image.uri} style={[styles.image]} />
           )}
         />
         {data.images?.length > 1 && renderPaginationDots()}
+        {renderAvailability()}
+        {renderActions()}
       </View>
     );
   };
 
   const renderItemDetails = () => {
-    if (!itemData) { return null; }
+    if (!itemData) {
+      return null;
+    }
     return (
       <View
-        style={[
-          styles.container,
-          {backgroundColor: theme.colors.background},
-        ]}>
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
         {renderHeader(itemData)}
         {renderCarousel(itemData)}
         {renderDetails()}
-        {renderActions()}
       </View>
     );
   };
@@ -370,13 +471,12 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     position: 'relative',
-    height: 300,
+    height: '50%',
     width: '100%',
   },
   image: {
-    height: 300,
+    height: '100%',
     width: '100%',
-    resizeMode: 'cover',
   },
   paginationDots: {
     flexDirection: 'row',
@@ -412,31 +512,27 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   rentButton: {
-    width: '50%',
-    padding: 15,
-    borderRadius: 30,
+    width: 40,
+    height: 40,
+    borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  contactOwnerButton: {
+    borderRadius: 30,
+    padding: 10,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   contactModal: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 30,
     flexDirection: 'column',
-    gap: 30,
+    gap: 20,
     width: '70%',
     padding: 20,
-  },
-  categoryItem: {
-    flex: 1,
-    height: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    maxWidth: 100,
-    borderRadius: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   favoriteButton: {
     position: 'absolute',
@@ -449,6 +545,21 @@ const styles = StyleSheet.create({
   },
   centerContent: {
     padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  categoryChip: {
+    maxWidth: 100,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  availableChip: {
+    height: 40,
+    width: 100,
+    backgroundColor: 'rgba(11, 209, 70, 0.98)',
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },

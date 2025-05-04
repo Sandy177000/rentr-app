@@ -9,15 +9,15 @@ import CustomText from './common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from './ListItem';
 import EmptyListComponent from './EmptyListComponent';
-import { Item } from './types';
+import { TItem } from './types';
 
 type TwoColumnListViewProps = {
   loading: boolean;
-  items: Item[];
+  items: TItem[];
   theme: any;
   navigation: any;
-  emptyText: string;
-  emptyComponent: () => React.ReactNode;
+  emptyText?: string;
+  emptyComponent?: () => React.ReactNode;
   showFavorite: boolean;
 }
 const TwoColumnListView = ({
@@ -47,7 +47,7 @@ const TwoColumnListView = ({
               </CustomText>
             </View>
           ) : (
-              emptyComponent()
+              emptyComponent?.()
           )}
         </EmptyListComponent>
       );
@@ -70,7 +70,7 @@ const TwoColumnListView = ({
             />
           );
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id || ''}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={[

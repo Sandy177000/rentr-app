@@ -3,14 +3,14 @@ import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import CustomText from './common/CustomText';
 import CustomImage from './common/CustomImage';
 import FavoriteButton from './FavoriteButton';
-import { ListItemProps } from './types';
+import { TListItemProps } from './types';
 import { placeholderImage } from '../constants';
 
 
 const {width} = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 48) / 2;
 
-const VerticalItemCard = ({item, theme, navigation, showFavorite}: ListItemProps) => {
+  const VerticalItemCard = ({item, theme, navigation, showFavorite}: TListItemProps) => {
   return (
     <>
       <View style={styles.itemCard}>
@@ -21,7 +21,7 @@ const VerticalItemCard = ({item, theme, navigation, showFavorite}: ListItemProps
         )}
         <TouchableOpacity
           style={styles.imageContainer}
-          onPress={() => navigation.navigate('ItemDetails', {itemId: item.id})}>
+          onPress={() => navigation.navigate('ItemDetails', {itemId: item.id, showFavorite})}>
           <CustomImage
             source={item.images?.[0].uri}
             style={styles.itemImage}

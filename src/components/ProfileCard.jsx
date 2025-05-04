@@ -17,17 +17,15 @@ import {userApi} from '../services/api/index';
 import CustomText from './common/CustomText';
 import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { colors } from '../theme/theme';
-import { isIOS } from '../utils/utils';
+import {colors} from '../theme/theme';
+import {isIOS} from '../utils/utils';
 
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(0);
 
   const handleUpdateProfileImage = async source => {
-
     const options = {
       quality: 0.8,
       maxWidth: 1200,
@@ -113,9 +111,8 @@ const ProfileCard = ({user, theme, navigation}) => {
           styles.header,
           {
             backgroundColor: theme.colors.surface,
-            shadowColor: theme.colors.primary,
-            borderColor: theme.colors.primary,
-            borderWidth: 0.2,
+            borderColor: theme.colors.secondary + '50',
+            borderBottomWidth: 4,
           },
         ]}>
         <TouchableOpacity
@@ -123,12 +120,7 @@ const ProfileCard = ({user, theme, navigation}) => {
           style={styles.settingsButton}>
           <Icons name="gear" size={24} color={theme.colors.secondary} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.profileImageContainer} onPress={()=>{
-          if(count == 2){
-            
-          }
-          setCount(count + 1);
-        }}>
+        <TouchableOpacity style={styles.profileImageContainer} activeOpacity={1}>
           {loading ? (
             <ActivityIndicator
               size="small"
@@ -142,6 +134,7 @@ const ProfileCard = ({user, theme, navigation}) => {
             />
           )}
           <TouchableOpacity
+            activeOpacity={0.8}
             style={[
               styles.editImageButton,
               {
@@ -186,6 +179,7 @@ const ProfilePickerModal = ({
             },
           ]}>
           <TouchableOpacity
+            activeOpacity={1}
             style={[
               {
                 backgroundColor: theme.colors.primary,
@@ -197,6 +191,7 @@ const ProfilePickerModal = ({
             <Icon name="close" size={20} color={colors.white} />
           </TouchableOpacity>
           <CustomText
+            variant="h4"
             style={[styles.modalTitle, {color: theme.colors.text.primary}]}>
             Update Profile Picture
           </CustomText>
@@ -204,23 +199,22 @@ const ProfilePickerModal = ({
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                { backgroundColor: theme.colors.surface},
+                {backgroundColor: theme.colors.surface},
               ]}
               onPress={() => {
                 handleUpdateProfileImage('gallery');
               }}>
-              <Icon name="image" size={20} color={theme.colors.text.primary} />
+              <Icon name="image" size={20} color={theme.colors.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.modalButton,
-                { backgroundColor: theme.colors.surface},
+                {backgroundColor: theme.colors.surface},
               ]}
               onPress={() => handleUpdateProfileImage('camera')}>
-              <Icon name="camera" size={20} color={theme.colors.text.primary} />
+              <Icon name="camera" size={20} color={theme.colors.primary} />
             </TouchableOpacity>
           </View>
-
         </View>
       </View>
     </Modal>
@@ -233,34 +227,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 30,
-    elevation: 15,
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 15,
+    elevation: 4,
   },
   profileImageContainer: {
     position: 'relative',
     marginBottom: 15,
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 1,
-    borderColor: '#666666',
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    elevation: 1,
   },
   editImageButton: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 5,
+    right: 5,
     padding: 8,
     borderRadius: 200,
     width: 35,
     height: 35,
     borderWidth: 3,
+    elevation: 2,
   },
   name: {
     fontWeight: 'bold',

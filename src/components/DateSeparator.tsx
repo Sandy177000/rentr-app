@@ -1,13 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Message} from './types';
+import {TMessage} from './types';
 import CustomText from './common/CustomText';
 import {StyleSheet} from 'react-native';
 import {useTheme} from '../theme/ThemeProvider';
-
+import { formatDate } from '../utils/utils';
 type DateSeparatorProps = {
-  currentMessage: Message;
-  previousMessage: Message;
+  currentMessage: TMessage;
+  previousMessage: TMessage;
   index: number;
 };
 const DateSeparator = ({
@@ -54,11 +54,7 @@ const DateSeparator = ({
           {backgroundColor: theme.colors.background + '80'},
         ]}>
         <CustomText style={styles.dateSeparatorText}>
-          {currentDate.toLocaleDateString('en-IN', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })}
+          {formatDate(currentDate.toDateString())}
         </CustomText>
       </View>
     );

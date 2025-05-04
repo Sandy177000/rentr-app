@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 
 const initialState = {
   items: [],
+  nearbyItems: [],
   userItems: [],
   favourites: [],
   loading: false,
@@ -18,6 +19,19 @@ export const getItems = createAsyncThunk(
   async (_, {rejectWithValue}) => {
     try {
       const response = await itemApi.getItems();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+// nearby items
+export const getNearbyItems = createAsyncThunk(
+  'items/getNearbyItems',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await itemApi.getNearbyItems(data);
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -235,6 +249,19 @@ const itemsSlice = createSlice({
     builder.addCase(getUserItems.fulfilled, (state, action) => {
       state.userItems = action.payload;
     });
+
+    // nearby items
+    builder.addCase(getNearbyItems.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(getNearbyItems.fulfilled, (state, action) => {
+      state.nearbyItems = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getNearbyItems.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error;
+    });
   },
 });
 
@@ -247,6 +274,7 @@ export const {
 } = itemsSlice.actions;
 
 export const selectItems = state => state.items.items;
+export const selectNearByItems = state => state.items.nearbyItems;
 export const selectUserItems = state => state.items.userItems;
 export const selectFavourites = state => state.items.favourites;
 export const selectFavouriteIds = createSelector(

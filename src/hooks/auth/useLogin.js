@@ -9,7 +9,7 @@ import {
 } from '../../../store/authSlice';
 import { useNavigation } from '@react-navigation/native';
 import { authStorage } from '../../services';
-
+import { dismissKeyboard } from '../../../src/utils/utils';
 export const useLogin = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ export const useLogin = () => {
   const handleLogin = async () => {
     try {
       setLoading(true);
+      dismissKeyboard(); // TODO: check if this is needed
       if (!formData.email || !formData.password) {
         throw new Error('Email and password are required');
       }

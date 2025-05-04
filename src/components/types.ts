@@ -1,7 +1,7 @@
 import { NavigationProp } from '@react-navigation/native';
 
 
-export type User = {
+export type TUser = {
   id: string;
   email: string;
   password: string;
@@ -15,83 +15,99 @@ export type User = {
   theme: any;
 };
 
-export type Media = {
+export type TMedia = {
   id: string;
   uri: string;
   name: string;
   type: string;
 };
 
-export type Message = {
+export type TMessage = {
   id: string;
   content: string;
   senderId: string;
   chatRoomId: string;
   createdAt: string;
   updatedAt: string;
-  sender: User;
-  media: Media[];
+  sender: TUser;
+  media: TMedia[];
   metadata: any;
 };
 
-export type MessageProps = {
-  item: Message;
+export type TMessageProps = {
+    item: TMessage;
   theme: any;
-  user: User;
-  setSelectedImages: (images: Media[]) => void;
+  user: TUser;
+  setSelectedImages: (images: TMedia[]) => void;
   setShowImageCarousel: (show: boolean) => void;
   handleMessageLink: (link: any) => void;
 };
 
-export type DateRange = {
+export type TDateRange = {
   startDate: string;
   endDate: string;
 };
 
-export type Participant = {
+export type TParticipant = {
   id: string;
   userId: string;
   chatRoomId: string;
   joinedAt: string;
-  user: User;
+  user: TUser;
 };
 
-export type Chat = {
+export type TChat = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  participants: Participant[];
-  messages: Message[];
+  participants: TParticipant[];
+  messages: TMessage[];
 };
 
-export type Location = {
+export type TLocation = {
   latitude: number;
   longitude: number;
   address?: string;
 };
 
-export type Item = {
+export type TItem = {
   id: string;
   name: string;
   description: string;
   price: number;
   available: boolean;
   rentalPeriod: string;
-  dateRange: DateRange;
-  ownerId: string;
-  createdAt: string;
-  updatedAt: string;
-  images: Media[];
-  isFavourite: boolean;
+  dateRange: TDateRange;
+  ownerId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  images: TMedia[];
+  isFavourite?: boolean;
   category: string;
-  isRented: boolean;
-  location: Location;
+  isRented?: boolean;
+  location?: TLocation;
 };
 
-export type ListItemProps = {
-    item: Item;
-    theme: any;
-    navigation: NavigationProp<any>;
-    horizontal?: boolean;
-    showFavorite?: boolean;
+export type TListItemProps = {
+  item: TItem;
+  theme: any;
+  navigation: NavigationProp<any>;
+  horizontal?: boolean;
+  showFavorite?: boolean;
+};
+
+export type TRootStackParamList = {
+  ItemDetails: { item: TItem };
+};
+
+
+export type TFormData = {
+  name: string;
+  description: string;
+  price: string;
+  rentalPeriod: string;
+  dateRange: TDateRange;
+  category: string;
+  location: TLocation;
+  images: TMedia[];
 };

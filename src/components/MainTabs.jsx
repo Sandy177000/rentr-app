@@ -47,10 +47,6 @@ const MainTabs = () => {
 
 
   const renderTabBar = useCallback(() => {
-
-    if (isKeyboardVisible()) {
-      return null;
-    }
     return (
       <View style={styles.tabBarContainer} pointerEvents="box-none">
         <View style={[styles.tabBar, {backgroundColor: theme.colors.primary}]}>

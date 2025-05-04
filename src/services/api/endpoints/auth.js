@@ -6,7 +6,7 @@ export const authApi = {
       const response = await apiClient.post('/auth/login', credentials);
       return response.data;
     } catch (error) {
-      console.error('Full error:', error);  // Log full error
+      console.error('Full error:', JSON.stringify(error, null, 2));  // Log full error
       throw new Error(error.response?.data?.message || error.message);
     }
   },

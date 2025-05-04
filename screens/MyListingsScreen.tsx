@@ -4,7 +4,6 @@ import {itemApi} from '../src/services/api/index';
 import {useTheme} from '../src/theme/ThemeProvider';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
-import CustomText from '../src/components/common/CustomText';
 import TwoColumnListView from '../src/components/TwoColumnListView';
 import CustomModal from '../src/components/common/CustomModal';
 import NewItemForm from '../src/components/NewItemForm';
@@ -40,7 +39,6 @@ export const MyListingsScreen = () => {
           items={myListings}
           theme={theme}
           navigation={navigation}
-          onRefresh={fetchListings}
           emptyText="No listings found"
           showFavorite={false}
         />
@@ -56,7 +54,7 @@ export const MyListingsScreen = () => {
         }
       </View>
       {visible && (
-        <CustomModal showModal={visible} setShowModal={setVisible}>
+        <CustomModal showModal={visible}>
           <NewItemForm setVisible={setVisible} />
         </CustomModal>
       )}

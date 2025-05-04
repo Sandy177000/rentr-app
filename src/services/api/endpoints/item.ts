@@ -1,5 +1,5 @@
 import {apiClient} from '../apiClient';
-import { Item } from './../../../components/types';
+import { TFormData } from './../../../components/types';
 /**
  * API module for item-related operations
  */
@@ -14,7 +14,7 @@ export const itemApi = {
     }
   },
 
-  createItem: async (item: Item) => {
+  createItem: async (item: TFormData) => {
     try {
       const response = await apiClient.post('/items', item);
       return response.data;
@@ -24,7 +24,7 @@ export const itemApi = {
     }
   },
 
-  updateItem: async (id: string, item: Item) => {
+  updateItem: async (id: string | undefined, item: TFormData) => {
     try {
       const response = await apiClient.patch(`/items/${id}`, item);
       console.log('response', response.data);
@@ -35,8 +35,11 @@ export const itemApi = {
     }
   },
 
-  deleteItem: async (id: string) => {
+  deleteItem: async (id: string | undefined | null) => {
     try {
+      if (!id) {
+        throw new Error('Item not found');
+      }
       const response = await apiClient.delete(`/items/${id}`);
       return response.data;
     } catch (error) {
@@ -76,17 +79,30 @@ export const itemApi = {
       return response.data;
     } catch (error) {
       console.error('Error fetching category items:', error);
-      return [];
+      return [];  
     }
   },
 
-  getItemById: async (id: string) => {
+  getItemById: async (id: string | undefined) => {
     try {
+      if (!id) {
+        throw new Error('Item not found');
+      }
       const response = await apiClient.get(`/items/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching item by id:', error);
       throw error;
+    }
+  },
+
+  getNearbyItems: async (data: {latitude: number, longitude: number, radius: number}) => {
+    try {
+      const response = await apiClient.get('/items/nearby', {params: data});
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching nearby items:', error);
+      return [];
     }
   },
 };

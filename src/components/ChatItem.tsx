@@ -7,10 +7,10 @@ import {avatar} from '../constants';
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from '../../store/authSlice';
 import CustomImage from './common/CustomImage';
-import { Chat } from './types';
+import { TChat, TParticipant } from './types';
 
 type ChatItemProps = {
-  item: Chat;
+  item: TChat;
   token: string;
   index: number;
 };
@@ -20,7 +20,7 @@ const ChatItem = ({item, token, index}: ChatItemProps) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const user = useSelector(selectCurrentUser);
   const participants = user
-    ? item.participants.filter(participant => participant.user.id !== user.id)
+    ? item.participants.filter((participant: TParticipant) => participant.user.id !== user.id)
     : [];
 
   return (
@@ -75,7 +75,8 @@ const ChatItem = ({item, token, index}: ChatItemProps) => {
 
 const styles = StyleSheet.create({
   chatItem: {
-    padding: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     borderRadius: 20,
   },
   avatar: {

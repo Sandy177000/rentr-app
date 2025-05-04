@@ -78,7 +78,7 @@ const ChatScreen = () => {
         contentContainerStyle={styles.chatList}
         ListEmptyComponent={
           <EmptyListComponent>
-            <View style={styles.emptyContainer}>
+            {!loading && filteredChats.length === 0 && <View style={styles.emptyContainer}>
               <Icon
                 name="comments-o"
                 size={50}
@@ -92,7 +92,7 @@ const ChatScreen = () => {
                 ]}>
                 No chats found
               </CustomText>
-            </View>
+            </View>}
           </EmptyListComponent>
         }
       />

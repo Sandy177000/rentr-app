@@ -11,16 +11,16 @@ import CustomModal from './common/CustomModal';
 import OpenStreetMap from './OpenStreetMap';
 import {useTheme} from '../theme/ThemeProvider';
 import Geolocation from '@react-native-community/geolocation';
-import {Location} from './types';
-import Toast from 'react-native-toast-message';
+import {TLocation} from './types';
 import CustomText from './common/CustomText';
 import {getLocationName} from '../utils/utils';
+import {colors} from '../theme/theme';
 
 type MapViewerProps = {
   showMap: boolean;
   setShowMap: (visible: boolean) => void;
-  onLocationSelect: (location: Location) => void;
-  initialLocation?: Location;
+  onLocationSelect: (location: TLocation) => void;
+  initialLocation?: TLocation;
 };
 
 // Using memo to prevent unnecessary re-renders
@@ -33,17 +33,17 @@ const MapViewer = memo(
   }: MapViewerProps) => {
     const theme = useTheme();
     // Store location in a ref to reduce re-renders
-    const locationRef = useRef<Location>(
+    const locationRef = useRef<TLocation>(
       initialLocation || {latitude: 0, longitude: 0, address: ''},
     );
     // State only for UI updates
-    const [location, setLocation] = useState<Location>(locationRef.current);
+    const [location, setLocation] = useState<TLocation>(locationRef.current);
     const [isLoading, setIsLoading] = useState(true);
     const [isMapRendered, setIsMapRendered] = useState(false);
     const isInitialMount = useRef(true);
 
     // Handle location change with minimal re-renders
-    const handleLocationChange = (newLocation: Location) => {
+    const handleLocationChange = (newLocation: TLocation) => {
       locationRef.current = newLocation;
       setLocation(newLocation);
     };
@@ -115,7 +115,9 @@ const MapViewer = memo(
 
       Geolocation.getCurrentPosition(
         position => {
-          if (cancelToken.isCancelled) return;
+          if (cancelToken.isCancelled) {
+            return;
+          }
 
           const newLocation = {
             latitude: position.coords.latitude,
@@ -128,25 +130,20 @@ const MapViewer = memo(
           setIsMapRendered(true);
         },
         () => {
-          if (cancelToken.isCancelled) return;
+          if (cancelToken.isCancelled) {
+            return;
+          }
 
           // Default location (Mumbai)
           const defaultLocation = {
-            latitude: 19.076,
-            longitude: 72.8777,
+            latitude: -1,
+            longitude: -1,
           };
 
           locationRef.current = defaultLocation;
           setLocation(defaultLocation);
           setIsLoading(false);
           setIsMapRendered(true);
-
-          Toast.show({
-            text1: 'Using default location',
-            type: 'info',
-            position: 'bottom',
-            visibilityTime: 2000,
-          });
         },
         {
           enableHighAccuracy: false,
@@ -170,14 +167,12 @@ const MapViewer = memo(
       };
     }, [showMap]);
 
-    if (!showMap) return null;
+    if (!showMap) {
+      return null;
+    }
 
     return (
-      <CustomModal
-        showModal={showMap}
-        onRequestClose={handleClose}
-        animationType="fade"
-        hardwareAccelerated={true}>
+      <CustomModal showModal={showMap}>
         <View
           style={[
             styles.container,
@@ -264,7 +259,7 @@ const MapViewer = memo(
               {isLoading ? (
                 <ActivityIndicator size="small" color={theme.colors.white} />
               ) : (
-              <CustomText variant="h4" style={{color: '#fff'}}>
+                <CustomText variant="h4" style={{color: colors.white}}>
                   CONFIRM
                 </CustomText>
               )}
