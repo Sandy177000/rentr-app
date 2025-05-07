@@ -3,7 +3,7 @@ import {chatApi} from '../../services/api/index';
 import io from 'socket.io-client';
 import {getBaseUrl} from '../../services/api/endpoints/constants';
 import Toast from 'react-native-toast-message';
-const useChatMessages = (roomId, token, user, item) => {
+const useChatMessages = (roomId, token, user, item, handleModal) => {
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(false);
   const [message, setMessage] = useState('');
@@ -101,14 +101,14 @@ const useChatMessages = (roomId, token, user, item) => {
             metadata,
           };
 
-          socket.emit('send_message', newMessage);
-
+          
           await chatApi.sendMessage({
             content: content,
             chatRoomId: roomId,
             media: imageUrls,
             metadata,
           });
+          socket.emit('send_message', newMessage);
         } catch (error) {
           console.log('error sending initial message', error);
         }
@@ -154,14 +154,15 @@ const useChatMessages = (roomId, token, user, item) => {
           },
         };
 
-        socket.emit('send_message', newMessage);
         setMedia([]);
         setMessage('');
+        handleModal();
         await chatApi.sendMessage({
           content: tempMessage,
           chatRoomId: roomId,
           media: imageUrls,
         });
+        socket.emit('send_message', newMessage);
       }
     } catch (error) {
       console.log('error in send message', error);

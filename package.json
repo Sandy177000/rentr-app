@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "gradle-clean": "cd android && ./gradlew clean"
+    "gradle-clean": "cd android && ./gradlew clean",
+    "android:install-release": "cd android && ./gradlew assembleRelease && adb install -r app/build/outputs/apk/release/app-release.apk"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",

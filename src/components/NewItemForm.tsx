@@ -284,6 +284,7 @@ const NewItemForm = ({
         if (editing) {
           response = await itemApi.updateItem(item?.id, submitFormData);
         } else {
+          console.log('submitFormData', submitFormData);
           response = await itemApi.createItem(submitFormData);
         }
         if (response.item) {

@@ -57,7 +57,14 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
   const [selectedImages, setSelectedImages] = useState<TMedia[]>([]);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const width = Dimensions.get('window').width;
-
+  const handleModal = () => {
+    Animated.timing(modalHeight, {
+      toValue: showModal ? 0 : 150,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+    setShowModal(!showModal);
+  };
   const {
     loadingMessage,
     loading,
@@ -69,7 +76,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
     removeMedia,
     sendMessage,
     handleLoadMore,
-  } = useChatMessages(roomId, token, user, item);
+  } = useChatMessages(roomId, token, user, item, handleModal);
 
   useEffect(() => {
     let title = participant
@@ -80,14 +87,7 @@ const ChatDetails = ({route, navigation}: ChatDetailsProps) => {
     });
   }, [navigation, chat, roomId, user?.id, participant]);
 
-  const handleModal = () => {
-    Animated.timing(modalHeight, {
-      toValue: showModal ? 0 : 150,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    setShowModal(!showModal);
-  };
+  
 
   const handleImagePicker = async (source: string) => {
     handleMediaPicker(source, (asset: any) => {
@@ -340,8 +340,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     position: 'absolute',
-    bottom: 0,
-    left: 0,
+    bottom: 10,
+    left: 5,
     zIndex: 0,
   },
   imageSection: {

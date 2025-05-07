@@ -242,6 +242,7 @@ export const ItemDetailsScreen = ({
           <Divider />
           <CustomText variant="h4" style={{marginTop: 10}}>
             {itemData.description.slice(0, 400)}
+            {JSON.stringify(itemData.location)}
           </CustomText>
           <CustomText variant="h4">
             Available from {formatDate(itemData.dateRange.startDate)} to{' '}
