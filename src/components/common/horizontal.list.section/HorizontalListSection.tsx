@@ -33,7 +33,7 @@ export const HorizontalListSection = ({title, data, renderItem, style}: Horizont
               }}>
               <CustomText
                 style={{color: theme.colors.text.primary}}
-                variant="h1"
+                variant="h2"
                 bold={700}>
                 {title}
               </CustomText>

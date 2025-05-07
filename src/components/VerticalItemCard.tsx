@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'white',
     paddingHorizontal: 10,
-    paddingVertical: 30,
+    height: '45%',
     gap: 5,
   },
   itemPrice: {
