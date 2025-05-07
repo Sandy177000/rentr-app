@@ -139,6 +139,7 @@ const useChatMessages = (roomId, token, user, item, handleModal) => {
             });
           });
           imageUrls = await chatApi.mediaUpload(mediaData);
+          handleModal();
         }
 
         let newMessage = {
@@ -156,7 +157,6 @@ const useChatMessages = (roomId, token, user, item, handleModal) => {
 
         setMedia([]);
         setMessage('');
-        handleModal();
         await chatApi.sendMessage({
           content: tempMessage,
           chatRoomId: roomId,
