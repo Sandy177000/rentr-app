@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   ActivityIndicator,
-  ScrollView,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useSelector} from 'react-redux';
@@ -25,7 +24,7 @@ import {TItem} from '../src/components/types';
 import CustomImage from '../src/components/common/CustomImage';
 import Chip from '../src/components/Chip';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {formatDate, isAvailable} from '../src/utils/utils';
+import {formatDate, isAvailable, getColor} from '../src/utils/utils';
 import Divider from '../src/components/Divider';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 type ItemDetailsScreenProps = {
@@ -154,10 +153,6 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const getColor = (flag: boolean) => {
-    return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.85)';
-  };
-
   const renderLoading = () => {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -215,7 +210,7 @@ export const ItemDetailsScreen = ({
         backgroundComponent={(props) => (
           <View style={{
             ...props.style,
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            backgroundColor: getColor(theme.isDark),
             borderTopRightRadius: 30,
           }}></View>
         )}

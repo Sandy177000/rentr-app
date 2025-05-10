@@ -48,26 +48,32 @@ const ChatScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader title="Chats">
-        <View
+      <ScreenHeader title="Chats"/>
+      <View
           style={{
-            height: 45,
             borderRadius: 30,
             backgroundColor: theme.colors.surface,
-            paddingHorizontal: 10,
-            marginRight: 15,
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignSelf: 'center',
+            marginVertical: 10,
+            marginHorizontal: 10,
           }}>
+           <Icon name="search" size={20} color={theme.colors.text.secondary} style={{marginLeft: 10}} />
           <TextInput
             style={[styles.searchInput, {color: theme.colors.text.primary}]}
             placeholder="Search chats..."
             placeholderTextColor={theme.colors.text.secondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
+            numberOfLines={1}
           />
         </View>
-      </ScreenHeader>
 
       <FlatList
+        style={{flex: 1, marginHorizontal: 10}}
         data={filteredChats}
         onRefresh={fetchChats}
         refreshing={loading}
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    width: 170,
+    marginLeft: 5,
   },
   chatList: {
     flex: 1,

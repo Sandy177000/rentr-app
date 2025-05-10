@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Linking, Alert } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Linking, Alert, Switch } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../src/theme/ThemeProvider';
 import { useNavigation } from '@react-navigation/native';
@@ -12,12 +12,16 @@ import { resetItems } from '../store/itemsSlice';
 import Toast from 'react-native-toast-message';
 import { authStorage } from '../src/services';
 import ScreenHeader from '../src/components/ScreenHeader';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../store/authSlice';
 
 const SettingsScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const user = useSelector(selectCurrentUser);
+  const isAdmin = user?.admin;
 
   const handleLogout = async () => {
     try {
@@ -75,22 +79,44 @@ const SettingsScreen = () => {
     </TouchableOpacity>
   );
 
+  const renderThemeToggle = () => (
+    <View style={[styles.themeToggleContainer, {backgroundColor: theme.colors.surface}]}>
+      <View style={styles.themeToggleLeft}>
+        <Icon
+          name={theme.isDark ? 'moon-o' : 'sun-o'}
+          size={20}
+          color={theme.colors.text.primary}
+        />
+        <CustomText variant="h4" style={{color: theme.colors.text.primary}}>
+          {theme.isDark ? 'Dark Theme' : 'Light Theme'}
+        </CustomText>
+      </View>
+      <Switch
+        value={theme.isDark}
+        onValueChange={theme.toggleTheme}
+        thumbColor={theme.colors.primary}
+        trackColor={{true: theme.colors.primary + '50', false: '#f4f3f4'}}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <ScreenHeader title={"Settings"}/>
       <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
-          <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary }}>Account</CustomText>
+          <CustomText variant="h4" bold={600} style={{ color: theme.colors.text.secondary,marginLeft: 15 }}>Account</CustomText>
           <SettingItem title="Personal Information" icon="user" onPress={() => {
             navigation.navigate('PersonalInfo');
            }} />
           <SettingItem title="Notifications" icon="bell" onPress={() => { }} />
         </View>
-        <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
+        {isAdmin && <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <SettingItem title="Theme" icon="moon-o" onPress={() => {
             navigation.navigate('Theme');
            }} />
-        </View>
+        </View>}
+        {renderThemeToggle()}
         <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <SettingItem title="Contact Us" icon="envelope" onPress={handleContactUs} />
         </View>
@@ -119,7 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 30,
     overflow: 'hidden',
-    padding: 15,
+    padding: 10,
   },
   sectionTitle: {
     fontWeight: '600',
@@ -143,6 +169,19 @@ const styles = StyleSheet.create({
   contactButtonText: {
     color: colors.primary,
     fontWeight: '600',
+  },
+  themeToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    borderRadius: 30,
+    marginBottom: 24,
+  },
+  themeToggleLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
 });
 

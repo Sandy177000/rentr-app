@@ -2,7 +2,6 @@ import {View} from 'react-native';
 import React from 'react';
 import GoBackButton from './GoBackButton';
 import CustomText from './common/CustomText';
-
 type ScreenHeaderProps = {
   children?: React.ReactNode;
   styles?: any;
@@ -11,7 +10,6 @@ type ScreenHeaderProps = {
 }
 
 const ScreenHeader = ({children, styles, goBack = true, title}: ScreenHeaderProps) => {
-
   const getHeaderStyle = () => {
     const baseStyle = {
       borderRadius: 20,
@@ -28,8 +26,6 @@ const ScreenHeader = ({children, styles, goBack = true, title}: ScreenHeaderProp
     }
     return {
       ...baseStyle,
-      borderBottomColor: 'rgba(0, 0, 0, 0.2)',
-      borderBottomWidth: 4,
     };
   };
 

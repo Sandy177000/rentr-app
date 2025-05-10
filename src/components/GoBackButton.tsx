@@ -16,7 +16,7 @@ function GoBackButton({styles}: GoBackButtonProps) {
       onPress={() => navigation.goBack()}
       style={{
         backgroundColor: theme.colors.surface,
-        borderRadius: 8,
+        borderRadius: 100,
         width: 40,
         position: 'absolute',
         left: 20,
@@ -24,8 +24,6 @@ function GoBackButton({styles}: GoBackButtonProps) {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomColor: 'rgba(0, 0, 0, 0.2)',
-        borderBottomWidth: 3,
         ...styles
       }}>
       <Icon name="angle-left" size={25} color={theme.colors.text.secondary} />
