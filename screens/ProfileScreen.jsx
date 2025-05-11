@@ -122,14 +122,6 @@ const ProfileScreen = () => {
               title="Recently Listed Items"
               limit={5}
             />
-            
-            <RecentItems
-              loading={loading}
-              theme={theme}
-              type="rentals"
-              title="Recently Rented Items"
-              limit={5}
-            />
           </View>
         </ScrollView>
       </View>
@@ -167,17 +159,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
     padding: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   actionSectionTitle: {
     flexDirection: 'row',
@@ -203,7 +189,7 @@ const styles = StyleSheet.create({
     gap: 8
   },
   recentSectionsContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 5,
   },
 });
 

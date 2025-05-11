@@ -21,9 +21,14 @@ export const MyListingsScreen = () => {
 
   const fetchListings = async () => {
     setLoading(true);
-    const listings = await itemApi.getUserItems();
-    setMyListings(listings);
-    setLoading(false);
+    try {
+      const listings = await itemApi.getUserItems();
+      setMyListings(listings);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     fetchListings();

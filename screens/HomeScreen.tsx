@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Image,
   Platform,
   StatusBar,
 } from 'react-native';
@@ -14,7 +13,6 @@ import {useTheme} from '../src/theme/ThemeProvider';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import CustomText from '../src/components/common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {HorizontalListSection as Section} from '../src/components/common/horizontal.list.section/HorizontalListSection';
 import ListItem from '../src/components/ListItem';
 import {useDispatch, useSelector} from 'react-redux';
 import Footer from '../src/components/Footer';
@@ -26,12 +24,11 @@ import {
   selectNearByRadius,
 } from '../store/itemsSlice';
 import {categories} from '../src/constants';
-import ScreenHeader from '../src/components/ScreenHeader';
 import {TItem} from '../src/components/types';
-import Chip from '../src/components/Chip';
 import Geolocation from '@react-native-community/geolocation';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {selectCurrentUser} from '../store/authSlice';
+import ShimmerItemCard from '../src/components/common/ShimmerItemCard';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -40,24 +37,75 @@ const HomeScreen = () => {
   const items = useSelector(selectItems);
   const [userLocation, setUserLocation] = useState<any>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [itemsLoading, setItemsLoading] = useState<boolean>(true);
+  const [nearbyItemsLoading, setNearbyItemsLoading] = useState<boolean>(true);
   const nearByItems = useSelector(selectNearByItems);
   const nearByRadius = useSelector(selectNearByRadius);
   const currentUser = useSelector(selectCurrentUser);
 
+  const getUserLocation = async () => {
+    try {
+      Geolocation.getCurrentPosition(
+        position => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        error => {
+          console.log(error);
+        },
+      );
+    } catch (error) {
+      console.log('error', error);
+      Toast.show({
+        text1: 'Error getting location',
+        type: 'error',
+      });
+    }
+  };
+
+  const getNearby = useCallback(async () => {
+    if (userLocation) {
+      setNearbyItemsLoading(true);
+      try {
+        await dispatch(getNearbyItems({
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+          radius: nearByRadius,
+        }) as any).unwrap();
+      } catch (error) {
+        console.log('Error fetching nearby items:', error);
+      } finally {
+        // Add a slight delay for a smoother transition
+        setTimeout(() => setNearbyItemsLoading(false), 800);
+      }
+    }
+  }, [dispatch, userLocation, nearByRadius]);
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setItemsLoading(true);
         setRefreshing(true);
-        await dispatch(getItems()).unwrap();
+        await dispatch(getItems() as any).unwrap();
         getUserLocation();
       } catch (error) {
         console.log('error', error);
       } finally {
         setRefreshing(false);
+        // Add a slight delay for a smoother transition
+        setTimeout(() => setItemsLoading(false), 800);
       }
     };
     fetchItems();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (userLocation) {
+      getNearby();
+    }
+  }, [userLocation, nearByRadius, getNearby]);
 
   const handleNavigation = useCallback(
     (navigateTo: string | undefined, data: any | null) => {
@@ -108,55 +156,33 @@ const HomeScreen = () => {
     [theme, navigation],
   );
 
-  const getUserLocation = async () => {
-    try {
-      Geolocation.getCurrentPosition(
-        position => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        error => {
-          console.log(error);
-        },
-      );
-    } catch (error) {
-      console.log('error', error);
-      Toast.show({
-        text1: 'Error getting location',
-        type: 'error',
-      });
-    }
-  };
-
-  const getNearby = async () => {
-    if (userLocation) {
-      await dispatch(
-        getNearbyItems({
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-          radius: nearByRadius,
-        }),
-      ).unwrap();
-    }
-  };
+  // Function to render shimmer placeholders
+  const renderShimmerItems = useCallback((count = 5) => {
+    return Array(count)
+      .fill(0)
+      .map((_, index) => (
+        <ShimmerItemCard key={`shimmer-${index}`} theme={theme} />
+      ));
+  }, [theme]);
 
   const handleRefresh = async () => {
     try {
       setRefreshing(true);
-      await dispatch(getItems()).unwrap();
+      setItemsLoading(true);
+      setNearbyItemsLoading(true);
+      await dispatch(getItems() as any).unwrap();
       getNearby();
     } catch (error) {
       console.log('error', error);
     } finally {
       setRefreshing(false);
+      // Add a slight delay for a smoother transition
+      setTimeout(() => {
+        setItemsLoading(false);
+        setNearbyItemsLoading(false);
+      }, 800);
     }
   };
-
-  useEffect(() => {
-    getNearby();
-  }, [userLocation, nearByRadius]);
 
   // Get appropriate icons for categories
   const getCategoryIcon = (categoryName: string) => {
@@ -177,15 +203,14 @@ const HomeScreen = () => {
   return (
     <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
       {/* Header */}
-      <View 
+      <View
         style={[
-          styles.header, 
+          styles.header,
           {
             backgroundColor: theme.colors.background,
             elevation: 5,
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
-            paddingTop: Platform.OS === 'ios' ? StatusBar.currentHeight : 0,
           }
         ]}>
         <View style={styles.headerTop}>
@@ -269,11 +294,15 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             style={{borderRadius: 20}}
             contentContainerStyle={styles.itemsContainerCompact}>
-            {items.map((item, index) => (
-              <React.Fragment key={`latest-${index}`}>
-                {renderRecommendation({item})}
-              </React.Fragment>
-            ))}
+            {itemsLoading ? (
+              renderShimmerItems(4)
+            ) : (
+              items.map((item, index) => (
+                <React.Fragment key={`latest-${index}`}>
+                  {renderRecommendation({item})}
+                </React.Fragment>
+              ))
+            )}
           </ScrollView>
         </View>
 
@@ -286,7 +315,15 @@ const HomeScreen = () => {
             </CustomText>
           </View>
           
-          {nearByItems.length > 0 ? (
+          {nearbyItemsLoading ? (
+            <ScrollView
+              horizontal
+              style={{borderRadius: 20}}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.itemsContainerCompact}>
+              {renderShimmerItems(4)}
+            </ScrollView>
+          ) : nearByItems.length > 0 ? (
             <ScrollView
               horizontal
               style={{borderRadius: 20}}

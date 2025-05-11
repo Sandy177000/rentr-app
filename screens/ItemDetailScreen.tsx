@@ -27,6 +27,7 @@ import CustomImage from '../src/components/common/CustomImage';
 import Chip from '../src/components/Chip';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {formatDate, isAvailable, getColor} from '../src/utils/utils';
+import ShimmerItemDetails from '../src/components/common/ShimmerItemDetails';
 
 type ItemDetailsScreenProps = {
   route: {
@@ -55,7 +56,7 @@ export const ItemDetailsScreen = ({
   const currentUser = useSelector(selectCurrentUser);
 
   // Calculate card heights
-  const imageHeight = width * 0.75;
+  const imageHeight = width * 0.8;
 
   const fetchItem = useCallback(async () => {
     try {
@@ -162,14 +163,6 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const renderLoading = () => {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
-    );
-  };
-
   const renderAvailability = () => {
     if (!itemData?.dateRange) {
       return null;
@@ -187,7 +180,7 @@ export const ItemDetailsScreen = ({
             },
           ]}>
           <Icon
-            name={isItemAvailable ? 'check-circle' : 'close-circle'}
+            name={isItemAvailable ? 'check-circle' : 'close'}
             size={16}
             color={colors.white}
           />
@@ -238,14 +231,20 @@ export const ItemDetailsScreen = ({
         {itemData.ownerId === currentUser?.id ? (
           <View style={styles.ownerActionsRow}>
             <TouchableOpacity
-              style={[styles.actionButton, {backgroundColor: theme.colors.primary}]}
+              style={[
+                styles.actionButton,
+                {backgroundColor: theme.colors.primary},
+              ]}
               onPress={() => setShowEditModal(!showEditModal)}>
               <Icon name="pencil" size={20} color={colors.white} />
               <CustomText style={styles.actionButtonText}>Edit</CustomText>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionButton, {backgroundColor: theme.colors.error}]}
+              style={[
+                styles.actionButton,
+                {backgroundColor: theme.colors.error},
+              ]}
               onPress={() => handleDelete(itemData.id)}>
               <Icon name="trash" size={20} color={colors.white} />
               <CustomText style={styles.actionButtonText}>Delete</CustomText>
@@ -253,7 +252,10 @@ export const ItemDetailsScreen = ({
           </View>
         ) : (
           <TouchableOpacity
-            style={[styles.contactButton, {backgroundColor: theme.colors.primary}]}
+            style={[
+              styles.contactButton,
+              {backgroundColor: theme.colors.primary},
+            ]}
             onPress={() => setShowModal(!showModal)}>
             <Icon name="user" size={15} color={colors.white} />
             <CustomText style={styles.contactButtonText}>
@@ -267,18 +269,20 @@ export const ItemDetailsScreen = ({
 
   const renderDetails = () => {
     return (
-      <ScrollView 
+      <ScrollView
         style={styles.detailsContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 100}}>
-        
         {/* Item Title and Price */}
         <View style={styles.titlePriceContainer}>
           <CustomText variant="h2" style={styles.itemTitle} bold={700}>
             {itemData.name}
           </CustomText>
           <View style={styles.priceContainer}>
-            <CustomText variant="h3" bold={700} style={{color: theme.colors.primary}}>
+            <CustomText
+              variant="h3"
+              bold={700}
+              style={{color: theme.colors.primary}}>
               Rs. {itemData.price}
             </CustomText>
             <CustomText style={styles.priceUnit}>/day</CustomText>
@@ -289,7 +293,10 @@ export const ItemDetailsScreen = ({
         <View style={styles.categoryContainer}>
           <Chip
             item={{name: itemData.category}}
-            style={[styles.categoryChip, {backgroundColor: theme.colors.surface}]}
+            style={[
+              styles.categoryChip,
+              {backgroundColor: theme.colors.surface},
+            ]}
             navigation={navigation}
             navigationData={{
               navigateTo: 'CategoryItems',
@@ -300,7 +307,11 @@ export const ItemDetailsScreen = ({
         </View>
 
         {/* Dates */}
-        <View style={[styles.datesContainer, {backgroundColor: theme.colors.surface}]}>
+        <View
+          style={[
+            styles.datesContainer,
+            {backgroundColor: theme.colors.surface},
+          ]}>
           <View style={styles.dateRow}>
             <Icon name="angle-right" size={18} color={theme.colors.primary} />
             <CustomText style={{color: theme.colors.text.secondary}}>
@@ -326,7 +337,11 @@ export const ItemDetailsScreen = ({
           <CustomText variant="h3" bold={700} style={styles.sectionTitle}>
             Description
           </CustomText>
-          <CustomText style={[styles.descriptionText, {color: theme.colors.text.secondary}]}>
+          <CustomText
+            style={[
+              styles.descriptionText,
+              {color: theme.colors.text.secondary},
+            ]}>
             {itemData.description}
           </CustomText>
         </View>
@@ -342,7 +357,8 @@ export const ItemDetailsScreen = ({
       return null;
     }
     return (
-      <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
         {renderHeader(itemData)}
         {renderCarousel(itemData)}
         {renderDetails()}
@@ -350,76 +366,77 @@ export const ItemDetailsScreen = ({
     );
   };
 
+  if (loading) {
+    return <ShimmerItemDetails />;
+  }
+
   return (
     <>
-      {loading ? (
-        renderLoading()
-      ) : (
-        <>
-          <CustomModal showModal={showModal}>
-            <View
+      <CustomModal showModal={showModal}>
+        <View
+          style={[
+            styles.contactModal,
+            {
+              backgroundColor: getColor(theme.isDark),
+            },
+          ]}>
+          <View style={styles.modalHeader}>
+            <Icon name="user" size={30} color={theme.colors.primary} />
+            <CustomText
+              variant="h3"
+              bold={600}
+              style={{color: theme.colors.text.primary}}>
+              Contact Owner
+            </CustomText>
+          </View>
+
+          <CustomText
+            variant="h4"
+            style={[styles.modalMessage, {color: theme.colors.text.secondary}]}>
+            A message will be sent to the owner of this item. Continue?
+          </CustomText>
+
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
               style={[
-                styles.contactModal,
+                styles.modalButton,
                 {
-                  backgroundColor: getColor(theme.isDark),
+                  backgroundColor: 'transparent',
+                  borderColor: theme.colors.border,
+                  borderWidth: 1,
                 },
-              ]}>
-              <View style={styles.modalHeader}>
-                <Icon name="user" size={30} color={theme.colors.primary} />
-                <CustomText variant="h3" bold={600} style={{color: theme.colors.text.primary}}>
-                  Contact Owner
-                </CustomText>
-              </View>
-              
-              <CustomText 
-                style={[
-                  styles.modalMessage, 
-                  {color: theme.colors.text.secondary}
-                ]}>
-                A message will be sent to the owner of this item. Continue?
+              ]}
+              onPress={() => setShowModal(false)}>
+              <CustomText variant="h4" style={{color: theme.colors.text.primary}}>
+                Cancel
               </CustomText>
-              
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton,
-                    {backgroundColor: 'transparent', borderColor: theme.colors.border, borderWidth: 1}
-                  ]}
-                  onPress={() => setShowModal(false)}>
-                  <CustomText
-                    style={{color: theme.colors.text.primary}}>
-                    Cancel
-                  </CustomText>
-                </TouchableOpacity>
-                
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton,
-                    {backgroundColor: theme.colors.primary}
-                  ]}
-                  onPress={handleContact}>
-                  <CustomText
-                    style={{color: colors.white}}>
-                    Send Message
-                  </CustomText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </CustomModal>
-          
-          {showEditModal && (
-            <CustomModal showModal={showEditModal}>
-              <NewItemForm
-                item={itemData}
-                setVisible={setShowEditModal}
-                editing={true}
-              />
-            </CustomModal>
-          )}
-          
-          {renderItemDetails()}
-        </>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.modalButton,
+                {backgroundColor: theme.colors.primary},
+              ]}
+              onPress={handleContact}>
+              <CustomText variant="h4" style={{color: colors.white}}>
+                Send Message
+              </CustomText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </CustomModal>
+
+      {showEditModal && (
+        <CustomModal showModal={showEditModal}>
+          <NewItemForm
+            item={itemData}
+            setVisible={setShowEditModal}
+            editing={true}
+          />
+        </CustomModal>
       )}
+
+      {renderItemDetails()}
     </>
   );
 };
@@ -617,17 +634,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: '85%',
     padding: 22,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 4},
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
   },
   modalHeader: {
     alignItems: 'center',

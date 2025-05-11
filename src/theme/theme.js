@@ -10,11 +10,6 @@ export const lightTheme = {
       primary: '#1A1A1A',
       secondary: '#666666',
     },
-    shimmer: {
-      start: '#ebebeb',
-      middle: '#c5c5c5',
-      end: '#ebebeb',
-    },
     dark: {
       shimmer: {
         start: '#262626',
@@ -43,11 +38,6 @@ export const darkTheme = {
       primary: '#FFFFFF',
       secondary: '#ABABAB'
     },
-    shimmer: {
-      start: '#262626',
-      middle: '#363636',
-      end: '#262626',
-    }
   },
   fonts: {
     regular: 'Roboto-Regular',

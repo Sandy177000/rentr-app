@@ -211,3 +211,10 @@ export const getUserLocation = async (successCallback: (position: any) => void, 
 export const getColor = (flag: boolean) => {
   return flag ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.85)';
 };
+
+
+export const getShimmerColors = (theme: any) => {
+  return theme.isDark
+    ? ['#333333', '#444444', '#333333']
+    : ['#f0f0f0', '#e0e0e0', '#f0f0f0'];
+};

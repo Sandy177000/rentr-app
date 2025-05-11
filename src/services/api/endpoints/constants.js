@@ -1,7 +1,6 @@
 export const getBaseUrl = () => {
   // Use environment variables with defaults
-  return 'http://192.168.1.16:4000';
-  // return 'https://rentr-backend.onrender.com';
+  return 'https://rentr-backend.onrender.com';
 };
 
 export const getApiUrl = () => {

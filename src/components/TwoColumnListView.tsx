@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  View,
-  FlatList,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 import CustomText from './common/CustomText';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListItem from './ListItem';
 import EmptyListComponent from './EmptyListComponent';
-import { TItem } from './types';
+import {TItem} from './types';
+import ShimmerItemCard from './common/ShimmerItemCard';
 
 type TwoColumnListViewProps = {
   loading: boolean;
@@ -19,7 +15,8 @@ type TwoColumnListViewProps = {
   emptyText?: string;
   emptyComponent?: () => React.ReactNode;
   showFavorite: boolean;
-}
+};
+
 const TwoColumnListView = ({
   loading,
   items,
@@ -47,36 +44,36 @@ const TwoColumnListView = ({
               </CustomText>
             </View>
           ) : (
-              emptyComponent?.()
+            emptyComponent?.()
           )}
         </EmptyListComponent>
       );
-    } else {
-      return <ActivityIndicator size="large" color={theme.colors.primary} />;
     }
+  };
+
+  const renderItem = ({item, index}: {item: TItem, index: number}) => {
+    if (loading) {
+      return <ShimmerItemCard key={`shimmer-${index}`} theme={theme} />;
+    }
+    return (
+      <ListItem
+        item={item}
+        theme={theme}
+        navigation={navigation}
+        showFavorite={showFavorite}
+      />
+    );
   };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={items}
-        renderItem={({item}) => {
-          return (
-            <ListItem
-              item={item}
-              theme={theme}
-              navigation={navigation}
-              showFavorite={showFavorite}
-            />
-          );
-        }}
+        renderItem={renderItem}
         keyExtractor={item => item.id || ''}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        contentContainerStyle={[
-          styles.listContent,
-          items.length === 0 && styles.emptyListContent,
-        ]}
+        contentContainerStyle={styles.listContent}
         ListEmptyComponent={getEmptyComponent()}
       />
     </View>

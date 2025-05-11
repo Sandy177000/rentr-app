@@ -52,22 +52,11 @@ const COLUMN_WIDTH = (width - 48) / 2;
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
   heartIcon: {
     position: 'absolute',
     top: 15,
     right: 15,
     zIndex: 1000,
-  },
-  row: {
-    justifyContent: 'flex-start',
-    marginBottom: 16,
   },
   itemCard: {
     width: COLUMN_WIDTH,
