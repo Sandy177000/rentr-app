@@ -209,5 +209,5 @@ export const getUserLocation = async (successCallback: (position: any) => void, 
 
 
 export const getColor = (flag: boolean) => {
-  return flag ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.85)';
+  return flag ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.85)';
 };

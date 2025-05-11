@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomText from '../src/components/common/CustomText';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,6 +11,8 @@ import ScreenHeader from '../src/components/ScreenHeader';
 
 const FavouritesScreen = () => {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const goBack = route.params?.goBack || false;
   const favourites = useSelector(selectFavourites);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
@@ -57,7 +59,7 @@ const FavouritesScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader title={'Favorites'} />
+      <ScreenHeader title={'Favorites'} goBack={goBack} />
       <TwoColumnListView
         loading={loading}
         items={favourites}

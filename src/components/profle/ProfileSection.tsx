@@ -15,35 +15,22 @@ export const ProfileSection = ({title, icon, onPress, theme}: ProfileSectionProp
   <CustomButton
     style={[styles.sectionContainer, {backgroundColor: theme.colors.surface}]}
     onPress={onPress}>
-    <View style={styles.sectionContent}>
-      <Icons name={icon} size={15} color={theme.colors.text.primary} />
-      <CustomText
-        variant="h4"
-        style={[styles.sectionTitle, {color: theme.colors.text.secondary}]}>
-        {title}
-      </CustomText>
-    </View>
-    <Icons name="chevron-right" size={14} color={theme.colors.text.secondary} />
+      <Icons name={icon} size={20} color={theme.colors.text.primary} />
+      <CustomText variant="h4" style={{color: theme.colors.text.primary}}>{title}</CustomText>
+
   </CustomButton>
 );
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    padding: 25,
-    marginBottom: 10,
-    borderRadius: 30,
     flex: 1,
-  },
-  sectionContent: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-  },
-  sectionTitle: {
-    marginLeft: 15,
-    fontWeight: 'bold',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    width: 100,
+    height: 100,
+    borderRadius: 20,
+    gap: 10,
   },
 });

@@ -28,7 +28,7 @@ const Chip = ({item, navigation, navigationData, style, iconStyle, textStyle}: C
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      style={[styles.categoryItem, {backgroundColor: theme.colors.background}, style]}
+      style={[styles.categoryItem, {backgroundColor: theme.colors.surface}, style]}
       onPress={() => handleNavigation()}>
       {(item.icon || iconStyle?.name) && (
         <Icon name={iconStyle?.name || item.icon} size={iconStyle?.size || 20} color={iconStyle?.color || theme.colors.primary} />

@@ -2,6 +2,8 @@ import {View} from 'react-native';
 import React from 'react';
 import GoBackButton from './GoBackButton';
 import CustomText from './common/CustomText';
+import { useTheme } from '../theme/ThemeProvider';
+
 type ScreenHeaderProps = {
   children?: React.ReactNode;
   styles?: any;
@@ -10,12 +12,11 @@ type ScreenHeaderProps = {
 }
 
 const ScreenHeader = ({children, styles, goBack = true, title}: ScreenHeaderProps) => {
+  const theme = useTheme();
   const getHeaderStyle = () => {
     const baseStyle = {
-      borderRadius: 20,
       flexDirection: 'row',
       alignItems: 'center',
-      marginTop: 5,
       height: 70,
     };
     if (!title) {
@@ -26,6 +27,8 @@ const ScreenHeader = ({children, styles, goBack = true, title}: ScreenHeaderProp
     }
     return {
       ...baseStyle,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.surface,
     };
   };
 

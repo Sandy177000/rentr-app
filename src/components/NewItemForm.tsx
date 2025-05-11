@@ -221,6 +221,7 @@ const NewItemForm = ({
       name: 'Item Name',
       description: 'Item Description',
       price: 'Price',
+      dateRange: 'Date Range',
       category: 'Category',
       images: 'Images',
     };
@@ -346,7 +347,7 @@ const NewItemForm = ({
     if (fullScreen) {
       return {
         width: '100%',
-        height: isKeyboardVisible() ? '100%' : '90%',
+        height: '100%',
         borderRadius: 0,
       };
     }
@@ -657,7 +658,7 @@ const NewItemForm = ({
             alignItems: 'center',
           }}>
           <CustomText variant="h3" bold={700} style={{color: theme.colors.text.primary}}>
-            Add Photos
+            Add Photos<Text style={{color: theme.colors.error}}>*</Text>
           </CustomText>
           <View style={styles.imageButtons}>
             <TouchableOpacity
@@ -762,7 +763,7 @@ const NewItemForm = ({
             variant="h3"
             bold={700}
             style={{textAlign: 'center', color: theme.colors.text.secondary}}>
-            {fullScreen ? 'RESET' : 'CANCEL'}
+            {'CANCEL'}
           </CustomText>
         </TouchableOpacity>
         <TouchableOpacity

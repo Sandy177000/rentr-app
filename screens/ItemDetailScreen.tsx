@@ -1,11 +1,13 @@
-// screens/ItemDetailsScreen.js
-import React, {useCallback, useEffect, useState} from 'react';
+// screens/ItemDetailsScreen.tsx
+import React, {useCallback, useEffect, useState, useMemo} from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
   ActivityIndicator,
+  ScrollView,
+  Platform,
 } from 'react-native';
 import {useTheme} from '../src/theme/ThemeProvider';
 import {useSelector} from 'react-redux';
@@ -25,8 +27,7 @@ import CustomImage from '../src/components/common/CustomImage';
 import Chip from '../src/components/Chip';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {formatDate, isAvailable, getColor} from '../src/utils/utils';
-import Divider from '../src/components/Divider';
-import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
+
 type ItemDetailsScreenProps = {
   route: {
     params: {
@@ -49,9 +50,12 @@ export const ItemDetailsScreen = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const theme = useTheme();
   const [itemData, setItemData] = useState<TItem>(item);
-  const {width, height} = useWindowDimensions();
+  const {width} = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector(selectCurrentUser);
+
+  // Calculate card heights
+  const imageHeight = width * 0.75;
 
   const fetchItem = useCallback(async () => {
     try {
@@ -136,6 +140,11 @@ export const ItemDetailsScreen = ({
     }
   };
 
+  // Availability status
+  const isItemAvailable = useMemo(() => {
+    return itemData?.dateRange ? isAvailable(itemData.dateRange) : false;
+  }, [itemData?.dateRange]);
+
   const renderPaginationDots = () => {
     return (
       <View style={styles.paginationDots}>
@@ -144,7 +153,7 @@ export const ItemDetailsScreen = ({
             key={index}
             style={[
               styles.dot,
-              {backgroundColor: theme.colors.primary},
+              {backgroundColor: theme.colors.surface},
               index === activeIndex ? styles.activeDot : styles.inactiveDot,
             ]}
           />
@@ -165,104 +174,28 @@ export const ItemDetailsScreen = ({
     if (!itemData?.dateRange) {
       return null;
     }
-    const available = isAvailable(itemData?.dateRange);
 
     return (
-      <View
-        style={{
-          gap: 10,
-          marginTop: 10,
-          position: 'absolute',
-          bottom: 15,
-          right: 15,
-        }}>
-        {available && (
-          <Chip
-            item={{name: 'Available'}}
-            style={styles.availableChip}
-            iconStyle={{color: colors.white, name: 'check-circle'}}
-            textStyle={{color: colors.white}}
+      <View style={styles.availabilityContainer}>
+        <View
+          style={[
+            styles.availabilityBadge,
+            {
+              backgroundColor: isItemAvailable
+                ? 'rgba(11, 209, 70, 0.9)'
+                : theme.colors.error + 'E6',
+            },
+          ]}>
+          <Icon
+            name={isItemAvailable ? 'check-circle' : 'close-circle'}
+            size={16}
+            color={colors.white}
           />
-        )}
-        {!available && (
-          <Chip
-            item={{name: 'Not Available'}}
-            style={{
-              ...styles.availableChip,
-              backgroundColor: theme.colors.error,
-              width: 150,
-            }}
-            iconStyle={{color: colors.white, name: 'times-circle'}}
-            textStyle={{color: colors.white}}
-          />
-        )}
+          <CustomText style={styles.availabilityText}>
+            {isItemAvailable ? 'Available' : 'Not Available'}
+          </CustomText>
+        </View>
       </View>
-    );
-  };
-
-  const renderDetails = () => {
-    return (
-      <BottomSheet
-        snapPoints={['50%', '90%']}
-        enablePanDownToClose={false}
-        enableDynamicSizing={true}
-        enableHandlePanningGesture={true}
-        backgroundComponent={(props) => (
-          <View style={{
-            ...props.style,
-            backgroundColor: getColor(theme.isDark),
-            borderTopRightRadius: 30,
-          }}></View>
-        )}
-      >
-        <BottomSheetView
-          style={{
-            padding: 25,
-            height: '100%',
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <CustomText variant="h1" bold={700}>
-              {itemData.name}
-            </CustomText>
-
-            <CustomText variant="h2" bold={900}>
-              Rs. {itemData.price}/day
-            </CustomText>
-          </View>
-          <Divider />
-
-          <CustomText variant="h3" bold={700}>
-            Description
-          </CustomText>
-          <Divider />
-          <CustomText variant="h4" style={{marginTop: 10}}>
-            {itemData.description.slice(0, 400)}
-            {JSON.stringify(itemData.location)}
-          </CustomText>
-          <CustomText variant="h4">
-            Available from {formatDate(itemData.dateRange.startDate)} to{' '}
-            {formatDate(itemData.dateRange.endDate)}
-          </CustomText>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-              marginVertical: 10,
-              backgroundColor: 'transparent',
-            }}>
-            <Chip
-              item={{name: itemData.category}}
-              style={[styles.categoryChip, {backgroundColor: theme.colors.surface}]}
-              navigation={navigation}
-              navigationData={{
-                navigateTo: 'CategoryItems',
-                data: {category: itemData.category},
-              }}
-            />
-          </View>
-        </BottomSheetView>
-      </BottomSheet>
     );
   };
 
@@ -278,61 +211,53 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const renderActions = () => {
+  const renderCarousel = (data: TItem) => {
     return (
-      <View
-        style={{
-          paddingHorizontal: 15,
-          position: 'absolute',
-          bottom: 15,
-          left: 1,
-        }}>
+      <View style={[styles.carouselContainer, {height: imageHeight}]}>
+        <Carousel
+          loop
+          width={width}
+          height={imageHeight}
+          data={data.images || []}
+          onSnapToItem={setActiveIndex}
+          renderItem={({item: image}) => (
+            <View style={{position: 'relative', width: '100%', height: '100%'}}>
+              <CustomImage source={image.uri} style={styles.image} />
+            </View>
+          )}
+        />
+        {data.images?.length > 1 && renderPaginationDots()}
+        {renderAvailability()}
+      </View>
+    );
+  };
+
+  const renderItemActions = () => {
+    return (
+      <View style={styles.actionsContainer}>
         {itemData.ownerId === currentUser?.id ? (
-          <View style={{gap: 10, flexDirection: 'row', marginTop: 10}}>
+          <View style={styles.ownerActionsRow}>
             <TouchableOpacity
-              style={[styles.rentButton, {backgroundColor: theme.colors.error}]}
-              onPress={() => handleDelete(itemData.id)}>
-              <Icon name="trash" size={20} color={colors.white} />
-              {/* <CustomText
-                variant="h4"
-                style={{
-                  color: colors.white,
-                  fontWeight: '600',
-                }}>
-                DELETE ITEM
-              </CustomText> */}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.rentButton,
-                {backgroundColor: theme.colors.primary},
-              ]}
+              style={[styles.actionButton, {backgroundColor: theme.colors.primary}]}
               onPress={() => setShowEditModal(!showEditModal)}>
               <Icon name="pencil" size={20} color={colors.white} />
-              {/* <CustomText
-                variant="h4"
-                style={{
-                  color: colors.white,
-                  fontWeight: '600',
-                }}>
-                EDIT ITEM
-              </CustomText> */}
+              <CustomText style={styles.actionButtonText}>Edit</CustomText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, {backgroundColor: theme.colors.error}]}
+              onPress={() => handleDelete(itemData.id)}>
+              <Icon name="trash" size={20} color={colors.white} />
+              <CustomText style={styles.actionButtonText}>Delete</CustomText>
             </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
-            style={[
-              styles.contactOwnerButton,
-              {backgroundColor: theme.colors.primary, width: '100%'},
-            ]}
+            style={[styles.contactButton, {backgroundColor: theme.colors.primary}]}
             onPress={() => setShowModal(!showModal)}>
-            <CustomText
-              variant="h4"
-              style={{
-                color: colors.white,
-                fontWeight: '600',
-              }}>
-              CONTACT OWNER
+            <Icon name="user" size={15} color={colors.white} />
+            <CustomText style={styles.contactButtonText}>
+              Contact Owner
             </CustomText>
           </TouchableOpacity>
         )}
@@ -340,23 +265,75 @@ export const ItemDetailsScreen = ({
     );
   };
 
-  const renderCarousel = (data: TItem) => {
+  const renderDetails = () => {
     return (
-      <View style={styles.carouselContainer}>
-        <Carousel
-          loop
-          width={width}
-          height={900}
-          data={data.images || []}
-          onSnapToItem={setActiveIndex}
-          renderItem={({item: image}) => (
-            <CustomImage source={image.uri} style={[styles.image]} />
-          )}
-        />
-        {data.images?.length > 1 && renderPaginationDots()}
-        {renderAvailability()}
-        {renderActions()}
-      </View>
+      <ScrollView 
+        style={styles.detailsContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 100}}>
+        
+        {/* Item Title and Price */}
+        <View style={styles.titlePriceContainer}>
+          <CustomText variant="h2" style={styles.itemTitle} bold={700}>
+            {itemData.name}
+          </CustomText>
+          <View style={styles.priceContainer}>
+            <CustomText variant="h3" bold={700} style={{color: theme.colors.primary}}>
+              Rs. {itemData.price}
+            </CustomText>
+            <CustomText style={styles.priceUnit}>/day</CustomText>
+          </View>
+        </View>
+
+        {/* Category */}
+        <View style={styles.categoryContainer}>
+          <Chip
+            item={{name: itemData.category}}
+            style={[styles.categoryChip, {backgroundColor: theme.colors.surface}]}
+            navigation={navigation}
+            navigationData={{
+              navigateTo: 'CategoryItems',
+              data: {category: itemData.category},
+            }}
+            textStyle={{color: theme.colors.text.primary}}
+          />
+        </View>
+
+        {/* Dates */}
+        <View style={[styles.datesContainer, {backgroundColor: theme.colors.surface}]}>
+          <View style={styles.dateRow}>
+            <Icon name="angle-right" size={18} color={theme.colors.primary} />
+            <CustomText style={{color: theme.colors.text.secondary}}>
+              Available from:
+            </CustomText>
+            <CustomText bold={600} style={{color: theme.colors.text.primary}}>
+              {formatDate(itemData.dateRange?.startDate)}
+            </CustomText>
+          </View>
+          <View style={styles.dateRow}>
+            <Icon name="angle-right" size={18} color={theme.colors.primary} />
+            <CustomText style={{color: theme.colors.text.secondary}}>
+              Available until:
+            </CustomText>
+            <CustomText bold={600} style={{color: theme.colors.text.primary}}>
+              {formatDate(itemData.dateRange?.endDate)}
+            </CustomText>
+          </View>
+        </View>
+
+        {/* Description */}
+        <View style={styles.descriptionContainer}>
+          <CustomText variant="h3" bold={700} style={styles.sectionTitle}>
+            Description
+          </CustomText>
+          <CustomText style={[styles.descriptionText, {color: theme.colors.text.secondary}]}>
+            {itemData.description}
+          </CustomText>
+        </View>
+
+        {/* Action Buttons */}
+        {renderItemActions()}
+      </ScrollView>
     );
   };
 
@@ -365,14 +342,14 @@ export const ItemDetailsScreen = ({
       return null;
     }
     return (
-      <View
-        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
         {renderHeader(itemData)}
         {renderCarousel(itemData)}
         {renderDetails()}
       </View>
     );
   };
+
   return (
     <>
       {loading ? (
@@ -385,55 +362,51 @@ export const ItemDetailsScreen = ({
                 styles.contactModal,
                 {
                   backgroundColor: getColor(theme.isDark),
-                  borderColor: getColor(!theme.isDark),
-                  borderWidth: 0.2,
                 },
               ]}>
-              <CustomText variant="h4">
-                A Message will be sent to the owner
+              <View style={styles.modalHeader}>
+                <Icon name="user" size={30} color={theme.colors.primary} />
+                <CustomText variant="h3" bold={600} style={{color: theme.colors.text.primary}}>
+                  Contact Owner
+                </CustomText>
+              </View>
+              
+              <CustomText 
+                style={[
+                  styles.modalMessage, 
+                  {color: theme.colors.text.secondary}
+                ]}>
+                A message will be sent to the owner of this item. Continue?
               </CustomText>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  gap: 10,
-                  paddingHorizontal: 20,
-                }}>
+              
+              <View style={styles.modalButtons}>
                 <TouchableOpacity
                   style={[
-                    styles.button,
-                    styles.centerContent,
-                    {backgroundColor: theme.colors.primary},
+                    styles.modalButton,
+                    {backgroundColor: 'transparent', borderColor: theme.colors.border, borderWidth: 1}
                   ]}
                   onPress={() => setShowModal(false)}>
                   <CustomText
-                    variant="h4"
-                    style={{
-                      color: colors.white,
-                      fontSize: 13,
-                    }}>
+                    style={{color: theme.colors.text.primary}}>
                     Cancel
                   </CustomText>
                 </TouchableOpacity>
+                
                 <TouchableOpacity
                   style={[
-                    styles.button,
-                    styles.centerContent,
-                    {backgroundColor: theme.colors.primary},
+                    styles.modalButton,
+                    {backgroundColor: theme.colors.primary}
                   ]}
                   onPress={handleContact}>
                   <CustomText
-                    variant="h4"
-                    style={{
-                      color: colors.white,
-                      fontSize: 13,
-                    }}>
+                    style={{color: colors.white}}>
                     Send Message
                   </CustomText>
                 </TouchableOpacity>
               </View>
             </View>
           </CustomModal>
+          
           {showEditModal && (
             <CustomModal showModal={showEditModal}>
               <NewItemForm
@@ -443,6 +416,7 @@ export const ItemDetailsScreen = ({
               />
             </CustomModal>
           )}
+          
           {renderItemDetails()}
         </>
       )}
@@ -457,27 +431,28 @@ const styles = StyleSheet.create({
   screenHeader: {
     position: 'absolute',
     width: '100%',
+    zIndex: 100,
     backgroundColor: 'transparent',
-  },
-  heartIcon: {
-    position: 'absolute',
-    top: 30,
-    right: 30,
-    zIndex: 1000,
   },
   carouselContainer: {
     position: 'relative',
-    height: '50%',
     width: '100%',
   },
   image: {
     height: '100%',
     width: '100%',
   },
+  imageGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
   paginationDots: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 10,
+    bottom: 20,
     alignSelf: 'center',
   },
   dot: {
@@ -493,71 +468,188 @@ const styles = StyleSheet.create({
   inactiveDot: {
     opacity: 0.5,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  rentButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  contactOwnerButton: {
-    borderRadius: 30,
-    padding: 10,
-    paddingHorizontal: 15,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  contactModal: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 30,
-    flexDirection: 'column',
-    gap: 20,
-    width: '70%',
-    padding: 20,
-  },
   favoriteButton: {
     position: 'absolute',
     right: 10,
     zIndex: 1000,
   },
-  button: {
-    borderRadius: 15,
-    flexDirection: 'row',
+  availabilityContainer: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
-  centerContent: {
-    padding: 15,
+  availabilityBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    gap: 6,
+  },
+  availabilityText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  detailsContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  titlePriceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  itemTitle: {
+    flex: 2,
+    marginRight: 10,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  priceUnit: {
+    fontSize: 14,
+    marginLeft: 2,
+    opacity: 0.7,
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
   },
   categoryChip: {
-    maxWidth: 100,
-    height: 40,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10,
   },
-  availableChip: {
-    height: 40,
-    width: 100,
-    backgroundColor: 'rgba(11, 209, 70, 0.98)',
-    borderRadius: 30,
+  datesContainer: {
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 10,
+  },
+  descriptionContainer: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    marginBottom: 10,
+  },
+  descriptionText: {
+    lineHeight: 22,
+    fontSize: 15,
+  },
+  actionsContainer: {
+    marginTop: 10,
+  },
+  ownerActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
+    gap: 8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  actionButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  contactButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  contactButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  contactModal: {
+    borderRadius: 20,
+    width: '85%',
+    padding: 22,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+    gap: 10,
+  },
+  modalMessage: {
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
   },
 });
 

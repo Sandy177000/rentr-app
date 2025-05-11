@@ -3,11 +3,12 @@ export const lightTheme = {
     background: '#FFFFFF',
     surface: '#F5F5F5',
     primary: '#599df9',
+    primaryLight: '#e6f1fc',
     secondary: '#ABABAB',
     error: '#ff005c',
     text: {
       primary: '#1A1A1A',
-      secondary: '#666666'
+      secondary: '#666666',
     },
     shimmer: {
       start: '#ebebeb',
@@ -32,8 +33,8 @@ export const lightTheme = {
 
 export const darkTheme = {
   colors: {
-    background: '#1a1a1a',
-    surface: 'black',
+    background: 'black',
+    surface: '#1a1a1a',
     primary: '#599df9',
     secondary: '#ABABAB',
     error: '#ff005c',

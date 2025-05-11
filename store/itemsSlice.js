@@ -11,6 +11,7 @@ const initialState = {
   favourites: [],
   loading: false,
   error: null,
+  nearByRadius: 1000,
 };
 
 // all items except user's items
@@ -127,6 +128,9 @@ const itemsSlice = createSlice({
   name: 'items',
   initialState,
   reducers: {
+    setNearByRadius: (state, action) => {
+      state.nearByRadius = action.payload;
+    },
     setItems: (state, action) => {
       state.items = action.payload;
     },
@@ -271,6 +275,7 @@ export const {
   addFavourite,
   removeFavourite,
   resetItems,
+  setNearByRadius,
 } = itemsSlice.actions;
 
 export const selectItems = state => state.items.items;
@@ -283,5 +288,5 @@ export const selectFavouriteIds = createSelector(
 );
 export const selectLoading = state => state.items.loading;
 export const selectError = state => state.items.error;
-
+export const selectNearByRadius = state => state.items.nearByRadius;
 export default itemsSlice.reducer;

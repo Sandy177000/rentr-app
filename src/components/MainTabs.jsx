@@ -14,6 +14,8 @@ import {useTheme} from '../theme/ThemeProvider';
 import MyRentalsScreen from '../../screens/MyRentalsScreen';
 import NewItemScreen from '../../screens/NewItemScreen';
 import {isKeyboardVisible} from '../utils/utils';
+import ChatScreen from '../../screens/ChatScreen';
+import FavouritesScreen from '../../screens/FavouritesScreen';
 const MainTabs = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -22,8 +24,8 @@ const MainTabs = () => {
 
   const routes = useMemo(() => [
     {key: 'home', title: 'Home', icon: 'home'},
-    {key: 'myOrders', title: 'myOrders', icon: 'shopping-cart'},
-    {key: 'newItem', title: 'newItem', icon: 'plus'},
+    {key: 'chat', title: 'chat', icon: 'comment'},
+    {key: 'favourites', title: 'favourites', icon: 'heart'},
     {
       key: 'profile',
       title: 'Profile',
@@ -35,9 +37,9 @@ const MainTabs = () => {
   const renderScene = useMemo(() => 
     SceneMap({
       home: HomeScreen,
-      myOrders: MyRentalsScreen,
       profile: ProfileScreen,
-      newItem: NewItemScreen,
+      chat: ChatScreen,
+      favourites: FavouritesScreen,
     }), 
   []);
 

@@ -48,7 +48,7 @@ const ChatScreen = () => {
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <ScreenHeader title="Chats"/>
+      <ScreenHeader title="Chats" goBack={false}/>
       <View
           style={{
             borderRadius: 30,

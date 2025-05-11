@@ -19,7 +19,7 @@ import {avatar} from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {colors} from '../theme/theme';
 import {isIOS} from '../utils/utils';
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const ProfileCard = ({user, theme, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -116,7 +116,7 @@ const ProfileCard = ({user, theme, navigation}) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
           style={styles.settingsButton}>
-          <Icons name="gear" size={24} color={theme.colors.secondary} />
+          <MaterialIcons name="manage-accounts" size={24} color={theme.colors.secondary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileImageContainer} activeOpacity={1}>
           {loading ? (

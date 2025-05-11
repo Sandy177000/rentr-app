@@ -28,6 +28,7 @@ import MainTabs from './src/components/MainTabs';
 import FavouritesScreen from './screens/FavouritesScreen';
 import ChatScreen from './screens/ChatScreen';
 import PersonalInfoScreen from './screens/PersonalInfoScreen';
+import NewItemScreen from './screens/NewItemScreen';
 
 const Stack = createStackNavigator();
 
@@ -195,6 +196,11 @@ const App = () => {
             name="PersonalInfo"
             options={{title: 'Personal Information', headerShown: false}}
             component={PersonalInfoScreen}
+          />
+          <Stack.Screen
+            name="NewItemScreen"
+            options={{title: 'New Item', headerShown: false}}
+            component={NewItemScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
