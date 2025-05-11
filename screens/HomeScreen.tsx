@@ -129,9 +129,9 @@ const HomeScreen = () => {
         <View
           style={[
             styles.categoryIconContainer,
-            {backgroundColor: theme.colors.primary + '20'},
+            {backgroundColor: theme.colors.secondary + '20'},
           ]}>
-          <Icon name={getCategoryIcon(item.name)} size={20} color={theme.colors.primary} />
+          <Icon name={getCategoryIcon(item.name)} size={20} color={theme.colors.secondary} />
         </View>
         <CustomText
           style={[styles.categoryText, {color: theme.colors.text.primary}]}>
@@ -242,6 +242,7 @@ const HomeScreen = () => {
             color={theme.colors.text.secondary}
           />
           <CustomText
+            variant="h4"
             style={{color: theme.colors.text.secondary, marginLeft: 10}}>
             Search for items...
           </CustomText>
@@ -378,36 +379,16 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    elevation: 3,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 30,
     marginBottom: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    elevation: 3,
   },
   scrollContent: {
     paddingBottom: 30,
@@ -423,7 +404,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   categoriesContainer: {
-    paddingRight: 16,
+    paddingVertical: 1,
+    paddingHorizontal: 12,
     gap: 12,
   },
   categoryCard: {

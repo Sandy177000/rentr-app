@@ -1,20 +1,20 @@
 export const lightTheme = {
   colors: {
-    background: '#FFFFFF',
-    surface: '#F5F5F5',
-    primary: '#599df9',
-    primaryLight: '#e6f1fc',
-    secondary: '#ABABAB',
-    error: '#ff005c',
+    background: '#F9FAFB',           // Soft light background
+    surface: '#FFFFFF',              // White cards/surfaces
+    primary: '#3AB4AA',              // Teal (main brand color)
+    primaryLight: '#D9F1EF',         // Very light teal for highlights
+    secondary: '#FFB84C',            // Warm soft orange for accents
+    error: '#E63946',                // Soft red for errors
     text: {
-      primary: '#1A1A1A',
-      secondary: '#666666',
+      primary: '#1F2937',            // Deep gray for main text
+      secondary: '#6B7280',          // Muted gray for subtext
     },
     dark: {
       shimmer: {
-        start: '#262626',
-        middle: '#363636',
-        end: '#262626',
+        start: '#2D2D2D',
+        middle: '#3D3D3D',
+        end: '#2D2D2D',
       }
     }
   },
@@ -28,15 +28,15 @@ export const lightTheme = {
 
 export const darkTheme = {
   colors: {
-    background: 'black',
-    surface: '#1a1a1a',
-    primary: '#599df9',
-    secondary: '#ABABAB',
-    error: '#ff005c',
-    success: '#008000',
+    background: '#0E0E0E',           // Near-black
+    surface: '#1F1F1F',              // Deep dark gray
+    primary: '#3AB4AA',              // Same teal
+    secondary: '#FFB84C',            // Warm accent
+    error: '#E63946',                // Same error color
+    success: '#22C55E',              // Soft green
     text: {
-      primary: '#FFFFFF',
-      secondary: '#ABABAB'
+      primary: '#F9FAFB',            // Light off-white
+      secondary: '#9CA3AF'           // Muted gray
     },
   },
   fonts: {
@@ -45,9 +45,7 @@ export const darkTheme = {
     bold: 'Roboto-Bold'
   },
   font: 'Roboto-Regular'
-}; 
-
-
+};
 
 export const themeColors = [
   {label: 'Background', path: 'background'},
@@ -71,5 +69,3 @@ export const colors = {
   black: '#000000',
   gray: '#808080',
 };
-
-

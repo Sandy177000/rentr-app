@@ -24,7 +24,7 @@ import { Calendar, DateData } from 'react-native-calendars';
 import CustomText from './common/CustomText';
 import { useNavigation } from '@react-navigation/native';
 import MapViewer from './MapViewer';
-import { isKeyboardVisible, handleMediaPicker } from '../utils/utils';
+import { handleMediaPicker } from '../utils/utils';
 import { TItem, TLocation, TRootStackParamList, TFormData } from './types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import CustomImage from './common/CustomImage';

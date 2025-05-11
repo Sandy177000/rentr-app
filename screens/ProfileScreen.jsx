@@ -79,7 +79,6 @@ const ProfileScreen = () => {
 
           {/* Action Sections */}
           <View style={[styles.actionSectionTitle, {marginTop: 20}]}>
-            <Icon name="gear" size={20} color={theme.colors.primary} />
             <CustomText variant="h4" bold={600} style={{color: theme.colors.text.primary}}>
               Manage Your Items
             </CustomText>

@@ -5,4 +5,5 @@ export const categories = [
     {id: '2', name: 'Books', icon: 'book'},
     {id: '3', name: 'Sports', icon: 'futbol-o'},
     {id: '4', name: 'Vehicles', icon: 'car'},
+    {id: '6', name: 'Other', icon: 'ellipsis-h'},
 ];

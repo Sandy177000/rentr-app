@@ -116,7 +116,7 @@ const ProfileCard = ({user, theme, navigation}) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
           style={styles.settingsButton}>
-          <MaterialIcons name="manage-accounts" size={24} color={theme.colors.secondary} />
+          <Icons name="gear" size={24} color={theme.colors.secondary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileImageContainer} activeOpacity={1}>
           {loading ? (

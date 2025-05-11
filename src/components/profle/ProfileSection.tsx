@@ -15,7 +15,7 @@ export const ProfileSection = ({title, icon, onPress, theme}: ProfileSectionProp
   <CustomButton
     style={[styles.sectionContainer, {backgroundColor: theme.colors.surface}]}
     onPress={onPress}>
-      <Icons name={icon} size={20} color={theme.colors.text.primary} />
+      <Icons name={icon} size={20} color={theme.colors.secondary} />
       <CustomText variant="h4" style={{color: theme.colors.text.primary}}>{title}</CustomText>
 
   </CustomButton>
