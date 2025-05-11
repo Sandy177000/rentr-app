@@ -1,4 +1,109 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Rentr
+
+Rentr is a mobile application built with React Native that allows users to rent items from others or list their own items for rent. It creates a peer-to-peer rental marketplace where users can find, rent, and list a variety of items across different categories.
+
+## Features
+
+### User Authentication
+- **Login/Registration**: Secure user authentication system
+- **Personal Profile**: Manage your personal information and profile settings
+
+### Item Listings
+- **Browse Items**: View available items for rent across multiple categories
+- **Search Functionality**: Find specific items using the search feature
+- **Categories**: Browse items by category (Electronics, Books, Clothing, Furniture, Tools, Sports, Toys, Vehicles, etc.)
+- **Nearby Items**: Discover items available for rent near your location using geolocation
+- **Favorites**: Save items to your favorites list for quick access
+
+### Item Management
+- **List Items**: Add your own items for rent with details such as:
+  - Title and description
+  - Multiple images
+  - Price information (daily, weekly, monthly rates)
+  - Availability dates
+  - Location information
+- **My Listings**: Manage your listed items (edit, delete, update availability)
+- **Item Details**: View comprehensive information about items including availability calendar, location, and owner details
+
+### Rental Management
+- **My Rentals**: Track items you've rented from others
+- **Rental Requests**: Process rental requests for your listed items
+- **Availability Calendar**: Set and view availability dates for items
+
+### Communication
+- **Chat System**: Built-in messaging system to communicate with item owners or renters
+- **Real-time Messaging**: Instant communication with other users using Socket.io
+
+### User Experience
+- **Theming**: Customize the app appearance with different theme options (light/dark mode)
+- **Location Services**: Find items near you and see item locations on a map
+- **Image Management**: Upload and view multiple images for each item
+
+## Technology Stack
+
+- **Frontend**: React Native (iOS & Android)
+- **State Management**: Redux Toolkit
+- **API Communication**: Axios, React Query
+- **Navigation**: React Navigation
+- **Real-time Features**: Socket.io
+- **UI Components**: Custom components with theming support
+- **Maps & Location**: React Native Maps, Geolocation services
+- **Image Handling**: React Native Image Picker, Fast Image
+
+## Getting Started
+
+### Prerequisites
+- Node.js (version 18 or higher)
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/rentr.git
+cd rentr
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the Metro bundler:
+```bash
+npm start
+```
+
+4. Run the application:
+
+For Android:
+```bash
+npm run android
+```
+
+For iOS:
+```bash
+npm run ios
+```
+
+## Additional Scripts
+
+- `npm run gradle-clean`: Clean Android Gradle build
+- `npm run android:install-release`: Build and install release APK on connected Android device
+
+## Future Enhancements
+
+- Payment integration for processing rental transactions
+- Reviews and ratings system for users and items
+- Enhanced filtering options for item search
+- Push notifications for rental requests and messages
+- Social media sharing of listings
+
+## Contributing
+
+Contributions to improve Rentr are welcome. Please feel free to submit a pull request or create an issue to discuss potential changes or additions.
 
 # Getting Started
 
@@ -77,3 +182,4 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+

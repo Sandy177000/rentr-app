@@ -59,20 +59,20 @@ export const LoginScreen = () => {
         <View style={{gap: 10, marginTop: 20, marginBottom: 20}}>
           <TextInput
             label="Email"
-            style={[styles.input, {backgroundColor: theme.colors.surface, color: theme.colors.text.secondary}]}
+            style={[styles.input, {backgroundColor: theme.colors.surface, color: theme.colors.text.primary}]}
             value={formData.email}
             onChangeText={value => handleFormData('email', value)}
             placeholder="Enter your email"
-            placeholderColor={theme.colors.text.secondary}
+            placeholderTextColor={colors.gray}
           />
             <View style={[styles.passwordInput, {backgroundColor: theme.colors.surface}]}>
               <TextInput
-              style={{color: theme.colors.text.secondary}}
+              style={{color: theme.colors.text.primary}}
               label="Password"
               value={formData.password}
               onChangeText={value => handleFormData('password', value)}
               placeholder="Enter your password"
-              placeholderColor={theme.colors.text.secondary}
+              placeholderTextColor={colors.gray}
               secureTextEntry={secureTextEntry}
             />
             <Icon
