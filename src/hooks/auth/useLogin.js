@@ -14,7 +14,7 @@ export const useLogin = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const [formData, setFormData] = useState({email: 'test@rentr.com', password: 'Test@123'});
+  const [formData, setFormData] = useState({email: '', password: ''});
   const error = useSelector(selectAuthError);
 
   const handleLogin = async () => {
