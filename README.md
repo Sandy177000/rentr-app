@@ -68,6 +68,8 @@ You've successfully run and modified your React Native App. :partying_face:
 
 If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
 
+
+
 # Learn More
 
 To learn more about React Native, take a look at the following resources:
@@ -77,3 +79,22 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+# UX
+
+| Screenshot 1 | Screenshot 2 | Screenshot 3 |
+|-------------|-------------|-------------|
+| ![Screenshot_1746974698](https://github.com/user-attachments/assets/eb600b41-43bd-4e71-a925-5d8812961d97) | ![Screenshot_1746974602](https://github.com/user-attachments/assets/0dd7d711-062e-4825-beb8-6677014a7d2a) | ![Screenshot_1746974733](https://github.com/user-attachments/assets/b07fbf3f-e965-4fed-80c1-83c672b74ce5) |
+
+| Screenshot 4 | Screenshot 5 | Screenshot 6 |
+|-------------|-------------|-------------|
+| ![Screenshot_1746974740](https://github.com/user-attachments/assets/500cf74e-5725-443f-82f6-218e4ee43c9f) | ![Screenshot_1746974744](https://github.com/user-attachments/assets/566e7dd4-5e42-43fa-9875-12f954adefcc) | ![Screenshot_1746974661](https://github.com/user-attachments/assets/9f88971b-3256-401c-85a3-e236eb58b2d8) |
+
+| Screenshot 7 | Screenshot 8 | Screenshot 9 |
+|-------------|-------------|-------------|
+| ![Screenshot_1746974760](https://github.com/user-attachments/assets/16627ad9-7b24-4b9e-ad81-e951c422b7e0) | ![Screenshot_1746974634](https://github.com/user-attachments/assets/c520ef21-7388-46c2-ba0e-a9bd41de6b0b) | ![Screenshot_1746974667](https://github.com/user-attachments/assets/54baa5e6-e913-4204-b864-6f5b87c52cba) |
+
+| Screenshot 10 | Screenshot 11 | Screenshot 12 |
+|--------------|---------------|---------------|
+| ![Screenshot_1746968811](https://github.com/user-attachments/assets/c4d53aee-c05a-4179-9857-238e4c061669) | ![Screenshot_1746974725](https://github.com/user-attachments/assets/a0262989-c356-4b42-b9f0-bd79dec98dc3) | ![Screenshot_1746974710](https://github.com/user-attachments/assets/36a2bb8b-179b-4317-95e9-1f7861083a8e) |
+
